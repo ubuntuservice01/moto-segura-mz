@@ -28,12 +28,15 @@ export interface MotoPublica extends Omit<Moto, "proprietario_bi" | "notas_inter
   proprietario_contacto: string | null;
 }
 
+export type DiffValue = string | number | boolean | null;
+export type DiffMap = Record<string, { antes: DiffValue; depois: DiffValue }>;
+
 export interface HistoricoEvento {
   id: string;
   moto_id: string;
   tipo_evento: TipoEvento;
   descricao: string;
-  diff: Record<string, { antes: unknown; depois: unknown }> | null;
+  diff: DiffMap | null;
   operador: string;
   motivo: string | null;
   created_at: string;
