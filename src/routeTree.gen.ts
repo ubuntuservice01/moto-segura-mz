@@ -9,38 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerificarRouteImport } from './routes/verificar'
+import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
+import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
 
+const VerificarRoute = VerificarRouteImport.update({
+  id: '/verificar',
+  path: '/verificar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComprarRoute = ComprarRouteImport.update({
+  id: '/comprar',
+  path: '/comprar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerificarChassiRoute = VerificarChassiRouteImport.update({
+  id: '/$chassi',
+  path: '/$chassi',
+  getParentRoute: () => VerificarRoute,
+} as any)
+const ComprarIdRoute = ComprarIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ComprarRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/comprar': typeof ComprarRouteWithChildren
+  '/verificar': typeof VerificarRouteWithChildren
+  '/comprar/$id': typeof ComprarIdRoute
+  '/verificar/$chassi': typeof VerificarChassiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/comprar': typeof ComprarRouteWithChildren
+  '/verificar': typeof VerificarRouteWithChildren
+  '/comprar/$id': typeof ComprarIdRoute
+  '/verificar/$chassi': typeof VerificarChassiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/comprar': typeof ComprarRouteWithChildren
+  '/verificar': typeof VerificarRouteWithChildren
+  '/comprar/$id': typeof ComprarIdRoute
+  '/verificar/$chassi': typeof VerificarChassiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/comprar'
+    | '/verificar'
+    | '/comprar/$id'
+    | '/verificar/$chassi'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/comprar' | '/verificar' | '/comprar/$id' | '/verificar/$chassi'
+  id:
+    | '__root__'
+    | '/'
+    | '/comprar'
+    | '/verificar'
+    | '/comprar/$id'
+    | '/verificar/$chassi'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ComprarRoute: typeof ComprarRouteWithChildren
+  VerificarRoute: typeof VerificarRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verificar': {
+      id: '/verificar'
+      path: '/verificar'
+      fullPath: '/verificar'
+      preLoaderRoute: typeof VerificarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comprar': {
+      id: '/comprar'
+      path: '/comprar'
+      fullPath: '/comprar'
+      preLoaderRoute: typeof ComprarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +111,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verificar/$chassi': {
+      id: '/verificar/$chassi'
+      path: '/$chassi'
+      fullPath: '/verificar/$chassi'
+      preLoaderRoute: typeof VerificarChassiRouteImport
+      parentRoute: typeof VerificarRoute
+    }
+    '/comprar/$id': {
+      id: '/comprar/$id'
+      path: '/$id'
+      fullPath: '/comprar/$id'
+      preLoaderRoute: typeof ComprarIdRouteImport
+      parentRoute: typeof ComprarRoute
+    }
   }
 }
 
+interface ComprarRouteChildren {
+  ComprarIdRoute: typeof ComprarIdRoute
+}
+
+const ComprarRouteChildren: ComprarRouteChildren = {
+  ComprarIdRoute: ComprarIdRoute,
+}
+
+const ComprarRouteWithChildren =
+  ComprarRoute._addFileChildren(ComprarRouteChildren)
+
+interface VerificarRouteChildren {
+  VerificarChassiRoute: typeof VerificarChassiRoute
+}
+
+const VerificarRouteChildren: VerificarRouteChildren = {
+  VerificarChassiRoute: VerificarChassiRoute,
+}
+
+const VerificarRouteWithChildren = VerificarRoute._addFileChildren(
+  VerificarRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ComprarRoute: ComprarRouteWithChildren,
+  VerificarRoute: VerificarRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
