@@ -51,14 +51,13 @@ export function Timeline({ eventos }: { eventos: HistoricoEvento[] }) {
             {e.diff && Object.keys(e.diff).length > 0 && (
               <ul className="mt-2 space-y-1 text-xs">
                 {Object.entries(e.diff).map(([campo, val]) => {
-                  const v = val as { antes?: unknown; depois?: unknown };
-                  if (v.antes === undefined && v.depois === undefined) return null;
+                  if (val.antes === null && val.depois === null) return null;
                   return (
                     <li key={campo} className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
                       <span className="font-mono font-semibold text-foreground">{campo}:</span>
-                      <span className="line-through opacity-70">{formatVal(v.antes)}</span>
+                      <span className="line-through opacity-70">{formatVal(val.antes)}</span>
                       <span>→</span>
-                      <span className="font-semibold text-secondary">{formatVal(v.depois)}</span>
+                      <span className="font-semibold text-secondary">{formatVal(val.depois)}</span>
                     </li>
                   );
                 })}
