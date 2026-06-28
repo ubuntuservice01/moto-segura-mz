@@ -10,14 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerificarRouteImport } from './routes/verificar'
+import { Route as GestaoRouteImport } from './routes/gestao'
 import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GestaoIndexRouteImport } from './routes/gestao.index'
 import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
+import { Route as GestaoNovaRouteImport } from './routes/gestao.nova'
+import { Route as GestaoHistoricoRouteImport } from './routes/gestao.historico'
+import { Route as GestaoIdRouteImport } from './routes/gestao.$id'
 import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
+import { Route as GestaoIdTransferirRouteImport } from './routes/gestao.$id.transferir'
 
 const VerificarRoute = VerificarRouteImport.update({
   id: '/verificar',
   path: '/verificar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GestaoRoute = GestaoRouteImport.update({
+  id: '/gestao',
+  path: '/gestao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComprarRoute = ComprarRouteImport.update({
@@ -30,61 +41,126 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GestaoIndexRoute = GestaoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GestaoRoute,
+} as any)
 const VerificarChassiRoute = VerificarChassiRouteImport.update({
   id: '/$chassi',
   path: '/$chassi',
   getParentRoute: () => VerificarRoute,
+} as any)
+const GestaoNovaRoute = GestaoNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => GestaoRoute,
+} as any)
+const GestaoHistoricoRoute = GestaoHistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => GestaoRoute,
+} as any)
+const GestaoIdRoute = GestaoIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => GestaoRoute,
 } as any)
 const ComprarIdRoute = ComprarIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ComprarRoute,
 } as any)
+const GestaoIdTransferirRoute = GestaoIdTransferirRouteImport.update({
+  id: '/transferir',
+  path: '/transferir',
+  getParentRoute: () => GestaoIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
+  '/gestao': typeof GestaoRouteWithChildren
   '/verificar': typeof VerificarRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
+  '/gestao/$id': typeof GestaoIdRouteWithChildren
+  '/gestao/historico': typeof GestaoHistoricoRoute
+  '/gestao/nova': typeof GestaoNovaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
+  '/gestao/': typeof GestaoIndexRoute
+  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/verificar': typeof VerificarRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
+  '/gestao/$id': typeof GestaoIdRouteWithChildren
+  '/gestao/historico': typeof GestaoHistoricoRoute
+  '/gestao/nova': typeof GestaoNovaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
+  '/gestao': typeof GestaoIndexRoute
+  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
+  '/gestao': typeof GestaoRouteWithChildren
   '/verificar': typeof VerificarRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
+  '/gestao/$id': typeof GestaoIdRouteWithChildren
+  '/gestao/historico': typeof GestaoHistoricoRoute
+  '/gestao/nova': typeof GestaoNovaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
+  '/gestao/': typeof GestaoIndexRoute
+  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/comprar'
+    | '/gestao'
     | '/verificar'
     | '/comprar/$id'
+    | '/gestao/$id'
+    | '/gestao/historico'
+    | '/gestao/nova'
     | '/verificar/$chassi'
+    | '/gestao/'
+    | '/gestao/$id/transferir'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/comprar' | '/verificar' | '/comprar/$id' | '/verificar/$chassi'
-  id:
-    | '__root__'
+  to:
     | '/'
     | '/comprar'
     | '/verificar'
     | '/comprar/$id'
+    | '/gestao/$id'
+    | '/gestao/historico'
+    | '/gestao/nova'
     | '/verificar/$chassi'
+    | '/gestao'
+    | '/gestao/$id/transferir'
+  id:
+    | '__root__'
+    | '/'
+    | '/comprar'
+    | '/gestao'
+    | '/verificar'
+    | '/comprar/$id'
+    | '/gestao/$id'
+    | '/gestao/historico'
+    | '/gestao/nova'
+    | '/verificar/$chassi'
+    | '/gestao/'
+    | '/gestao/$id/transferir'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComprarRoute: typeof ComprarRouteWithChildren
+  GestaoRoute: typeof GestaoRouteWithChildren
   VerificarRoute: typeof VerificarRouteWithChildren
 }
 
@@ -95,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/verificar'
       fullPath: '/verificar'
       preLoaderRoute: typeof VerificarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gestao': {
+      id: '/gestao'
+      path: '/gestao'
+      fullPath: '/gestao'
+      preLoaderRoute: typeof GestaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comprar': {
@@ -111,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gestao/': {
+      id: '/gestao/'
+      path: '/'
+      fullPath: '/gestao/'
+      preLoaderRoute: typeof GestaoIndexRouteImport
+      parentRoute: typeof GestaoRoute
+    }
     '/verificar/$chassi': {
       id: '/verificar/$chassi'
       path: '/$chassi'
@@ -118,12 +208,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerificarChassiRouteImport
       parentRoute: typeof VerificarRoute
     }
+    '/gestao/nova': {
+      id: '/gestao/nova'
+      path: '/nova'
+      fullPath: '/gestao/nova'
+      preLoaderRoute: typeof GestaoNovaRouteImport
+      parentRoute: typeof GestaoRoute
+    }
+    '/gestao/historico': {
+      id: '/gestao/historico'
+      path: '/historico'
+      fullPath: '/gestao/historico'
+      preLoaderRoute: typeof GestaoHistoricoRouteImport
+      parentRoute: typeof GestaoRoute
+    }
+    '/gestao/$id': {
+      id: '/gestao/$id'
+      path: '/$id'
+      fullPath: '/gestao/$id'
+      preLoaderRoute: typeof GestaoIdRouteImport
+      parentRoute: typeof GestaoRoute
+    }
     '/comprar/$id': {
       id: '/comprar/$id'
       path: '/$id'
       fullPath: '/comprar/$id'
       preLoaderRoute: typeof ComprarIdRouteImport
       parentRoute: typeof ComprarRoute
+    }
+    '/gestao/$id/transferir': {
+      id: '/gestao/$id/transferir'
+      path: '/transferir'
+      fullPath: '/gestao/$id/transferir'
+      preLoaderRoute: typeof GestaoIdTransferirRouteImport
+      parentRoute: typeof GestaoIdRoute
     }
   }
 }
@@ -138,6 +256,35 @@ const ComprarRouteChildren: ComprarRouteChildren = {
 
 const ComprarRouteWithChildren =
   ComprarRoute._addFileChildren(ComprarRouteChildren)
+
+interface GestaoIdRouteChildren {
+  GestaoIdTransferirRoute: typeof GestaoIdTransferirRoute
+}
+
+const GestaoIdRouteChildren: GestaoIdRouteChildren = {
+  GestaoIdTransferirRoute: GestaoIdTransferirRoute,
+}
+
+const GestaoIdRouteWithChildren = GestaoIdRoute._addFileChildren(
+  GestaoIdRouteChildren,
+)
+
+interface GestaoRouteChildren {
+  GestaoIdRoute: typeof GestaoIdRouteWithChildren
+  GestaoHistoricoRoute: typeof GestaoHistoricoRoute
+  GestaoNovaRoute: typeof GestaoNovaRoute
+  GestaoIndexRoute: typeof GestaoIndexRoute
+}
+
+const GestaoRouteChildren: GestaoRouteChildren = {
+  GestaoIdRoute: GestaoIdRouteWithChildren,
+  GestaoHistoricoRoute: GestaoHistoricoRoute,
+  GestaoNovaRoute: GestaoNovaRoute,
+  GestaoIndexRoute: GestaoIndexRoute,
+}
+
+const GestaoRouteWithChildren =
+  GestaoRoute._addFileChildren(GestaoRouteChildren)
 
 interface VerificarRouteChildren {
   VerificarChassiRoute: typeof VerificarChassiRoute
@@ -154,6 +301,7 @@ const VerificarRouteWithChildren = VerificarRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComprarRoute: ComprarRouteWithChildren,
+  GestaoRoute: GestaoRouteWithChildren,
   VerificarRoute: VerificarRouteWithChildren,
 }
 export const routeTree = rootRouteImport
