@@ -76,8 +76,8 @@ export function Timeline({ eventos }: { eventos: HistoricoEvento[] }) {
   );
 }
 
-function formatVal(v: unknown): string {
-  if (v === null || v === undefined || v === "") return "—";
+function formatVal(v: string | number | boolean | null): string {
+  if (v === null || v === "") return "—";
   if (typeof v === "number") return new Intl.NumberFormat("pt-PT").format(v);
   return String(v);
 }
