@@ -14,16 +14,169 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      historico_motos: {
+        Row: {
+          created_at: string
+          descricao: string
+          diff: Json | null
+          id: string
+          motivo: string | null
+          moto_id: string
+          operador: string
+          tipo_evento: Database["public"]["Enums"]["historico_tipo"]
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          diff?: Json | null
+          id?: string
+          motivo?: string | null
+          moto_id: string
+          operador?: string
+          tipo_evento: Database["public"]["Enums"]["historico_tipo"]
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          diff?: Json | null
+          id?: string
+          motivo?: string | null
+          moto_id?: string
+          operador?: string
+          tipo_evento?: Database["public"]["Enums"]["historico_tipo"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_motos_moto_id_fkey"
+            columns: ["moto_id"]
+            isOneToOne: false
+            referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      motos: {
+        Row: {
+          ano: number | null
+          chassi: string
+          cilindrada: number | null
+          cor: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["moto_estado"]
+          id: string
+          km: number | null
+          marca: string
+          matricula: string | null
+          modelo: string
+          notas_internas: string | null
+          preco_venda: number | null
+          proprietario_bi: string | null
+          proprietario_contacto: string | null
+          proprietario_localidade: string | null
+          proprietario_nome: string
+          proprietario_provincia: string | null
+          updated_at: string
+        }
+        Insert: {
+          ano?: number | null
+          chassi: string
+          cilindrada?: number | null
+          cor?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["moto_estado"]
+          id?: string
+          km?: number | null
+          marca: string
+          matricula?: string | null
+          modelo: string
+          notas_internas?: string | null
+          preco_venda?: number | null
+          proprietario_bi?: string | null
+          proprietario_contacto?: string | null
+          proprietario_localidade?: string | null
+          proprietario_nome: string
+          proprietario_provincia?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ano?: number | null
+          chassi?: string
+          cilindrada?: number | null
+          cor?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["moto_estado"]
+          id?: string
+          km?: number | null
+          marca?: string
+          matricula?: string | null
+          modelo?: string
+          notas_internas?: string | null
+          preco_venda?: number | null
+          proprietario_bi?: string | null
+          proprietario_contacto?: string | null
+          proprietario_localidade?: string | null
+          proprietario_nome?: string
+          proprietario_provincia?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transferencias: {
+        Row: {
+          created_at: string
+          id: string
+          motivo: string | null
+          moto_id: string
+          operador: string
+          proprietario_anterior: Json
+          proprietario_novo: Json
+          valor_transaccao: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          moto_id: string
+          operador?: string
+          proprietario_anterior: Json
+          proprietario_novo: Json
+          valor_transaccao?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          moto_id?: string
+          operador?: string
+          proprietario_anterior?: Json
+          proprietario_novo?: Json
+          valor_transaccao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transferencias_moto_id_fkey"
+            columns: ["moto_id"]
+            isOneToOne: false
+            referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      historico_tipo:
+        | "registo"
+        | "transferencia"
+        | "actualizacao"
+        | "mudanca_estado"
+      moto_estado: "activa" | "a_venda" | "roubada" | "transferida"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +303,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      historico_tipo: [
+        "registo",
+        "transferencia",
+        "actualizacao",
+        "mudanca_estado",
+      ],
+      moto_estado: ["activa", "a_venda", "roubada", "transferida"],
+    },
   },
 } as const
