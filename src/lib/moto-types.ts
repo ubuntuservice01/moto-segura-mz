@@ -45,8 +45,8 @@ export interface HistoricoEvento {
 export interface Transferencia {
   id: string;
   moto_id: string;
-  proprietario_anterior: Record<string, unknown>;
-  proprietario_novo: Record<string, unknown>;
+  proprietario_anterior: Record<string, string | null>;
+  proprietario_novo: Record<string, string | null>;
   valor_transaccao: number | null;
   motivo: string | null;
   operador: string;
