@@ -1,6 +1,26 @@
 export type EstadoMoto = "activa" | "a_venda" | "roubada" | "transferida";
 export type TipoEvento = "registo" | "transferencia" | "actualizacao" | "mudanca_estado";
 
+export type TipoDocumento = "bi" | "carta_conducao" | "livrete" | "factura" | "seguro" | "outro";
+
+export const TIPOS_DOCUMENTO_LABEL: Record<TipoDocumento, string> = {
+  bi: "Bilhete de Identidade",
+  carta_conducao: "Carta de Condução",
+  livrete: "Livrete da Moto",
+  factura: "Factura / Recibo",
+  seguro: "Seguro",
+  outro: "Outro documento",
+};
+
+export interface Documento {
+  tipo: TipoDocumento;
+  nome: string;
+  path: string;
+  mime: string;
+  tamanho: number;
+  carregado_em: string;
+}
+
 export interface Moto {
   id: string;
   chassi: string;
@@ -19,14 +39,16 @@ export interface Moto {
   estado: EstadoMoto;
   preco_venda: number | null;
   notas_internas: string | null;
+  documentos: Documento[];
   created_at: string;
   updated_at: string;
 }
 
-/** Public-facing moto: removes BI and notas_internas, masks contacto unless à venda */
-export interface MotoPublica extends Omit<Moto, "proprietario_bi" | "notas_internas" | "proprietario_contacto"> {
+/** Public-facing moto: removes BI, notas, documentos and masks contacto unless à venda */
+export interface MotoPublica extends Omit<Moto, "proprietario_bi" | "notas_internas" | "proprietario_contacto" | "documentos"> {
   proprietario_contacto: string | null;
 }
+
 
 export type DiffValue = string | number | boolean | null;
 export type DiffMap = Record<string, { antes: DiffValue; depois: DiffValue }>;

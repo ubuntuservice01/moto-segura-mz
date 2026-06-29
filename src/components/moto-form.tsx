@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { type MotoInput } from "@/lib/motos.functions";
-import { PROVINCIAS_MZ, type EstadoMoto, type Moto, ESTADOS_LABEL } from "@/lib/moto-types";
+import {
+  PROVINCIAS_MZ,
+  type EstadoMoto,
+  type Moto,
+  ESTADOS_LABEL,
+  type Documento,
+  type TipoDocumento,
+  TIPOS_DOCUMENTO_LABEL,
+} from "@/lib/moto-types";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   initial?: Partial<Moto>;
@@ -8,6 +17,9 @@ interface Props {
   onSubmit: (data: MotoInput) => void;
   submitLabel?: string;
 }
+
+const BUCKET = "moto-documentos";
+const MAX_SIZE = 8 * 1024 * 1024; // 8 MB
 
 export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar" }: Props) {
   const [form, setForm] = useState({
@@ -28,9 +40,60 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     preco_venda: initial?.preco_venda?.toString() ?? "",
     notas_internas: initial?.notas_internas ?? "",
   });
+  const [documentos, setDocumentos] = useState<Documento[]>(initial?.documentos ?? []);
+  const [uploadingTipo, setUploadingTipo] = useState<TipoDocumento | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function handleUpload(tipo: TipoDocumento, file: File) {
+    setUploadError(null);
+    if (file.size > MAX_SIZE) {
+      setUploadError(`Ficheiro maior que ${Math.round(MAX_SIZE / 1024 / 1024)} MB`);
+      return;
+    }
+    setUploadingTipo(tipo);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `motos/${form.chassi || "novo"}/${tipo}-${Date.now()}-${safeName}`;
+      const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+        contentType: file.type || `application/${ext}`,
+        upsert: false,
+      });
+      if (error) throw error;
+      setDocumentos((d) => [
+        ...d,
+        {
+          tipo,
+          nome: file.name,
+          path,
+          mime: file.type || "application/octet-stream",
+          tamanho: file.size,
+          carregado_em: new Date().toISOString(),
+        },
+      ]);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Falha no carregamento");
+    } finally {
+      setUploadingTipo(null);
+    }
+  }
+
+  async function handleRemove(doc: Documento) {
+    await supabase.storage.from(BUCKET).remove([doc.path]);
+    setDocumentos((d) => d.filter((x) => x.path !== doc.path));
+  }
+
+  async function openDoc(doc: Documento) {
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(doc.path, 60 * 10);
+    if (error || !data?.signedUrl) {
+      setUploadError(error?.message ?? "Não foi possível abrir o documento");
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -52,6 +115,7 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       estado: form.estado,
       preco_venda: form.preco_venda ? Number(form.preco_venda) : null,
       notas_internas: form.notas_internas || null,
+      documentos,
     });
   }
 
@@ -109,6 +173,74 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
         </Grid>
       </Section>
 
+      <Section title="Documentos">
+        <p className="text-xs text-muted-foreground -mt-2">
+          Carregue cópias do BI, carta de condução, livrete da moto e outros documentos relevantes (PDF ou imagem, até 8 MB).
+        </p>
+
+        <div className="grid gap-3 md:grid-cols-2">
+          {(Object.keys(TIPOS_DOCUMENTO_LABEL) as TipoDocumento[]).map((tipo) => (
+            <label
+              key={tipo}
+              className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed bg-background px-3 py-2.5 text-sm hover:border-secondary hover:bg-secondary/5"
+            >
+              <span className="flex items-center gap-2 font-medium">
+                <UploadIcon />
+                {TIPOS_DOCUMENTO_LABEL[tipo]}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {uploadingTipo === tipo ? "A carregar…" : "Escolher ficheiro"}
+              </span>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                className="hidden"
+                disabled={uploadingTipo !== null}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void handleUpload(tipo, f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          ))}
+        </div>
+
+        {uploadError && (
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+            {uploadError}
+          </div>
+        )}
+
+        {documentos.length > 0 && (
+          <ul className="divide-y rounded-md border bg-background">
+            {documentos.map((doc) => (
+              <li key={doc.path} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-secondary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-secondary">
+                      {TIPOS_DOCUMENTO_LABEL[doc.tipo]}
+                    </span>
+                    <span className="truncate font-medium">{doc.nome}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {(doc.tamanho / 1024).toFixed(0)} KB · {new Date(doc.carregado_em).toLocaleString("pt-PT")}
+                  </div>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <button type="button" onClick={() => void openDoc(doc)} className="rounded border px-2 py-1 text-xs hover:bg-muted">
+                    Ver
+                  </button>
+                  <button type="button" onClick={() => void handleRemove(doc)} className="rounded border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10">
+                    Remover
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+
       <Section title="Estado e mercado">
         <Grid>
           <Field label="Estado *" required>
@@ -130,7 +262,7 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       <div className="flex justify-end gap-3">
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || uploadingTipo !== null}
           className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-50"
         >
           {submitting ? "A guardar…" : submitLabel}
@@ -160,5 +292,15 @@ function Field({ label, children }: { label: string; required?: boolean; childre
       <span className="mb-1 block text-xs font-medium text-foreground">{label}</span>
       {children}
     </label>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
   );
 }

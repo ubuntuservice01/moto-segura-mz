@@ -18,6 +18,15 @@ function sb() {
   );
 }
 
+const documentoSchema = z.object({
+  tipo: z.enum(["bi", "carta_conducao", "livrete", "factura", "seguro", "outro"]),
+  nome: z.string().min(1).max(200),
+  path: z.string().min(1).max(500),
+  mime: z.string().max(100),
+  tamanho: z.number().int().min(0),
+  carregado_em: z.string(),
+});
+
 const motoInputSchema = z.object({
   chassi: z.string().trim().min(6, "Chassi muito curto").max(40).toUpperCase(),
   matricula: z.string().trim().max(20).optional().nullable(),
@@ -35,7 +44,9 @@ const motoInputSchema = z.object({
   estado: z.enum(["activa", "a_venda", "roubada", "transferida"]).default("activa"),
   preco_venda: z.number().min(0).max(999_999_999).optional().nullable(),
   notas_internas: z.string().trim().max(2000).optional().nullable(),
+  documentos: z.array(documentoSchema).default([]),
 });
+
 
 export type MotoInput = z.infer<typeof motoInputSchema>;
 
@@ -51,7 +62,7 @@ export const searchMotosByChassi = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(20);
     if (error) throw new Error(error.message);
-    return (rows ?? []).map((r) => publicizeMoto(r as Moto));
+    return (rows ?? []).map((r) => publicizeMoto(r as unknown as Moto));
   });
 
 export const getMotoByChassi = createServerFn({ method: "GET" })
@@ -65,7 +76,7 @@ export const getMotoByChassi = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
-    const moto = row as Moto;
+    const moto = row as unknown as Moto;
     const { data: hist } = await supa
       .from("historico_motos")
       .select("*")
@@ -94,7 +105,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
     if (data.precoMax) q = q.lte("preco_venda", data.precoMax);
     const { data: rows, error } = await q.order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return (rows ?? []).map((r) => publicizeMoto(r as Moto));
+    return (rows ?? []).map((r) => publicizeMoto(r as unknown as Moto));
   });
 
 export const getMotoMarketplaceById = createServerFn({ method: "GET" })
@@ -103,7 +114,7 @@ export const getMotoMarketplaceById = createServerFn({ method: "GET" })
     const { data: row, error } = await sb().from("motos").select("*").eq("id", data.id).maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
-    return publicizeMoto(row as Moto);
+    return publicizeMoto(row as unknown as Moto);
   });
 
 // =========== GESTÃO (sem auth nesta fase) ===========
@@ -114,14 +125,14 @@ export const listAllMotos = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<Moto[]> => {
     let q = sb().from("motos").select("*");
-    if (data.estado && data.estado !== "todos") q = q.eq("estado", data.estado as Moto["estado"]);
+    if (data.estado && data.estado !== "todos") q = q.eq("estado", data.estado as unknown as Moto["estado"]);
     if (data.busca) {
       const term = `%${data.busca}%`;
       q = q.or(`chassi.ilike.${term},matricula.ilike.${term},proprietario_nome.ilike.${term},marca.ilike.${term},modelo.ilike.${term}`);
     }
     const { data: rows, error } = await q.order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return (rows ?? []) as Moto[];
+    return (rows ?? []) as unknown as unknown as Moto[];
   });
 
 export const getMotoById = createServerFn({ method: "GET" })
@@ -129,7 +140,7 @@ export const getMotoById = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<Moto | null> => {
     const { data: row, error } = await sb().from("motos").select("*").eq("id", data.id).maybeSingle();
     if (error) throw new Error(error.message);
-    return (row as Moto) ?? null;
+    return (row as unknown as Moto) ?? null;
   });
 
 export const createMoto = createServerFn({ method: "POST" })
@@ -137,7 +148,7 @@ export const createMoto = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<Moto> => {
     const { data: row, error } = await sb().from("motos").insert(data).select("*").single();
     if (error) throw new Error(error.message);
-    return row as Moto;
+    return row as unknown as Moto;
   });
 
 export const updateMoto = createServerFn({ method: "POST" })
@@ -152,7 +163,7 @@ export const updateMoto = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
-    return row as Moto;
+    return row as unknown as Moto;
   });
 
 export const deleteMoto = createServerFn({ method: "POST" })
@@ -186,7 +197,7 @@ export const transferOwner = createServerFn({ method: "POST" })
       .eq("id", data.motoId)
       .single();
     if (e1 || !current) throw new Error(e1?.message || "Moto não encontrada");
-    const old = current as Moto;
+    const old = current as unknown as Moto;
 
     const snapshotAnterior = {
       nome: old.proprietario_nome,
@@ -231,7 +242,7 @@ export const transferOwner = createServerFn({ method: "POST" })
       motivo: data.motivo ?? null,
     });
 
-    return { moto: updated as Moto };
+    return { moto: updated as unknown as Moto };
   });
 
 export const listHistorico = createServerFn({ method: "GET" })
