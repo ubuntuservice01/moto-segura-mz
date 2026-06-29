@@ -62,6 +62,7 @@ export type Database = {
           cilindrada: number | null
           cor: string | null
           created_at: string
+          documentos: Json
           estado: Database["public"]["Enums"]["moto_estado"]
           id: string
           km: number | null
@@ -83,6 +84,7 @@ export type Database = {
           cilindrada?: number | null
           cor?: string | null
           created_at?: string
+          documentos?: Json
           estado?: Database["public"]["Enums"]["moto_estado"]
           id?: string
           km?: number | null
@@ -104,6 +106,7 @@ export type Database = {
           cilindrada?: number | null
           cor?: string | null
           created_at?: string
+          documentos?: Json
           estado?: Database["public"]["Enums"]["moto_estado"]
           id?: string
           km?: number | null
