@@ -18,6 +18,15 @@ function sb() {
   );
 }
 
+const documentoSchema = z.object({
+  tipo: z.enum(["bi", "carta_conducao", "livrete", "factura", "seguro", "outro"]),
+  nome: z.string().min(1).max(200),
+  path: z.string().min(1).max(500),
+  mime: z.string().max(100),
+  tamanho: z.number().int().min(0),
+  carregado_em: z.string(),
+});
+
 const motoInputSchema = z.object({
   chassi: z.string().trim().min(6, "Chassi muito curto").max(40).toUpperCase(),
   matricula: z.string().trim().max(20).optional().nullable(),
@@ -35,7 +44,9 @@ const motoInputSchema = z.object({
   estado: z.enum(["activa", "a_venda", "roubada", "transferida"]).default("activa"),
   preco_venda: z.number().min(0).max(999_999_999).optional().nullable(),
   notas_internas: z.string().trim().max(2000).optional().nullable(),
+  documentos: z.array(documentoSchema).default([]),
 });
+
 
 export type MotoInput = z.infer<typeof motoInputSchema>;
 
