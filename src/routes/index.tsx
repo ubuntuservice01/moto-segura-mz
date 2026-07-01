@@ -96,7 +96,7 @@ function Index() {
             to="/comprar"
             icon={<ShoppingBag className="h-6 w-6" />}
             title="Comprar Moto"
-            desc="Marketplace de motas verificadas. Filtre por marca, província e preço. Todas com certificado Ubuntu Link."
+            desc="Marketplace de motas verificadas. Filtre por marca, província e preço. Todas com certificado Ubuntu Service."
             color="bg-accent/15 text-accent-foreground"
           />
           <ActionCard

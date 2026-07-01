@@ -4,8 +4,8 @@ import { LayoutGrid, Plus, History, AlertTriangle } from "lucide-react";
 export const Route = createFileRoute("/gestao")({
   head: () => ({
     meta: [
-      { title: "Painel Ubuntu Link — MotoVerify MZ" },
-      { name: "description", content: "Painel de gestão Ubuntu Link." },
+      { title: "Painel Ubuntu Service — MotoCheck MZ" },
+      { name: "description", content: "Painel de gestão Ubuntu Service." },
     ],
   }),
   component: GestaoLayout,
@@ -19,7 +19,7 @@ function GestaoLayout() {
         <div className="flex items-start gap-2 text-warning-foreground">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
-            <strong>Acesso restrito a operadores Ubuntu Link.</strong> Esta área não tem autenticação
+            <strong>Acesso restrito a operadores Ubuntu Service.</strong> Esta área não tem autenticação
             nesta fase do projecto e está aberta para fins de prototipagem.
           </p>
         </div>
@@ -27,7 +27,7 @@ function GestaoLayout() {
 
       <header className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Painel Ubuntu Link</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Painel Ubuntu Service</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Registar, gerir e auditar todas as motas no sistema.
           </p>

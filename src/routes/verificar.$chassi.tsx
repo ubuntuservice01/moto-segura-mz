@@ -150,7 +150,7 @@ function VerificarChassi() {
               <div>
                 <h3 className="text-base font-semibold">Esta mota está à venda</h3>
                 <p className="mt-0.5 text-sm text-muted-foreground">
-                  Contacto mediado pela Ubuntu Link.
+                  Contacto mediado pela Ubuntu Service.
                 </p>
               </div>
               <a
@@ -159,7 +159,7 @@ function VerificarChassi() {
               >
                 <Phone className="h-4 w-4" />
                 <Tag className="h-4 w-4" />
-                Contactar via Ubuntu Link
+                Contactar via Ubuntu Service
               </a>
             </div>
           </div>
@@ -170,7 +170,7 @@ function VerificarChassi() {
       <section className="mt-10">
         <h2 className="text-xl font-bold">Histórico desta mota</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Todos os eventos registados desde a entrada no sistema Ubuntu Link.
+          Todos os eventos registados desde a entrada no sistema Ubuntu Service.
         </p>
         <div className="mt-6">
           <Timeline eventos={historico} />

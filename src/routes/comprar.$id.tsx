@@ -85,7 +85,7 @@ function MotoDetalhe() {
                 href={`tel:${m.proprietario_contacto}`}
                 className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90"
               >
-                <Phone className="h-4 w-4" /> Contactar via Ubuntu Link
+                <Phone className="h-4 w-4" /> Contactar via Ubuntu Service
               </a>
             )}
             <Link

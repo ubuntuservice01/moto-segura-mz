@@ -45,7 +45,7 @@ function ComprarPage() {
             Marketplace
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Motas verificadas pela Ubuntu Link, à venda em Moçambique.
+            Motas verificadas pela Ubuntu Service, à venda em Moçambique.
           </p>
         </div>
         <span className="rounded-full bg-secondary/10 px-3 py-1 text-sm font-semibold text-secondary">
