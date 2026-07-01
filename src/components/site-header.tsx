@@ -1,18 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { Search, ShoppingBag, Settings, ShieldCheck } from "lucide-react";
+import logoUrl from "@/assets/motocheck-logo.png";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/70">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={logoUrl} alt="MotoCheck MZ" className="h-10 w-10 object-contain" />
           <div className="flex flex-col leading-none">
-            <span className="text-base font-bold tracking-tight">MotoVerify MZ</span>
+            <span className="text-base font-bold tracking-tight">
+              Moto<span className="text-secondary">Check</span> MZ
+            </span>
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Ubuntu Link
+              Verifique. Confirme. Compre.
             </span>
           </div>
         </Link>
@@ -25,6 +26,7 @@ export function SiteHeader() {
     </header>
   );
 }
+
 
 function NavLink({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
   return (
@@ -46,9 +48,10 @@ export function SiteFooter() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-secondary" />
-            <span>MotoVerify MZ — Plataforma pública de verificação de motas em Moçambique</span>
+            <span>MotoCheck MZ — Verifique. Confirme. Compre com segurança.</span>
           </div>
-          <p className="text-xs">© {new Date().getFullYear()} Ubuntu Link</p>
+          <p className="text-xs">© {new Date().getFullYear()} MotoCheck MZ</p>
+
         </div>
       </div>
     </footer>

@@ -65,25 +65,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MotoVerify MZ — Verificação e mercado de motas em Moçambique" },
+      { title: "MotoCheck MZ — Verifique. Confirme. Compre com segurança." },
       {
         name: "description",
         content:
-          "Plataforma pública de verificação de propriedade e mercado de motas em Moçambique. Ubuntu Link.",
+          "MotoCheck MZ: plataforma pública de verificação de propriedade e mercado de motas em Moçambique.",
       },
-      { property: "og:title", content: "MotoVerify MZ — Verificação e mercado de motas em Moçambique" },
+      { property: "og:title", content: "MotoCheck MZ — Verifique. Confirme. Compre com segurança." },
       {
         property: "og:description",
         content: "Verifique qualquer mota pelo chassi. Marketplace de motas verificadas em Moçambique.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "MotoVerify MZ — Verificação e mercado de motas em Moçambique" },
-      { name: "description", content: "MotoSure MZ is a platform for verifying motorcycle ownership and a marketplace for buying and selling motorcycles in Mozambique." },
-      { property: "og:description", content: "MotoSure MZ is a platform for verifying motorcycle ownership and a marketplace for buying and selling motorcycles in Mozambique." },
-      { name: "twitter:description", content: "MotoSure MZ is a platform for verifying motorcycle ownership and a marketplace for buying and selling motorcycles in Mozambique." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2932c8ed-7b61-462e-a190-d3f67e7a9657/id-preview-0b56f131--13721f4e-bd7b-4928-9b39-0de077589e12.lovable.app-1782710169172.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2932c8ed-7b61-462e-a190-d3f67e7a9657/id-preview-0b56f131--13721f4e-bd7b-4928-9b39-0de077589e12.lovable.app-1782710169172.png" },
+      { name: "twitter:title", content: "MotoCheck MZ" },
+      { name: "twitter:description", content: "Verifique qualquer mota pelo chassi em Moçambique." },
+
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
