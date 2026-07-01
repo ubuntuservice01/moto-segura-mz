@@ -39,7 +39,7 @@ function HistoricoGlobal() {
     <div>
       <h2 className="text-xl font-bold">Histórico global</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Registo auditável de todas as operações executadas no sistema Ubuntu Link.
+        Registo auditável de todas as operações executadas no sistema Ubuntu Service.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">

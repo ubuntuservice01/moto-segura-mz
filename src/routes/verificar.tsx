@@ -77,7 +77,7 @@ function VerificarPage() {
           <p className="text-base font-semibold">Nenhuma mota encontrada com "{q}".</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Confirme o número do chassi e tente novamente. Se acredita que esta mota deveria estar
-            registada, contacte o operador Ubuntu Link.
+            registada, contacte o operador Ubuntu Service.
           </p>
         </div>
       )}
