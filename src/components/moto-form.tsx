@@ -123,55 +123,56 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     <form onSubmit={handleSubmit} className="space-y-8">
       <Section title="Identificação da viatura">
         <Grid>
-          <Field label="Chassi *" required>
-            <input value={form.chassi} onChange={(e) => set("chassi", e.target.value.toUpperCase())} required minLength={6} className={input + " font-mono"} />
+          <Field label="Chassi" required value={form.chassi}>
+            <input value={form.chassi} onChange={(e) => set("chassi", e.target.value.toUpperCase())} required minLength={6} className={inputCls(form.chassi, true) + " font-mono"} />
           </Field>
-          <Field label="Matrícula">
-            <input value={form.matricula} onChange={(e) => set("matricula", e.target.value)} className={input + " font-mono"} />
+          <Field label="Matrícula" value={form.matricula}>
+            <input value={form.matricula} onChange={(e) => set("matricula", e.target.value)} className={inputCls(form.matricula, false) + " font-mono"} />
           </Field>
-          <Field label="Marca *" required>
-            <input value={form.marca} onChange={(e) => set("marca", e.target.value)} required className={input} />
+          <Field label="Marca" required value={form.marca}>
+            <input value={form.marca} onChange={(e) => set("marca", e.target.value)} required className={inputCls(form.marca, true)} />
           </Field>
-          <Field label="Modelo *" required>
-            <input value={form.modelo} onChange={(e) => set("modelo", e.target.value)} required className={input} />
+          <Field label="Modelo" required value={form.modelo}>
+            <input value={form.modelo} onChange={(e) => set("modelo", e.target.value)} required className={inputCls(form.modelo, true)} />
           </Field>
-          <Field label="Ano">
-            <input type="number" value={form.ano} onChange={(e) => set("ano", e.target.value)} min={1950} max={2100} className={input} />
+          <Field label="Ano" value={form.ano}>
+            <input type="number" value={form.ano} onChange={(e) => set("ano", e.target.value)} min={1950} max={2100} className={inputCls(form.ano, false)} />
           </Field>
-          <Field label="Cilindrada (cc)">
-            <input type="number" value={form.cilindrada} onChange={(e) => set("cilindrada", e.target.value)} className={input} />
+          <Field label="Cilindrada (cc)" value={form.cilindrada}>
+            <input type="number" value={form.cilindrada} onChange={(e) => set("cilindrada", e.target.value)} className={inputCls(form.cilindrada, false)} />
           </Field>
-          <Field label="Cor">
-            <input value={form.cor} onChange={(e) => set("cor", e.target.value)} className={input} />
+          <Field label="Cor" value={form.cor}>
+            <input value={form.cor} onChange={(e) => set("cor", e.target.value)} className={inputCls(form.cor, false)} />
           </Field>
-          <Field label="Quilometragem">
-            <input type="number" value={form.km} onChange={(e) => set("km", e.target.value)} min={0} className={input} />
+          <Field label="Quilometragem" value={form.km}>
+            <input type="number" value={form.km} onChange={(e) => set("km", e.target.value)} min={0} className={inputCls(form.km, false)} />
           </Field>
         </Grid>
       </Section>
 
       <Section title="Proprietário">
         <Grid>
-          <Field label="Nome completo *" required>
-            <input value={form.proprietario_nome} onChange={(e) => set("proprietario_nome", e.target.value)} required className={input} />
+          <Field label="Nome completo" required value={form.proprietario_nome}>
+            <input value={form.proprietario_nome} onChange={(e) => set("proprietario_nome", e.target.value)} required className={inputCls(form.proprietario_nome, true)} />
           </Field>
-          <Field label="BI / Identificação">
-            <input value={form.proprietario_bi} onChange={(e) => set("proprietario_bi", e.target.value)} className={input + " font-mono"} />
+          <Field label="BI / Identificação" value={form.proprietario_bi}>
+            <input value={form.proprietario_bi} onChange={(e) => set("proprietario_bi", e.target.value)} className={inputCls(form.proprietario_bi, false) + " font-mono"} />
           </Field>
-          <Field label="Contacto">
-            <input value={form.proprietario_contacto} onChange={(e) => set("proprietario_contacto", e.target.value)} placeholder="+258 ..." className={input} />
+          <Field label="Contacto" value={form.proprietario_contacto}>
+            <input value={form.proprietario_contacto} onChange={(e) => set("proprietario_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto, false)} />
           </Field>
-          <Field label="Localidade / Bairro">
-            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={input} />
+          <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
+            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
           </Field>
-          <Field label="Província">
-            <select value={form.proprietario_provincia} onChange={(e) => set("proprietario_provincia", e.target.value)} className={input}>
+          <Field label="Província" value={form.proprietario_provincia}>
+            <select value={form.proprietario_provincia} onChange={(e) => set("proprietario_provincia", e.target.value)} className={inputCls(form.proprietario_provincia, false)}>
               <option value="">—</option>
               {PROVINCIAS_MZ.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </Field>
         </Grid>
       </Section>
+
 
       <Section title="Documentos">
         <p className="text-xs text-muted-foreground -mt-2">
@@ -243,19 +244,19 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
 
       <Section title="Estado e mercado">
         <Grid>
-          <Field label="Estado *" required>
-            <select value={form.estado} onChange={(e) => set("estado", e.target.value as EstadoMoto)} className={input}>
+          <Field label="Estado" required value={form.estado}>
+            <select value={form.estado} onChange={(e) => set("estado", e.target.value as EstadoMoto)} className={inputCls(form.estado, true)}>
               {(Object.keys(ESTADOS_LABEL) as EstadoMoto[]).map((s) => (
                 <option key={s} value={s}>{ESTADOS_LABEL[s]}</option>
               ))}
             </select>
           </Field>
-          <Field label="Preço de venda (MT)">
-            <input type="number" value={form.preco_venda} onChange={(e) => set("preco_venda", e.target.value)} disabled={form.estado !== "a_venda"} className={input + " disabled:opacity-50"} />
+          <Field label="Preço de venda (MT)" required={form.estado === "a_venda"} value={form.preco_venda}>
+            <input type="number" value={form.preco_venda} onChange={(e) => set("preco_venda", e.target.value)} disabled={form.estado !== "a_venda"} className={inputCls(form.preco_venda, form.estado === "a_venda") + " disabled:opacity-50 disabled:bg-muted"} />
           </Field>
         </Grid>
-        <Field label="Notas internas (não públicas)">
-          <textarea value={form.notas_internas} onChange={(e) => set("notas_internas", e.target.value)} rows={3} className={input + " resize-none"} />
+        <Field label="Notas internas (não públicas)" value={form.notas_internas}>
+          <textarea value={form.notas_internas} onChange={(e) => set("notas_internas", e.target.value)} rows={3} className={inputCls(form.notas_internas, false) + " resize-none"} />
         </Field>
       </Section>
 
@@ -272,8 +273,24 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
   );
 }
 
-const input =
-  "w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary";
+/** Colour-coded input:
+ *  - required + empty → âmbar (precisa preencher)
+ *  - required + preenchido → verde (ok)
+ *  - opcional + vazio → cinza neutro
+ *  - opcional + preenchido → verde suave
+ */
+function inputCls(value: string, required: boolean) {
+  const base =
+    "w-full rounded-md border bg-background px-3 py-2 text-sm outline-none transition-colors focus:ring-2";
+  const filled = value != null && String(value).trim() !== "";
+  if (required && !filled) {
+    return `${base} border-accent/70 bg-accent/10 focus:border-accent focus:ring-accent/30`;
+  }
+  if (filled) {
+    return `${base} border-secondary/50 bg-secondary/5 focus:border-secondary focus:ring-secondary/30`;
+  }
+  return `${base} border-input focus:border-secondary focus:ring-secondary/20`;
+}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -286,14 +303,40 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Grid({ children }: { children: React.ReactNode }) {
   return <div className="grid gap-4 md:grid-cols-2">{children}</div>;
 }
-function Field({ label, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  value,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  value?: string;
+  children: React.ReactNode;
+}) {
+  const filled = value != null && String(value).trim() !== "";
+  const status = required
+    ? filled
+      ? { text: "Preenchido", cls: "bg-secondary/15 text-secondary" }
+      : { text: "Obrigatório", cls: "bg-accent/25 text-accent-foreground" }
+    : filled
+      ? { text: "Preenchido", cls: "bg-secondary/10 text-secondary" }
+      : { text: "Opcional", cls: "bg-muted text-muted-foreground" };
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-foreground">{label}</span>
+      <span className="mb-1 flex items-center justify-between gap-2">
+        <span className="text-xs font-medium text-foreground">
+          {label} {required && <span className="text-accent-foreground">*</span>}
+        </span>
+        <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${status.cls}`}>
+          {status.text}
+        </span>
+      </span>
       {children}
     </label>
   );
 }
+
 
 function UploadIcon() {
   return (
