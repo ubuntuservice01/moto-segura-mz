@@ -6,15 +6,16 @@ import { getStats } from "@/lib/motos.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MotoVerify MZ — Verifique qualquer mota em Moçambique" },
+      { title: "MotoCheck MZ — Verifique qualquer mota em Moçambique" },
       {
         name: "description",
         content:
           "Verifique a propriedade de qualquer mota pelo chassi, descubra motas reportadas como roubadas e compre com confiança.",
       },
-      { property: "og:title", content: "MotoVerify MZ — Ubuntu Link" },
+      { property: "og:title", content: "MotoCheck MZ — Verifique. Confirme. Compre." },
     ],
   }),
+
   component: Index,
 });
 
