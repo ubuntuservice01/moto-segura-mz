@@ -40,8 +40,9 @@ function Index() {
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
               <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-              Registo público — Ubuntu Link
+              Registo público — MotoCheck MZ
             </span>
+
             <h1 className="mt-6 text-4xl font-bold tracking-tight md:text-6xl">
               Verifique qualquer mota antes de comprar.
             </h1>
@@ -101,8 +102,9 @@ function Index() {
           <ActionCard
             to="/gestao"
             icon={<Settings className="h-6 w-6" />}
-            title="Painel Ubuntu Link"
+            title="Painel de Gestão"
             desc="Registar motas, gerir transferências de propriedade e consultar o histórico global de operações."
+
             color="bg-primary/10 text-primary"
           />
         </div>
