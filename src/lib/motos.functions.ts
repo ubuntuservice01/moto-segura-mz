@@ -42,6 +42,8 @@ const motoInputSchema = z.object({
   proprietario_bi: z.string().trim().max(30).optional().nullable(),
   proprietario_contacto: z.string().trim().max(30).optional().nullable(),
   proprietario_localidade: z.string().trim().max(80).optional().nullable(),
+  proprietario_distrito: z.string().trim().max(80).optional().nullable(),
+  proprietario_posto_admin: z.string().trim().max(100).optional().nullable(),
   proprietario_provincia: z.string().trim().max(40).optional().nullable(),
   estado: z.enum(["activa", "a_venda", "roubada", "transferida"]).default("activa"),
   preco_venda: z.number().min(0).max(999_999_999).optional().nullable(),
