@@ -35,6 +35,8 @@ export interface Moto {
   proprietario_bi: string | null;
   proprietario_contacto: string | null;
   proprietario_localidade: string | null;
+  proprietario_distrito: string | null;
+  proprietario_posto_admin: string | null;
   proprietario_provincia: string | null;
   estado: EstadoMoto;
   preco_venda: number | null;
