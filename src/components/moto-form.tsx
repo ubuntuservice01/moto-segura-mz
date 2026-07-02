@@ -179,9 +179,6 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
           <Field label="Contacto" value={form.proprietario_contacto}>
             <input value={form.proprietario_contacto} onChange={(e) => set("proprietario_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto, false)} />
           </Field>
-          <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
-            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
-          </Field>
           <Field label="Província" value={form.proprietario_provincia}>
             <select
               value={form.proprietario_provincia}
