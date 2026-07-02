@@ -42,6 +42,8 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     proprietario_contacto: initial?.proprietario_contacto ?? "",
     proprietario_localidade: initial?.proprietario_localidade ?? "",
     proprietario_provincia: initial?.proprietario_provincia ?? "",
+    proprietario_distrito: initial?.proprietario_distrito ?? "",
+    proprietario_posto_admin: initial?.proprietario_posto_admin ?? "",
     estado: (initial?.estado ?? "activa") as EstadoMoto,
     preco_venda: initial?.preco_venda?.toString() ?? "",
     notas_internas: initial?.notas_internas ?? "",
