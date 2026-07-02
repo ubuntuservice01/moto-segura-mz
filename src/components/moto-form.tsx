@@ -220,19 +220,19 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
             </select>
           </Field>
           <Field label="Posto Administrativo" value={form.proprietario_posto_admin}>
-            <select
+            <input
               value={form.proprietario_posto_admin}
-              onChange={(e) => set("proprietario_posto_admin", e.target.value)}
-              disabled={!form.proprietario_distrito}
-              className={inputCls(form.proprietario_posto_admin, false) + " disabled:opacity-50 disabled:bg-muted"}
-            >
-              <option value="">
-                {form.proprietario_distrito ? "—" : "Escolha o distrito primeiro"}
-              </option>
+              onChange={(e) => set("proprietario_posto_admin", e.target.value.slice(0, 100))}
+              list="postos-admin-list"
+              maxLength={100}
+              placeholder={form.proprietario_distrito ? "Escreva ou escolha da lista" : "Escolha o distrito primeiro (opcional)"}
+              className={inputCls(form.proprietario_posto_admin, false)}
+            />
+            <datalist id="postos-admin-list">
               {getPostos(form.proprietario_provincia, form.proprietario_distrito).map((p) => (
-                <option key={p} value={p}>{p}</option>
+                <option key={p} value={p} />
               ))}
-            </select>
+            </datalist>
           </Field>
           <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
             <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
