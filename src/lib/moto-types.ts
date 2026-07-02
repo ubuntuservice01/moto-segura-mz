@@ -35,6 +35,8 @@ export interface Moto {
   proprietario_bi: string | null;
   proprietario_contacto: string | null;
   proprietario_localidade: string | null;
+  proprietario_distrito: string | null;
+  proprietario_posto_admin: string | null;
   proprietario_provincia: string | null;
   estado: EstadoMoto;
   preco_venda: number | null;
@@ -119,6 +121,8 @@ export function publicizeMoto(m: Moto): MotoPublica {
     proprietario_nome: m.proprietario_nome,
     proprietario_contacto: showContact ? m.proprietario_contacto : null,
     proprietario_localidade: m.proprietario_localidade,
+    proprietario_distrito: m.proprietario_distrito,
+    proprietario_posto_admin: m.proprietario_posto_admin,
     proprietario_provincia: m.proprietario_provincia,
     estado: m.estado,
     preco_venda: m.preco_venda,

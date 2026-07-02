@@ -14,6 +14,7 @@ import {
   type TipoDocumento,
   TIPOS_DOCUMENTO_LABEL,
 } from "@/lib/moto-types";
+import { getDistritos, getPostos } from "@/lib/mz-localidades";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
@@ -41,6 +42,8 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     proprietario_contacto: initial?.proprietario_contacto ?? "",
     proprietario_localidade: initial?.proprietario_localidade ?? "",
     proprietario_provincia: initial?.proprietario_provincia ?? "",
+    proprietario_distrito: initial?.proprietario_distrito ?? "",
+    proprietario_posto_admin: initial?.proprietario_posto_admin ?? "",
     estado: (initial?.estado ?? "activa") as EstadoMoto,
     preco_venda: initial?.preco_venda?.toString() ?? "",
     notas_internas: initial?.notas_internas ?? "",
@@ -125,6 +128,8 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       proprietario_contacto: form.proprietario_contacto || null,
       proprietario_localidade: form.proprietario_localidade || null,
       proprietario_provincia: form.proprietario_provincia || null,
+      proprietario_distrito: form.proprietario_distrito || null,
+      proprietario_posto_admin: form.proprietario_posto_admin || null,
       estado: form.estado,
       preco_venda: form.preco_venda ? Number(form.preco_venda) : null,
       notas_internas: form.notas_internas || null,
@@ -174,14 +179,63 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
           <Field label="Contacto" value={form.proprietario_contacto}>
             <input value={form.proprietario_contacto} onChange={(e) => set("proprietario_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto, false)} />
           </Field>
-          <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
-            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
-          </Field>
           <Field label="Província" value={form.proprietario_provincia}>
-            <select value={form.proprietario_provincia} onChange={(e) => set("proprietario_provincia", e.target.value)} className={inputCls(form.proprietario_provincia, false)}>
+            <select
+              value={form.proprietario_provincia}
+              onChange={(e) => {
+                const v = e.target.value;
+                setForm((f) => ({
+                  ...f,
+                  proprietario_provincia: v,
+                  proprietario_distrito: "",
+                  proprietario_posto_admin: "",
+                }));
+              }}
+              className={inputCls(form.proprietario_provincia, false)}
+            >
               <option value="">—</option>
               {PROVINCIAS_MZ.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
+          </Field>
+          <Field label="Distrito / Município" value={form.proprietario_distrito}>
+            <select
+              value={form.proprietario_distrito}
+              onChange={(e) => {
+                const v = e.target.value;
+                setForm((f) => ({
+                  ...f,
+                  proprietario_distrito: v,
+                  proprietario_posto_admin: "",
+                }));
+              }}
+              disabled={!form.proprietario_provincia}
+              className={inputCls(form.proprietario_distrito, false) + " disabled:opacity-50 disabled:bg-muted"}
+            >
+              <option value="">
+                {form.proprietario_provincia ? "—" : "Escolha a província primeiro"}
+              </option>
+              {getDistritos(form.proprietario_provincia).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Posto Administrativo" value={form.proprietario_posto_admin}>
+            <select
+              value={form.proprietario_posto_admin}
+              onChange={(e) => set("proprietario_posto_admin", e.target.value)}
+              disabled={!form.proprietario_distrito}
+              className={inputCls(form.proprietario_posto_admin, false) + " disabled:opacity-50 disabled:bg-muted"}
+            >
+              <option value="">
+                {form.proprietario_distrito ? "—" : "Escolha o distrito primeiro"}
+              </option>
+              {getPostos(form.proprietario_provincia, form.proprietario_distrito).map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
+            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
           </Field>
         </Grid>
       </Section>
