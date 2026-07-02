@@ -73,8 +73,10 @@ export type Database = {
           preco_venda: number | null
           proprietario_bi: string | null
           proprietario_contacto: string | null
+          proprietario_distrito: string | null
           proprietario_localidade: string | null
           proprietario_nome: string
+          proprietario_posto_admin: string | null
           proprietario_provincia: string | null
           updated_at: string
         }
@@ -95,8 +97,10 @@ export type Database = {
           preco_venda?: number | null
           proprietario_bi?: string | null
           proprietario_contacto?: string | null
+          proprietario_distrito?: string | null
           proprietario_localidade?: string | null
           proprietario_nome: string
+          proprietario_posto_admin?: string | null
           proprietario_provincia?: string | null
           updated_at?: string
         }
@@ -117,8 +121,10 @@ export type Database = {
           preco_venda?: number | null
           proprietario_bi?: string | null
           proprietario_contacto?: string | null
+          proprietario_distrito?: string | null
           proprietario_localidade?: string | null
           proprietario_nome?: string
+          proprietario_posto_admin?: string | null
           proprietario_provincia?: string | null
           updated_at?: string
         }
