@@ -14,6 +14,7 @@ import {
   type TipoDocumento,
   TIPOS_DOCUMENTO_LABEL,
 } from "@/lib/moto-types";
+import { getDistritos, getPostos } from "@/lib/mz-localidades";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
