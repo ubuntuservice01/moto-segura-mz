@@ -128,6 +128,8 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       proprietario_contacto: form.proprietario_contacto || null,
       proprietario_localidade: form.proprietario_localidade || null,
       proprietario_provincia: form.proprietario_provincia || null,
+      proprietario_distrito: form.proprietario_distrito || null,
+      proprietario_posto_admin: form.proprietario_posto_admin || null,
       estado: form.estado,
       preco_venda: form.preco_venda ? Number(form.preco_venda) : null,
       notas_internas: form.notas_internas || null,
