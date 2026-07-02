@@ -84,9 +84,22 @@ export const getMotoByChassi = createServerFn({ method: "GET" })
       .select("*")
       .eq("moto_id", moto.id)
       .order("created_at", { ascending: false });
+    const PII_KEYS = new Set([
+      "proprietario_nome",
+      "proprietario_bi",
+      "proprietario_contacto",
+      "proprietario_localidade",
+      "proprietario_provincia",
+    ]);
+    const sanitizedHist = ((hist ?? []) as HistoricoEvento[]).map((h) => ({
+      ...h,
+      diff: h.diff
+        ? Object.fromEntries(Object.entries(h.diff).filter(([k]) => !PII_KEYS.has(k)))
+        : h.diff,
+    }));
     return {
       moto: publicizeMoto(moto),
-      historico: (hist ?? []) as HistoricoEvento[],
+      historico: sanitizedHist,
     };
   });
 
