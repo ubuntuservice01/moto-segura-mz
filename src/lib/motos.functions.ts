@@ -10,10 +10,12 @@ import {
   publicizeMoto,
 } from "./moto-types";
 
+// Server-side client using the service role key.
+// Bypasses RLS — all public-facing reads MUST be sanitized (see publicizeMoto).
 function sb() {
   return createClient<Database>(
     process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
   );
 }
@@ -82,9 +84,22 @@ export const getMotoByChassi = createServerFn({ method: "GET" })
       .select("*")
       .eq("moto_id", moto.id)
       .order("created_at", { ascending: false });
+    const PII_KEYS = new Set([
+      "proprietario_nome",
+      "proprietario_bi",
+      "proprietario_contacto",
+      "proprietario_localidade",
+      "proprietario_provincia",
+    ]);
+    const sanitizedHist = ((hist ?? []) as HistoricoEvento[]).map((h) => ({
+      ...h,
+      diff: h.diff
+        ? Object.fromEntries(Object.entries(h.diff).filter(([k]) => !PII_KEYS.has(k)))
+        : h.diff,
+    }));
     return {
       moto: publicizeMoto(moto),
-      historico: (hist ?? []) as HistoricoEvento[],
+      historico: sanitizedHist,
     };
   });
 

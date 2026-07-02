@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { type MotoInput } from "@/lib/motos.functions";
 import {
+  createDocUploadUrl,
+  createDocReadUrl,
+  removeDoc,
+} from "@/lib/documentos.functions";
+import {
   PROVINCIAS_MZ,
   type EstadoMoto,
   type Moto,
@@ -56,13 +61,16 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     }
     setUploadingTipo(tipo);
     try {
-      const ext = file.name.split(".").pop() ?? "bin";
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `motos/${form.chassi || "novo"}/${tipo}-${Date.now()}-${safeName}`;
-      const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
-        contentType: file.type || `application/${ext}`,
-        upsert: false,
+      const chassiSafe = (form.chassi || "novo").replace(/[^A-Za-z0-9_-]/g, "_");
+      const { path, token } = await createDocUploadUrl({
+        data: { chassi: chassiSafe, tipo, filename: file.name },
       });
+      const { error } = await supabase.storage
+        .from(BUCKET)
+        .uploadToSignedUrl(path, token, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false,
+        });
       if (error) throw error;
       setDocumentos((d) => [
         ...d,
@@ -83,18 +91,23 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
   }
 
   async function handleRemove(doc: Documento) {
-    await supabase.storage.from(BUCKET).remove([doc.path]);
+    try {
+      await removeDoc({ data: { path: doc.path } });
+    } catch {
+      // best-effort remove
+    }
     setDocumentos((d) => d.filter((x) => x.path !== doc.path));
   }
 
   async function openDoc(doc: Documento) {
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(doc.path, 60 * 10);
-    if (error || !data?.signedUrl) {
-      setUploadError(error?.message ?? "Não foi possível abrir o documento");
-      return;
+    try {
+      const { signedUrl } = await createDocReadUrl({ data: { path: doc.path } });
+      window.open(signedUrl, "_blank", "noopener,noreferrer");
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Não foi possível abrir o documento");
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   }
+
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
