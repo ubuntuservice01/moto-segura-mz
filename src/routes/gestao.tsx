@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Plus, History, AlertTriangle } from "lucide-react";
+import { LayoutGrid, Plus, History, AlertTriangle, Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/gestao")({
   head: () => ({
