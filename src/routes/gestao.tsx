@@ -40,6 +40,13 @@ function GestaoLayout() {
             Nova
           </TabLink>
           <TabLink
+            to="/gestao/pre-registos"
+            icon={<Inbox className="h-4 w-4" />}
+            active={path === "/gestao/pre-registos"}
+          >
+            Pré-registos
+          </TabLink>
+          <TabLink
             to="/gestao/historico"
             icon={<History className="h-4 w-4" />}
             active={path === "/gestao/historico"}
