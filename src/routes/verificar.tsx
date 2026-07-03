@@ -21,6 +21,7 @@ function VerificarPage() {
   const [q, setQ] = useState("");
   const navigate = useNavigate();
   const [results, setResults] = useState<MotoPublica[] | null>(null);
+  const [mostrarPreRegisto, setMostrarPreRegisto] = useState(false);
 
   const mut = useMutation({
     mutationFn: (query: string) => searchMotosByChassi({ data: { q: query } }),
