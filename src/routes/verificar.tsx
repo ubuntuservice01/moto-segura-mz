@@ -27,6 +27,7 @@ function VerificarPage() {
     mutationFn: (query: string) => searchMotosByChassi({ data: { q: query } }),
     onSuccess: (data) => {
       setResults(data);
+      setMostrarPreRegisto(false);
       if (data.length === 1) {
         navigate({ to: "/verificar/$chassi", params: { chassi: data[0]!.chassi } });
       }
