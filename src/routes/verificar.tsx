@@ -76,12 +76,32 @@ function VerificarPage() {
       )}
 
       {results && results.length === 0 && (
-        <div className="mt-10 rounded-xl border border-dashed bg-card p-8 text-center">
-          <p className="text-base font-semibold">Nenhuma mota encontrada com "{q}".</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Confirme o número do chassi e tente novamente. Se acredita que esta mota deveria estar
-            registada, contacte o operador Ubuntu Service.
-          </p>
+        <div className="mt-10 space-y-4">
+          <div className="rounded-xl border border-dashed bg-card p-8 text-center">
+            <p className="text-base font-semibold">Nenhuma mota encontrada com "{q}".</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Confirme o número do chassi e tente novamente. Se a mota ainda não está no
+              sistema, pode fazer um pré-registo para revisão pelo operador Ubuntu Service.
+            </p>
+            {!mostrarPreRegisto && (
+              <button
+                onClick={() => setMostrarPreRegisto(true)}
+                className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90"
+              >
+                <PlusCircle className="h-4 w-4" />
+                Fazer pré-registo
+              </button>
+            )}
+          </div>
+
+          {mostrarPreRegisto && (
+            <PreRegistoForm
+              chassiInicial={q}
+              onSuccess={() => {
+                /* keeps the confirmation card visible */
+              }}
+            />
+          )}
         </div>
       )}
 
