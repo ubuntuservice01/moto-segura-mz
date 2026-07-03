@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, PlusCircle } from "lucide-react";
 import { searchMotosByChassi } from "@/lib/motos.functions";
 import { MotoCard } from "@/components/moto-card";
+import { PreRegistoForm } from "@/components/pre-registo-form";
 import type { MotoPublica } from "@/lib/moto-types";
 
 export const Route = createFileRoute("/verificar")({
