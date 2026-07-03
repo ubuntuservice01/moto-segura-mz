@@ -130,6 +130,57 @@ export type Database = {
         }
         Relationships: []
       }
+      pre_registos: {
+        Row: {
+          ano: number | null
+          chassi: string
+          cor: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["pre_registo_estado"]
+          id: string
+          marca: string
+          modelo: string
+          notas: string | null
+          origem_busca: string | null
+          proprietario_contacto: string | null
+          proprietario_nome: string
+          proprietario_provincia: string | null
+          updated_at: string
+        }
+        Insert: {
+          ano?: number | null
+          chassi: string
+          cor?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["pre_registo_estado"]
+          id?: string
+          marca: string
+          modelo: string
+          notas?: string | null
+          origem_busca?: string | null
+          proprietario_contacto?: string | null
+          proprietario_nome: string
+          proprietario_provincia?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ano?: number | null
+          chassi?: string
+          cor?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["pre_registo_estado"]
+          id?: string
+          marca?: string
+          modelo?: string
+          notas?: string | null
+          origem_busca?: string | null
+          proprietario_contacto?: string | null
+          proprietario_nome?: string
+          proprietario_provincia?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       transferencias: {
         Row: {
           created_at: string
@@ -186,6 +237,7 @@ export type Database = {
         | "actualizacao"
         | "mudanca_estado"
       moto_estado: "activa" | "a_venda" | "roubada" | "transferida"
+      pre_registo_estado: "pendente" | "aprovado" | "rejeitado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -320,6 +372,7 @@ export const Constants = {
         "mudanca_estado",
       ],
       moto_estado: ["activa", "a_venda", "roubada", "transferida"],
+      pre_registo_estado: ["pendente", "aprovado", "rejeitado"],
     },
   },
 } as const

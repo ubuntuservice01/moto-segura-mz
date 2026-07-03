@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Plus, History, AlertTriangle } from "lucide-react";
+import { LayoutGrid, Plus, History, AlertTriangle, Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/gestao")({
   head: () => ({
@@ -38,6 +38,13 @@ function GestaoLayout() {
           </TabLink>
           <TabLink to="/gestao/nova" icon={<Plus className="h-4 w-4" />} active={path === "/gestao/nova"}>
             Nova
+          </TabLink>
+          <TabLink
+            to="/gestao/pre-registos"
+            icon={<Inbox className="h-4 w-4" />}
+            active={path === "/gestao/pre-registos"}
+          >
+            Pré-registos
           </TabLink>
           <TabLink
             to="/gestao/historico"

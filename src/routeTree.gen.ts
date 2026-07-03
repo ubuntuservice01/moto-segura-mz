@@ -15,6 +15,7 @@ import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GestaoIndexRouteImport } from './routes/gestao.index'
 import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
+import { Route as GestaoPreRegistosRouteImport } from './routes/gestao.pre-registos'
 import { Route as GestaoNovaRouteImport } from './routes/gestao.nova'
 import { Route as GestaoHistoricoRouteImport } from './routes/gestao.historico'
 import { Route as GestaoIdRouteImport } from './routes/gestao.$id'
@@ -51,6 +52,11 @@ const VerificarChassiRoute = VerificarChassiRouteImport.update({
   path: '/$chassi',
   getParentRoute: () => VerificarRoute,
 } as any)
+const GestaoPreRegistosRoute = GestaoPreRegistosRouteImport.update({
+  id: '/pre-registos',
+  path: '/pre-registos',
+  getParentRoute: () => GestaoRoute,
+} as any)
 const GestaoNovaRoute = GestaoNovaRouteImport.update({
   id: '/nova',
   path: '/nova',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
+  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao/': typeof GestaoIndexRoute
   '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
+  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao': typeof GestaoIndexRoute
   '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
+  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao/': typeof GestaoIndexRoute
   '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/gestao/$id'
     | '/gestao/historico'
     | '/gestao/nova'
+    | '/gestao/pre-registos'
     | '/verificar/$chassi'
     | '/gestao/'
     | '/gestao/$id/transferir'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/gestao/$id'
     | '/gestao/historico'
     | '/gestao/nova'
+    | '/gestao/pre-registos'
     | '/verificar/$chassi'
     | '/gestao'
     | '/gestao/$id/transferir'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/gestao/$id'
     | '/gestao/historico'
     | '/gestao/nova'
+    | '/gestao/pre-registos'
     | '/verificar/$chassi'
     | '/gestao/'
     | '/gestao/$id/transferir'
@@ -207,6 +219,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/verificar/$chassi'
       preLoaderRoute: typeof VerificarChassiRouteImport
       parentRoute: typeof VerificarRoute
+    }
+    '/gestao/pre-registos': {
+      id: '/gestao/pre-registos'
+      path: '/pre-registos'
+      fullPath: '/gestao/pre-registos'
+      preLoaderRoute: typeof GestaoPreRegistosRouteImport
+      parentRoute: typeof GestaoRoute
     }
     '/gestao/nova': {
       id: '/gestao/nova'
@@ -273,6 +292,7 @@ interface GestaoRouteChildren {
   GestaoIdRoute: typeof GestaoIdRouteWithChildren
   GestaoHistoricoRoute: typeof GestaoHistoricoRoute
   GestaoNovaRoute: typeof GestaoNovaRoute
+  GestaoPreRegistosRoute: typeof GestaoPreRegistosRoute
   GestaoIndexRoute: typeof GestaoIndexRoute
 }
 
@@ -280,6 +300,7 @@ const GestaoRouteChildren: GestaoRouteChildren = {
   GestaoIdRoute: GestaoIdRouteWithChildren,
   GestaoHistoricoRoute: GestaoHistoricoRoute,
   GestaoNovaRoute: GestaoNovaRoute,
+  GestaoPreRegistosRoute: GestaoPreRegistosRoute,
   GestaoIndexRoute: GestaoIndexRoute,
 }
 
