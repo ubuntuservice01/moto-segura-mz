@@ -107,7 +107,7 @@ export function maskChassi(chassi: string): string {
 }
 
 export function publicizeMoto(m: Moto): MotoPublica {
-  const showContact = m.estado === "a_venda";
+  const showContact = m.estado === "a_venda" || m.estado === "roubada";
   return {
     id: m.id,
     chassi: m.chassi,
