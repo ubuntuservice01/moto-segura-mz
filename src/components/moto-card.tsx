@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bike, MapPin, Gauge, Calendar, ChevronRight } from "lucide-react";
+import { Bike, MapPin, Gauge, Calendar, ChevronRight, Phone, User } from "lucide-react";
 import { EstadoBadge, VerificadaBadge } from "./estado-badge";
 import {
   formatKm,
@@ -8,6 +8,7 @@ import {
   type Moto,
   type MotoPublica,
 } from "@/lib/moto-types";
+import { cn } from "@/lib/utils";
 
 type Variant = "marketplace" | "gestao" | "resultado";
 
@@ -76,6 +77,24 @@ export function MotoCard({
         <p className="mt-3 text-xs text-muted-foreground">
           Proprietário: <span className="font-medium text-foreground">{moto.proprietario_nome}</span>
         </p>
+      )}
+
+      {variant === "resultado" && moto.estado === "roubada" && (
+        <div className={cn("mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm")}>
+          <p className="text-xs font-semibold uppercase tracking-wider text-destructive">Informação de contacto</p>
+          <p className="mt-1 flex items-center gap-1.5">
+            <User className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="font-medium text-foreground">{moto.proprietario_nome}</span>
+          </p>
+          {moto.proprietario_contacto && (
+            <p className="mt-1 flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+              <a href={`tel:${moto.proprietario_contacto}`} className="font-semibold text-secondary hover:underline">
+                {moto.proprietario_contacto}
+              </a>
+            </p>
+          )}
+        </div>
       )}
     </Link>
   );
