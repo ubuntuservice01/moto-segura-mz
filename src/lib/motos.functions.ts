@@ -320,3 +320,40 @@ export const getStats = createServerFn({ method: "GET" }).handler(async () => {
 });
 
 export type Transferencia_ = Transferencia;
+
+/** Marca uma mota como roubada, registando o motivo no histórico. */
+export const marcarComoRoubada = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z.object({
+      id: z.string().uuid(),
+      motivo: z.string().trim().min(5, "Descreva o motivo (mín. 5 caracteres)").max(500),
+    }).parse(d),
+  )
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const supa = sb();
+    const { data: current, error: e1 } = await supa
+      .from("motos")
+      .select("id, estado")
+      .eq("id", data.id)
+      .single();
+    if (e1 || !current) throw new Error(e1?.message ?? "Mota não encontrada");
+    const anterior = (current as { estado: string }).estado;
+    if (anterior === "roubada") throw new Error("Esta mota já está marcada como roubada.");
+
+    const { error: e2 } = await supa
+      .from("motos")
+      .update({ estado: "roubada" })
+      .eq("id", data.id);
+    if (e2) throw new Error(e2.message);
+
+    const { error: e3 } = await supa.from("historico_motos").insert({
+      moto_id: data.id,
+      tipo_evento: "mudanca_estado",
+      descricao: "Mota declarada ROUBADA pelo operador",
+      diff: { estado: { antes: anterior, depois: "roubada" } },
+      motivo: data.motivo,
+    });
+    if (e3) throw new Error(e3.message);
+
+    return { ok: true };
+  });
