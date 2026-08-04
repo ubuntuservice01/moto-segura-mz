@@ -88,3 +88,64 @@ export const deletePreRegisto = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const countPreRegistosPendentes = createServerFn({ method: "GET" }).handler(
+  async (): Promise<number> => {
+    const { count, error } = await sb()
+      .from("pre_registos" as never)
+      .select("*", { count: "exact", head: true })
+      .eq("estado", "pendente");
+    if (error) throw new Error(error.message);
+    return count ?? 0;
+  },
+);
+
+/** Aprova um pré-registo e cria automaticamente a mota correspondente. */
+export const aprovarPreRegistoEConverter = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }): Promise<{ ok: true; motoId: string }> => {
+    const supa = sb();
+    const { data: pr, error: e1 } = await supa
+      .from("pre_registos" as never)
+      .select("*")
+      .eq("id", data.id)
+      .single();
+    if (e1 || !pr) throw new Error(e1?.message ?? "Pré-registo não encontrado");
+    const p = pr as unknown as PreRegisto;
+
+    if (p.chassi.trim().length < 6)
+      throw new Error("Chassi demasiado curto para criar a mota. Edite o pré-registo primeiro.");
+
+    const { data: existente } = await supa
+      .from("motos")
+      .select("id")
+      .eq("chassi", p.chassi.trim().toUpperCase())
+      .maybeSingle();
+    if (existente) throw new Error("Já existe uma mota registada com este chassi.");
+
+    const { data: nova, error: e2 } = await supa
+      .from("motos")
+      .insert({
+        chassi: p.chassi.trim().toUpperCase(),
+        marca: p.marca,
+        modelo: p.modelo,
+        ano: p.ano,
+        cor: p.cor,
+        proprietario_nome: p.proprietario_nome,
+        proprietario_contacto: p.proprietario_contacto,
+        proprietario_provincia: p.proprietario_provincia,
+        notas_internas: p.notas ? `Origem: pré-registo público. ${p.notas}` : "Origem: pré-registo público.",
+        estado: "activa",
+      })
+      .select("id")
+      .single();
+    if (e2 || !nova) throw new Error(e2?.message ?? "Falha ao criar mota");
+
+    const { error: e3 } = await supa
+      .from("pre_registos" as never)
+      .update({ estado: "aprovado" } as never)
+      .eq("id", data.id);
+    if (e3) throw new Error(e3.message);
+
+    return { ok: true, motoId: (nova as { id: string }).id };
+  });
