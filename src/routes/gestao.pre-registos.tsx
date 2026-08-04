@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Check, X, Trash2 } from "lucide-react";
+import { Loader2, Check, X, Trash2, Zap } from "lucide-react";
 import {
   listPreRegistos,
   updatePreRegistoEstado,
+  aprovarPreRegistoEConverter,
   deletePreRegisto,
   type PreRegistoEstado,
 } from "@/lib/pre-registos.functions";
@@ -24,6 +25,7 @@ const FILTROS: { key: "todos" | PreRegistoEstado; label: string }[] = [
 function PreRegistosPage() {
   const [estado, setEstado] = useState<"todos" | PreRegistoEstado>("pendente");
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { data, isLoading } = useQuery({
     queryKey: ["pre-registos", estado],
     queryFn: () => listPreRegistos({ data: { estado } }),
@@ -34,7 +36,20 @@ function PreRegistosPage() {
       updatePreRegistoEstado({ data: v }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pre-registos"] });
+      qc.invalidateQueries({ queryKey: ["pre-registos-pendentes"] });
       toast.success("Estado actualizado");
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  const converter = useMutation({
+    mutationFn: (id: string) => aprovarPreRegistoEConverter({ data: { id } }),
+    onSuccess: (r) => {
+      qc.invalidateQueries({ queryKey: ["pre-registos"] });
+      qc.invalidateQueries({ queryKey: ["pre-registos-pendentes"] });
+      qc.invalidateQueries({ queryKey: ["motos"] });
+      toast.success("Mota criada a partir do pré-registo");
+      navigate({ to: "/gestao/$id", params: { id: r.motoId } });
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -43,6 +58,7 @@ function PreRegistosPage() {
     mutationFn: (id: string) => deletePreRegisto({ data: { id } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pre-registos"] });
+      qc.invalidateQueries({ queryKey: ["pre-registos-pendentes"] });
       toast.success("Removido");
     },
     onError: (e) => toast.error((e as Error).message),
@@ -115,6 +131,20 @@ function PreRegistosPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
+                    {p.estado !== "aprovado" && (
+                      <button
+                        onClick={() => converter.mutate(p.id)}
+                        disabled={converter.isPending}
+                        className="inline-flex items-center gap-1 rounded bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+                      >
+                        {converter.isPending ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Zap className="h-3.5 w-3.5" />
+                        )}
+                        Aprovar e criar mota
+                      </button>
+                    )}
                     {p.estado !== "aprovado" && (
                       <button
                         onClick={() => setEst.mutate({ id: p.id, estado: "aprovado" })}

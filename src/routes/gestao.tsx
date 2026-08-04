@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { LayoutGrid, Plus, History, AlertTriangle, Inbox } from "lucide-react";
+import { countPreRegistosPendentes } from "@/lib/pre-registos.functions";
 
 export const Route = createFileRoute("/gestao")({
   head: () => ({
@@ -13,6 +15,11 @@ export const Route = createFileRoute("/gestao")({
 
 function GestaoLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { data: pendentes } = useQuery({
+    queryKey: ["pre-registos-pendentes"],
+    queryFn: () => countPreRegistosPendentes(),
+    refetchInterval: 60_000,
+  });
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="rounded-xl border border-warning/40 bg-warning/10 p-3 text-xs">
@@ -43,6 +50,7 @@ function GestaoLayout() {
             to="/gestao/pre-registos"
             icon={<Inbox className="h-4 w-4" />}
             active={path === "/gestao/pre-registos"}
+            badge={pendentes ?? 0}
           >
             Pré-registos
           </TabLink>
@@ -64,9 +72,9 @@ function GestaoLayout() {
 }
 
 function TabLink({
-  to, icon, children, active, exact: _exact,
+  to, icon, children, active, badge, exact: _exact,
 }: {
-  to: string; icon: React.ReactNode; children: React.ReactNode; active: boolean; exact?: boolean;
+  to: string; icon: React.ReactNode; children: React.ReactNode; active: boolean; badge?: number; exact?: boolean;
 }) {
   return (
     <Link
@@ -80,6 +88,16 @@ function TabLink({
     >
       {icon}
       {children}
+      {badge ? (
+        <span
+          className={
+            "ml-1 inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold " +
+            (active ? "bg-primary-foreground text-primary" : "bg-warning text-warning-foreground")
+          }
+        >
+          {badge}
+        </span>
+      ) : null}
     </Link>
   );
 }
