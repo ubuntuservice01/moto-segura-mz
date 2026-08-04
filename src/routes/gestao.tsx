@@ -15,6 +15,11 @@ export const Route = createFileRoute("/gestao")({
 
 function GestaoLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { data: pendentes } = useQuery({
+    queryKey: ["pre-registos-pendentes"],
+    queryFn: () => countPreRegistosPendentes(),
+    refetchInterval: 60_000,
+  });
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="rounded-xl border border-warning/40 bg-warning/10 p-3 text-xs">
