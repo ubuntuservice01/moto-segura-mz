@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { listAllMotos, getStats } from "@/lib/motos.functions";
 import { MotoCard } from "@/components/moto-card";
+import { MarcarRoubadaButton } from "@/components/marcar-roubada-button";
 import { ESTADOS_LABEL, type EstadoMoto } from "@/lib/moto-types";
 
 export const Route = createFileRoute("/gestao/")({
@@ -93,7 +94,14 @@ function GestaoIndex() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {motos.map((m) => (
-            <MotoCard key={m.id} moto={m} variant="gestao" />
+            <div key={m.id} className="flex flex-col gap-2">
+              <MotoCard moto={m} variant="gestao" />
+              <MarcarRoubadaButton
+                motoId={m.id}
+                chassi={m.chassi}
+                disabled={m.estado === "roubada"}
+              />
+            </div>
           ))}
         </div>
       )}
