@@ -50,6 +50,7 @@ function GestaoLayout() {
             to="/gestao/pre-registos"
             icon={<Inbox className="h-4 w-4" />}
             active={path === "/gestao/pre-registos"}
+            badge={pendentes ?? 0}
           >
             Pré-registos
           </TabLink>
