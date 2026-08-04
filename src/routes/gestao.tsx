@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { LayoutGrid, Plus, History, AlertTriangle, Inbox } from "lucide-react";
+import { countPreRegistosPendentes } from "@/lib/pre-registos.functions";
 
 export const Route = createFileRoute("/gestao")({
   head: () => ({
