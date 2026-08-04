@@ -72,9 +72,9 @@ function GestaoLayout() {
 }
 
 function TabLink({
-  to, icon, children, active, exact: _exact,
+  to, icon, children, active, badge, exact: _exact,
 }: {
-  to: string; icon: React.ReactNode; children: React.ReactNode; active: boolean; exact?: boolean;
+  to: string; icon: React.ReactNode; children: React.ReactNode; active: boolean; badge?: number; exact?: boolean;
 }) {
   return (
     <Link
@@ -88,6 +88,16 @@ function TabLink({
     >
       {icon}
       {children}
+      {badge ? (
+        <span
+          className={
+            "ml-1 inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold " +
+            (active ? "bg-primary-foreground text-primary" : "bg-warning text-warning-foreground")
+          }
+        >
+          {badge}
+        </span>
+      ) : null}
     </Link>
   );
 }
