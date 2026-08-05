@@ -50,14 +50,31 @@ export function Timeline({ eventos }: { eventos: HistoricoEvento[] }) {
             <p className="mt-1.5 text-sm font-medium text-foreground">{e.descricao}</p>
             {e.diff && Object.keys(e.diff).length > 0 && (
               <ul className="mt-2 space-y-1 text-xs">
-                {Object.entries(e.diff).map(([campo, val]) => {
-                  if (val.antes === null && val.depois === null) return null;
+                {Object.entries(e.diff).map(([campo, raw]) => {
+                  const val = raw as unknown;
+                  if (val === null || val === undefined) return null;
+                  if (typeof val !== "object") {
+                    return (
+                      <li key={campo} className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
+                        <span className="font-mono font-semibold text-foreground">{campo}:</span>
+                        <span className="font-semibold text-secondary">{formatVal(val as never)}</span>
+                      </li>
+                    );
+                  }
+                  const { antes, depois } = val as { antes?: never; depois?: never };
+                  const a = antes === null || antes === undefined || antes === "" ? null : antes;
+                  const d = depois === null || depois === undefined || depois === "" ? null : depois;
+                  if (a === null && d === null) return null;
                   return (
                     <li key={campo} className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
                       <span className="font-mono font-semibold text-foreground">{campo}:</span>
-                      <span className="line-through opacity-70">{formatVal(val.antes)}</span>
-                      <span>→</span>
-                      <span className="font-semibold text-secondary">{formatVal(val.depois)}</span>
+                      {a !== null && (
+                        <>
+                          <span className="line-through opacity-70">{formatVal(a)}</span>
+                          <span>→</span>
+                        </>
+                      )}
+                      <span className="font-semibold text-secondary">{formatVal(d)}</span>
                     </li>
                   );
                 })}
