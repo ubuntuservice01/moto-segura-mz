@@ -7,11 +7,13 @@ import { MotoCard } from "@/components/moto-card";
 import { PreRegistoForm } from "@/components/pre-registo-form";
 import type { MotoPublica } from "@/lib/moto-types";
 
-export const Route = createFileRoute("/verificar")({
+export const Route = createFileRoute("/verificar/")({
   head: () => ({
     meta: [
-      { title: "Verificar Chassi — MotoVerify MZ" },
+      { title: "Verificar Chassi — MotoCheck MZ" },
       { name: "description", content: "Pesquise o chassi de qualquer mota registada em Moçambique." },
+      { property: "og:title", content: "Verificar Chassi — MotoCheck MZ" },
+      { property: "og:description", content: "Consulte o estado e histórico de qualquer mota registada em Moçambique." },
     ],
   }),
   component: VerificarPage,
