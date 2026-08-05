@@ -5,6 +5,8 @@ import { EstadoBadge, VerificadaBadge } from "@/components/estado-badge";
 import { ChassisFingerprint } from "@/components/chassis-fingerprint";
 import { AlertaRoubada } from "@/components/alerta-roubada";
 import { Timeline } from "@/components/timeline";
+import { DocumentosPdf } from "@/components/documentos-pdf";
+
 import { formatKm, formatMTN } from "@/lib/moto-types";
 
 export const Route = createFileRoute("/verificar/$chassi")({
@@ -166,6 +168,17 @@ function VerificarChassi() {
         )}
       </article>
 
+      {/* Documentos */}
+      <section className="mt-8">
+        <h2 className="text-xl font-bold">Documentos</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Gere a ficha completa em PDF ou imprima o livrete em formato cartão (85,6 × 54 mm).
+        </p>
+        <div className="mt-4">
+          <DocumentosPdf moto={moto} historico={historico} />
+        </div>
+      </section>
+
       {/* Timeline */}
       <section className="mt-10">
         <h2 className="text-xl font-bold">Histórico desta mota</h2>
@@ -176,6 +189,7 @@ function VerificarChassi() {
           <Timeline eventos={historico} />
         </div>
       </section>
+
     </div>
   );
 }
