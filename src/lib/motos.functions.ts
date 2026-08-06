@@ -45,7 +45,18 @@ const motoInputSchema = z.object({
   proprietario_distrito: z.string().trim().max(80).optional().nullable(),
   proprietario_posto_admin: z.string().trim().max(100).optional().nullable(),
   proprietario_provincia: z.string().trim().max(40).optional().nullable(),
-  estado: z.enum(["activa", "a_venda", "roubada", "transferida"]).default("activa"),
+  estado: z
+    .enum(["activa", "a_venda", "roubada", "transferida", "recuperada", "vendida", "abatida"])
+    .default("activa"),
+  numero_motor: z.string().trim().max(40).optional().nullable(),
+  proprietario_data_nascimento: z.string().trim().max(10).optional().nullable(),
+  proprietario_contacto_alt: z.string().trim().max(30).optional().nullable(),
+  proprietario_familiar_nome: z.string().trim().max(100).optional().nullable(),
+  proprietario_familiar_contacto: z.string().trim().max(30).optional().nullable(),
+  proprietario_endereco: z.string().trim().max(200).optional().nullable(),
+  data_compra: z.string().trim().max(10).optional().nullable(),
+  local_compra: z.string().trim().max(120).optional().nullable(),
+  foto_path: z.string().trim().max(500).optional().nullable(),
   preco_venda: z.number().min(0).max(999_999_999).optional().nullable(),
   notas_internas: z.string().trim().max(2000).optional().nullable(),
   documentos: z.array(documentoSchema).default([]),
@@ -162,10 +173,20 @@ export const getMotoById = createServerFn({ method: "GET" })
 
 export const createMoto = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => motoInputSchema.parse(d))
-  .handler(async ({ data }): Promise<Moto> => {
-    const { data: row, error } = await sb().from("motos").insert(data).select("*").single();
+  .handler(async ({ data }): Promise<{ moto: Moto; codigo_recuperacao: string }> => {
+    const { gerarCodigoRecuperacao, hashCodigo, prefixoCodigo } = await import("./seguranca.server");
+    const codigo = gerarCodigoRecuperacao();
+    const { data: row, error } = await sb()
+      .from("motos")
+      .insert({
+        ...data,
+        codigo_recuperacao_hash: await hashCodigo(codigo),
+        codigo_recuperacao_prefixo: prefixoCodigo(codigo),
+      })
+      .select("*")
+      .single();
     if (error) throw new Error(error.message);
-    return row as unknown as Moto;
+    return { moto: row as unknown as Moto, codigo_recuperacao: codigo };
   });
 
 export const updateMoto = createServerFn({ method: "POST" })
