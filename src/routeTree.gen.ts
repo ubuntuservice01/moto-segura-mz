@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
 import { Route as GestaoRouteImport } from './routes/gestao'
 import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,6 +23,11 @@ import { Route as GestaoIdRouteImport } from './routes/gestao.$id'
 import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
 import { Route as GestaoIdTransferirRouteImport } from './routes/gestao.$id.transferir'
 
+const ReportarRouboRoute = ReportarRouboRouteImport.update({
+  id: '/reportar-roubo',
+  path: '/reportar-roubo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GestaoRoute = GestaoRouteImport.update({
   id: '/gestao',
   path: '/gestao',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/gestao': typeof GestaoRouteWithChildren
+  '/reportar-roubo': typeof ReportarRouboRoute
   '/comprar/$id': typeof ComprarIdRoute
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
+  '/reportar-roubo': typeof ReportarRouboRoute
   '/comprar/$id': typeof ComprarIdRoute
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/gestao': typeof GestaoRouteWithChildren
+  '/reportar-roubo': typeof ReportarRouboRoute
   '/comprar/$id': typeof ComprarIdRoute
   '/gestao/$id': typeof GestaoIdRouteWithChildren
   '/gestao/historico': typeof GestaoHistoricoRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/'
     | '/comprar'
     | '/gestao'
+    | '/reportar-roubo'
     | '/comprar/$id'
     | '/gestao/$id'
     | '/gestao/historico'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/comprar'
+    | '/reportar-roubo'
     | '/comprar/$id'
     | '/gestao/$id'
     | '/gestao/historico'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/'
     | '/comprar'
     | '/gestao'
+    | '/reportar-roubo'
     | '/comprar/$id'
     | '/gestao/$id'
     | '/gestao/historico'
@@ -173,12 +185,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComprarRoute: typeof ComprarRouteWithChildren
   GestaoRoute: typeof GestaoRouteWithChildren
+  ReportarRouboRoute: typeof ReportarRouboRoute
   VerificarChassiRoute: typeof VerificarChassiRoute
   VerificarIndexRoute: typeof VerificarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reportar-roubo': {
+      id: '/reportar-roubo'
+      path: '/reportar-roubo'
+      fullPath: '/reportar-roubo'
+      preLoaderRoute: typeof ReportarRouboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gestao': {
       id: '/gestao'
       path: '/gestao'
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComprarRoute: ComprarRouteWithChildren,
   GestaoRoute: GestaoRouteWithChildren,
+  ReportarRouboRoute: ReportarRouboRoute,
   VerificarChassiRoute: VerificarChassiRoute,
   VerificarIndexRoute: VerificarIndexRoute,
 }
