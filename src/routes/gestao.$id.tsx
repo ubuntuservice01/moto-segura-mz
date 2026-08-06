@@ -1,11 +1,12 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRightLeft, Trash2, Eye } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, Trash2, Eye, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { deleteMoto, getMotoById, updateMoto, type MotoInput } from "@/lib/motos.functions";
 import { MotoForm } from "@/components/moto-form";
 import { EstadoBadge } from "@/components/estado-badge";
+import { regenerarCodigoRecuperacao, marcarComoRecuperada } from "@/lib/seguranca.functions";
 
 export const Route = createFileRoute("/gestao/$id")({
   loader: async ({ params }) => {
@@ -26,6 +27,7 @@ function EditarMota() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [novoCodigo, setNovoCodigo] = useState<string | null>(null);
 
   const { data: moto } = useQuery({
     queryKey: ["moto", params.id],
@@ -51,6 +53,26 @@ function EditarMota() {
       qc.invalidateQueries({ queryKey: ["motos"] });
       navigate({ to: "/gestao" });
     },
+  });
+
+  const regenerarMut = useMutation({
+    mutationFn: () => regenerarCodigoRecuperacao({ data: { id: params.id } }),
+    onSuccess: (r) => {
+      setNovoCodigo(r.codigo);
+      toast.success("Novo código gerado. Entregue-o ao proprietário.");
+      qc.invalidateQueries({ queryKey: ["moto", params.id] });
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  const recuperarMut = useMutation({
+    mutationFn: (motivo: string) => marcarComoRecuperada({ data: { id: params.id, motivo } }),
+    onSuccess: () => {
+      toast.success("Mota marcada como recuperada.");
+      qc.invalidateQueries({ queryKey: ["moto", params.id] });
+      qc.invalidateQueries({ queryKey: ["motos"] });
+    },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   if (!moto) return null;
