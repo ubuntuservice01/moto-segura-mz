@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingBag, Settings, ShieldCheck } from "lucide-react";
+import { Search, ShoppingBag, Settings, ShieldAlert, ShieldCheck } from "lucide-react";
 import logoUrl from "@/assets/motocheck-logo.png";
 
 export function SiteHeader() {
@@ -19,6 +19,7 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-1">
           <NavLink to="/verificar" icon={<Search className="h-4 w-4" />} label="Verificar" />
+          <NavLink to="/reportar-roubo" icon={<ShieldAlert className="h-4 w-4" />} label="Reportar roubo" />
           <NavLink to="/comprar" icon={<ShoppingBag className="h-4 w-4" />} label="Comprar" />
           <NavLink to="/gestao" icon={<Settings className="h-4 w-4" />} label="Gestão" />
         </nav>

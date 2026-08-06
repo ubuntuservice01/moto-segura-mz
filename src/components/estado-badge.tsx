@@ -1,12 +1,15 @@
 import { cn } from "@/lib/utils";
 import { ESTADOS_LABEL, type EstadoMoto } from "@/lib/moto-types";
-import { AlertTriangle, CheckCircle2, Tag, ArrowRightLeft } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Tag, ArrowRightLeft, ShieldCheck, Banknote, Ban } from "lucide-react";
 
 const STYLES: Record<EstadoMoto, string> = {
   activa: "bg-secondary/10 text-secondary border-secondary/30",
   a_venda: "bg-accent/15 text-accent-foreground border-accent/40",
   roubada: "bg-destructive/10 text-destructive border-destructive/40",
   transferida: "bg-muted text-muted-foreground border-border",
+  recuperada: "bg-secondary/15 text-secondary border-secondary/40",
+  vendida: "bg-muted text-muted-foreground border-border",
+  abatida: "bg-muted text-muted-foreground border-border line-through",
 };
 
 const ICONS: Record<EstadoMoto, React.ReactNode> = {
@@ -14,6 +17,9 @@ const ICONS: Record<EstadoMoto, React.ReactNode> = {
   a_venda: <Tag className="h-3.5 w-3.5" />,
   roubada: <AlertTriangle className="h-3.5 w-3.5" />,
   transferida: <ArrowRightLeft className="h-3.5 w-3.5" />,
+  recuperada: <ShieldCheck className="h-3.5 w-3.5" />,
+  vendida: <Banknote className="h-3.5 w-3.5" />,
+  abatida: <Ban className="h-3.5 w-3.5" />,
 };
 
 export function EstadoBadge({ estado, className }: { estado: EstadoMoto; className?: string }) {

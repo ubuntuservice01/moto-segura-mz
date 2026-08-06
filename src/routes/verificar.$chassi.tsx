@@ -4,6 +4,7 @@ import { getMotoByChassi } from "@/lib/motos.functions";
 import { EstadoBadge, VerificadaBadge } from "@/components/estado-badge";
 import { ChassisFingerprint } from "@/components/chassis-fingerprint";
 import { AlertaRoubada } from "@/components/alerta-roubada";
+import { AvistamentoForm } from "@/components/avistamento-form";
 import { Timeline } from "@/components/timeline";
 import { DocumentosPdf } from "@/components/documentos-pdf";
 
@@ -61,7 +62,9 @@ function VerificarChassi() {
 
       {isRoubada && (
         <div className="mt-6">
-          <AlertaRoubada />
+          <AlertaRoubada>
+            <AvistamentoForm motoId={moto.id} />
+          </AlertaRoubada>
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Plus, ArrowRightLeft, Pencil, Activity } from "lucide-react";
+import { Plus, ArrowRightLeft, Pencil, Activity, ShieldAlert, Eye } from "lucide-react";
 import { listHistorico } from "@/lib/motos.functions";
 import type { TipoEvento } from "@/lib/moto-types";
 
@@ -14,18 +14,24 @@ const ICONS: Record<TipoEvento, React.ReactNode> = {
   transferencia: <ArrowRightLeft className="h-3.5 w-3.5" />,
   actualizacao: <Pencil className="h-3.5 w-3.5" />,
   mudanca_estado: <Activity className="h-3.5 w-3.5" />,
+  reporte_roubo: <ShieldAlert className="h-3.5 w-3.5" />,
+  avistamento: <Eye className="h-3.5 w-3.5" />,
 };
 const LABELS: Record<TipoEvento, string> = {
   registo: "Registo",
   transferencia: "Transferência",
   actualizacao: "Actualização",
   mudanca_estado: "Mudança de estado",
+  reporte_roubo: "Reporte de roubo",
+  avistamento: "Avistamento",
 };
 const COLORS: Record<TipoEvento, string> = {
   registo: "bg-secondary/10 text-secondary border-secondary/30",
   transferencia: "bg-accent/15 text-accent-foreground border-accent/40",
   actualizacao: "bg-muted text-muted-foreground border-border",
   mudanca_estado: "bg-primary/10 text-primary border-primary/30",
+  reporte_roubo: "bg-destructive/10 text-destructive border-destructive/40",
+  avistamento: "bg-warning/15 text-warning-foreground border-warning/40",
 };
 
 function HistoricoGlobal() {

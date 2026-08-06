@@ -1,4 +1,4 @@
-import { Plus, ArrowRightLeft, Pencil, Activity } from "lucide-react";
+import { Plus, ArrowRightLeft, Pencil, Activity, ShieldAlert, Eye } from "lucide-react";
 import type { HistoricoEvento, TipoEvento } from "@/lib/moto-types";
 
 const ICONS: Record<TipoEvento, React.ReactNode> = {
@@ -6,6 +6,8 @@ const ICONS: Record<TipoEvento, React.ReactNode> = {
   transferencia: <ArrowRightLeft className="h-4 w-4" />,
   actualizacao: <Pencil className="h-4 w-4" />,
   mudanca_estado: <Activity className="h-4 w-4" />,
+  reporte_roubo: <ShieldAlert className="h-4 w-4" />,
+  avistamento: <Eye className="h-4 w-4" />,
 };
 
 const COLORS: Record<TipoEvento, string> = {
@@ -13,6 +15,8 @@ const COLORS: Record<TipoEvento, string> = {
   transferencia: "bg-accent text-accent-foreground",
   actualizacao: "bg-muted text-foreground",
   mudanca_estado: "bg-primary text-primary-foreground",
+  reporte_roubo: "bg-destructive text-destructive-foreground",
+  avistamento: "bg-warning text-warning-foreground",
 };
 
 const TIPO_LABEL: Record<TipoEvento, string> = {
@@ -20,6 +24,8 @@ const TIPO_LABEL: Record<TipoEvento, string> = {
   transferencia: "Transferência",
   actualizacao: "Actualização",
   mudanca_estado: "Mudança de estado",
+  reporte_roubo: "Reporte de roubo",
+  avistamento: "Avistamento",
 };
 
 export function Timeline({ eventos }: { eventos: HistoricoEvento[] }) {

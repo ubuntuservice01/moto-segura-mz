@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      avistamentos: {
+        Row: {
+          contacto_informante: string | null
+          created_at: string
+          foto_path: string | null
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          ip: string | null
+          moto_id: string
+          observacoes: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          contacto_informante?: string | null
+          created_at?: string
+          foto_path?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          ip?: string | null
+          moto_id: string
+          observacoes?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          contacto_informante?: string | null
+          created_at?: string
+          foto_path?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          ip?: string | null
+          moto_id?: string
+          observacoes?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avistamentos_moto_id_fkey"
+            columns: ["moto_id"]
+            isOneToOne: false
+            referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historico_motos: {
         Row: {
           created_at: string
@@ -60,20 +107,32 @@ export type Database = {
           ano: number | null
           chassi: string
           cilindrada: number | null
+          codigo_recuperacao_hash: string | null
+          codigo_recuperacao_prefixo: string | null
           cor: string | null
           created_at: string
+          data_compra: string | null
+          data_reporte_roubo: string | null
           documentos: Json
           estado: Database["public"]["Enums"]["moto_estado"]
+          foto_path: string | null
           id: string
           km: number | null
+          local_compra: string | null
           marca: string
           matricula: string | null
           modelo: string
           notas_internas: string | null
+          numero_motor: string | null
           preco_venda: number | null
           proprietario_bi: string | null
           proprietario_contacto: string | null
+          proprietario_contacto_alt: string | null
+          proprietario_data_nascimento: string | null
           proprietario_distrito: string | null
+          proprietario_endereco: string | null
+          proprietario_familiar_contacto: string | null
+          proprietario_familiar_nome: string | null
           proprietario_localidade: string | null
           proprietario_nome: string
           proprietario_posto_admin: string | null
@@ -84,20 +143,32 @@ export type Database = {
           ano?: number | null
           chassi: string
           cilindrada?: number | null
+          codigo_recuperacao_hash?: string | null
+          codigo_recuperacao_prefixo?: string | null
           cor?: string | null
           created_at?: string
+          data_compra?: string | null
+          data_reporte_roubo?: string | null
           documentos?: Json
           estado?: Database["public"]["Enums"]["moto_estado"]
+          foto_path?: string | null
           id?: string
           km?: number | null
+          local_compra?: string | null
           marca: string
           matricula?: string | null
           modelo: string
           notas_internas?: string | null
+          numero_motor?: string | null
           preco_venda?: number | null
           proprietario_bi?: string | null
           proprietario_contacto?: string | null
+          proprietario_contacto_alt?: string | null
+          proprietario_data_nascimento?: string | null
           proprietario_distrito?: string | null
+          proprietario_endereco?: string | null
+          proprietario_familiar_contacto?: string | null
+          proprietario_familiar_nome?: string | null
           proprietario_localidade?: string | null
           proprietario_nome: string
           proprietario_posto_admin?: string | null
@@ -108,20 +179,32 @@ export type Database = {
           ano?: number | null
           chassi?: string
           cilindrada?: number | null
+          codigo_recuperacao_hash?: string | null
+          codigo_recuperacao_prefixo?: string | null
           cor?: string | null
           created_at?: string
+          data_compra?: string | null
+          data_reporte_roubo?: string | null
           documentos?: Json
           estado?: Database["public"]["Enums"]["moto_estado"]
+          foto_path?: string | null
           id?: string
           km?: number | null
+          local_compra?: string | null
           marca?: string
           matricula?: string | null
           modelo?: string
           notas_internas?: string | null
+          numero_motor?: string | null
           preco_venda?: number | null
           proprietario_bi?: string | null
           proprietario_contacto?: string | null
+          proprietario_contacto_alt?: string | null
+          proprietario_data_nascimento?: string | null
           proprietario_distrito?: string | null
+          proprietario_endereco?: string | null
+          proprietario_familiar_contacto?: string | null
+          proprietario_familiar_nome?: string | null
           proprietario_localidade?: string | null
           proprietario_nome?: string
           proprietario_posto_admin?: string | null
@@ -129,6 +212,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      notificacoes: {
+        Row: {
+          canal: string
+          created_at: string
+          id: string
+          lida: boolean
+          mensagem: string
+          moto_id: string | null
+          payload: Json
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          canal?: string
+          created_at?: string
+          id?: string
+          lida?: boolean
+          mensagem: string
+          moto_id?: string | null
+          payload?: Json
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          canal?: string
+          created_at?: string
+          id?: string
+          lida?: boolean
+          mensagem?: string
+          moto_id?: string | null
+          payload?: Json
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_moto_id_fkey"
+            columns: ["moto_id"]
+            isOneToOne: false
+            referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pre_registos: {
         Row: {
@@ -180,6 +307,53 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reportes_roubo: {
+        Row: {
+          created_at: string
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          identificador: string
+          ip: string | null
+          motivo_falha: string | null
+          moto_id: string | null
+          sucesso: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          identificador: string
+          ip?: string | null
+          motivo_falha?: string | null
+          moto_id?: string | null
+          sucesso?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          identificador?: string
+          ip?: string | null
+          motivo_falha?: string | null
+          moto_id?: string | null
+          sucesso?: boolean
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_roubo_moto_id_fkey"
+            columns: ["moto_id"]
+            isOneToOne: false
+            referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transferencias: {
         Row: {
@@ -236,7 +410,16 @@ export type Database = {
         | "transferencia"
         | "actualizacao"
         | "mudanca_estado"
-      moto_estado: "activa" | "a_venda" | "roubada" | "transferida"
+        | "reporte_roubo"
+        | "avistamento"
+      moto_estado:
+        | "activa"
+        | "a_venda"
+        | "roubada"
+        | "transferida"
+        | "recuperada"
+        | "vendida"
+        | "abatida"
       pre_registo_estado: "pendente" | "aprovado" | "rejeitado"
     }
     CompositeTypes: {
@@ -370,8 +553,18 @@ export const Constants = {
         "transferencia",
         "actualizacao",
         "mudanca_estado",
+        "reporte_roubo",
+        "avistamento",
       ],
-      moto_estado: ["activa", "a_venda", "roubada", "transferida"],
+      moto_estado: [
+        "activa",
+        "a_venda",
+        "roubada",
+        "transferida",
+        "recuperada",
+        "vendida",
+        "abatida",
+      ],
       pre_registo_estado: ["pendente", "aprovado", "rejeitado"],
     },
   },
