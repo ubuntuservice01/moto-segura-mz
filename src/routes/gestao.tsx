@@ -1,7 +1,8 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { LayoutGrid, Plus, History, AlertTriangle, Inbox } from "lucide-react";
+import { LayoutGrid, Plus, History, AlertTriangle, Inbox, ShieldAlert } from "lucide-react";
 import { countPreRegistosPendentes } from "@/lib/pre-registos.functions";
+import { countNotificacoesNaoLidas } from "@/lib/seguranca.functions";
 
 export const Route = createFileRoute("/gestao")({
   head: () => ({
@@ -18,6 +19,11 @@ function GestaoLayout() {
   const { data: pendentes } = useQuery({
     queryKey: ["pre-registos-pendentes"],
     queryFn: () => countPreRegistosPendentes(),
+    refetchInterval: 60_000,
+  });
+  const { data: alertas } = useQuery({
+    queryKey: ["notificacoes-nao-lidas"],
+    queryFn: () => countNotificacoesNaoLidas(),
     refetchInterval: 60_000,
   });
   return (
@@ -53,6 +59,14 @@ function GestaoLayout() {
             badge={pendentes ?? 0}
           >
             Pré-registos
+          </TabLink>
+          <TabLink
+            to="/gestao/seguranca"
+            icon={<ShieldAlert className="h-4 w-4" />}
+            active={path === "/gestao/seguranca"}
+            badge={alertas ?? 0}
+          >
+            Segurança
           </TabLink>
           <TabLink
             to="/gestao/historico"

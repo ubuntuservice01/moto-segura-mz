@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerificarIndexRouteImport } from './routes/verificar.index'
 import { Route as GestaoIndexRouteImport } from './routes/gestao.index'
 import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
+import { Route as GestaoSegurancaRouteImport } from './routes/gestao.seguranca'
 import { Route as GestaoPreRegistosRouteImport } from './routes/gestao.pre-registos'
 import { Route as GestaoNovaRouteImport } from './routes/gestao.nova'
 import { Route as GestaoHistoricoRouteImport } from './routes/gestao.historico'
@@ -58,6 +59,11 @@ const VerificarChassiRoute = VerificarChassiRouteImport.update({
   path: '/verificar/$chassi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GestaoSegurancaRoute = GestaoSegurancaRouteImport.update({
+  id: '/seguranca',
+  path: '/seguranca',
+  getParentRoute: () => GestaoRoute,
+} as any)
 const GestaoPreRegistosRoute = GestaoPreRegistosRouteImport.update({
   id: '/pre-registos',
   path: '/pre-registos',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
   '/gestao/pre-registos': typeof GestaoPreRegistosRoute
+  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao/': typeof GestaoIndexRoute
   '/verificar/': typeof VerificarIndexRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
   '/gestao/pre-registos': typeof GestaoPreRegistosRoute
+  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao': typeof GestaoIndexRoute
   '/verificar': typeof VerificarIndexRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/gestao/historico': typeof GestaoHistoricoRoute
   '/gestao/nova': typeof GestaoNovaRoute
   '/gestao/pre-registos': typeof GestaoPreRegistosRoute
+  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/gestao/': typeof GestaoIndexRoute
   '/verificar/': typeof VerificarIndexRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
+    | '/gestao/seguranca'
     | '/verificar/$chassi'
     | '/gestao/'
     | '/verificar/'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
+    | '/gestao/seguranca'
     | '/verificar/$chassi'
     | '/gestao'
     | '/verificar'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
+    | '/gestao/seguranca'
     | '/verificar/$chassi'
     | '/gestao/'
     | '/verificar/'
@@ -240,6 +252,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/verificar/$chassi'
       preLoaderRoute: typeof VerificarChassiRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/gestao/seguranca': {
+      id: '/gestao/seguranca'
+      path: '/seguranca'
+      fullPath: '/gestao/seguranca'
+      preLoaderRoute: typeof GestaoSegurancaRouteImport
+      parentRoute: typeof GestaoRoute
     }
     '/gestao/pre-registos': {
       id: '/gestao/pre-registos'
@@ -314,6 +333,7 @@ interface GestaoRouteChildren {
   GestaoHistoricoRoute: typeof GestaoHistoricoRoute
   GestaoNovaRoute: typeof GestaoNovaRoute
   GestaoPreRegistosRoute: typeof GestaoPreRegistosRoute
+  GestaoSegurancaRoute: typeof GestaoSegurancaRoute
   GestaoIndexRoute: typeof GestaoIndexRoute
 }
 
@@ -322,6 +342,7 @@ const GestaoRouteChildren: GestaoRouteChildren = {
   GestaoHistoricoRoute: GestaoHistoricoRoute,
   GestaoNovaRoute: GestaoNovaRoute,
   GestaoPreRegistosRoute: GestaoPreRegistosRoute,
+  GestaoSegurancaRoute: GestaoSegurancaRoute,
   GestaoIndexRoute: GestaoIndexRoute,
 }
 
