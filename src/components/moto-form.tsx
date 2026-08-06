@@ -44,6 +44,14 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     proprietario_provincia: initial?.proprietario_provincia ?? "",
     proprietario_distrito: initial?.proprietario_distrito ?? "",
     proprietario_posto_admin: initial?.proprietario_posto_admin ?? "",
+    numero_motor: initial?.numero_motor ?? "",
+    proprietario_data_nascimento: initial?.proprietario_data_nascimento ?? "",
+    proprietario_contacto_alt: initial?.proprietario_contacto_alt ?? "",
+    proprietario_familiar_nome: initial?.proprietario_familiar_nome ?? "",
+    proprietario_familiar_contacto: initial?.proprietario_familiar_contacto ?? "",
+    proprietario_endereco: initial?.proprietario_endereco ?? "",
+    data_compra: initial?.data_compra ?? "",
+    local_compra: initial?.local_compra ?? "",
     estado: (initial?.estado ?? "activa") as EstadoMoto,
     preco_venda: initial?.preco_venda?.toString() ?? "",
     notas_internas: initial?.notas_internas ?? "",
@@ -130,6 +138,14 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       proprietario_provincia: form.proprietario_provincia || null,
       proprietario_distrito: form.proprietario_distrito || null,
       proprietario_posto_admin: form.proprietario_posto_admin || null,
+      numero_motor: form.numero_motor || null,
+      proprietario_data_nascimento: form.proprietario_data_nascimento || null,
+      proprietario_contacto_alt: form.proprietario_contacto_alt || null,
+      proprietario_familiar_nome: form.proprietario_familiar_nome || null,
+      proprietario_familiar_contacto: form.proprietario_familiar_contacto || null,
+      proprietario_endereco: form.proprietario_endereco || null,
+      data_compra: form.data_compra || null,
+      local_compra: form.local_compra || null,
       estado: form.estado,
       preco_venda: form.preco_venda ? Number(form.preco_venda) : null,
       notas_internas: form.notas_internas || null,
@@ -146,6 +162,9 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
           </Field>
           <Field label="Matrícula" value={form.matricula}>
             <input value={form.matricula} onChange={(e) => set("matricula", e.target.value)} className={inputCls(form.matricula, false) + " font-mono"} />
+          </Field>
+          <Field label="Número do motor" value={form.numero_motor}>
+            <input value={form.numero_motor} onChange={(e) => set("numero_motor", e.target.value.toUpperCase())} className={inputCls(form.numero_motor, false) + " font-mono"} />
           </Field>
           <Field label="Marca" required value={form.marca}>
             <input value={form.marca} onChange={(e) => set("marca", e.target.value)} required className={inputCls(form.marca, true)} />
@@ -240,6 +259,37 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
         </Grid>
       </Section>
 
+
+      <Section title="Dados de Segurança e Recuperação">
+        <p className="-mt-2 text-xs text-muted-foreground">
+          Estes dados permitem ao proprietário reportar a motorizada como roubada pelo telemóvel,
+          sem criar conta. O <strong>Código de Recuperação</strong> é gerado automaticamente ao
+          concluir o registo e mostrado uma única vez.
+        </p>
+        <Grid>
+          <Field label="Data de nascimento do proprietário" value={form.proprietario_data_nascimento}>
+            <input type="date" value={form.proprietario_data_nascimento} onChange={(e) => set("proprietario_data_nascimento", e.target.value)} className={inputCls(form.proprietario_data_nascimento, false)} />
+          </Field>
+          <Field label="Telefone alternativo" value={form.proprietario_contacto_alt}>
+            <input value={form.proprietario_contacto_alt} onChange={(e) => set("proprietario_contacto_alt", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto_alt, false)} />
+          </Field>
+          <Field label="Nome do familiar de referência" value={form.proprietario_familiar_nome}>
+            <input value={form.proprietario_familiar_nome} onChange={(e) => set("proprietario_familiar_nome", e.target.value)} className={inputCls(form.proprietario_familiar_nome, false)} />
+          </Field>
+          <Field label="Telefone do familiar" value={form.proprietario_familiar_contacto}>
+            <input value={form.proprietario_familiar_contacto} onChange={(e) => set("proprietario_familiar_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_familiar_contacto, false)} />
+          </Field>
+          <Field label="Data da compra" value={form.data_compra}>
+            <input type="date" value={form.data_compra} onChange={(e) => set("data_compra", e.target.value)} className={inputCls(form.data_compra, false)} />
+          </Field>
+          <Field label="Local da compra" value={form.local_compra}>
+            <input value={form.local_compra} onChange={(e) => set("local_compra", e.target.value)} placeholder="Loja, feira, particular…" className={inputCls(form.local_compra, false)} />
+          </Field>
+        </Grid>
+        <Field label="Endereço completo do proprietário" value={form.proprietario_endereco}>
+          <textarea value={form.proprietario_endereco} onChange={(e) => set("proprietario_endereco", e.target.value)} rows={2} className={inputCls(form.proprietario_endereco, false) + " resize-none"} />
+        </Field>
+      </Section>
 
       <Section title="Documentos">
         <p className="text-xs text-muted-foreground -mt-2">
