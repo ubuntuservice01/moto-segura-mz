@@ -1,5 +1,18 @@
-export type EstadoMoto = "activa" | "a_venda" | "roubada" | "transferida";
-export type TipoEvento = "registo" | "transferencia" | "actualizacao" | "mudanca_estado";
+export type EstadoMoto =
+  | "activa"
+  | "a_venda"
+  | "roubada"
+  | "transferida"
+  | "recuperada"
+  | "vendida"
+  | "abatida";
+export type TipoEvento =
+  | "registo"
+  | "transferencia"
+  | "actualizacao"
+  | "mudanca_estado"
+  | "reporte_roubo"
+  | "avistamento";
 
 export type TipoDocumento = "bi" | "carta_conducao" | "livrete" | "factura" | "seguro" | "outro";
 
@@ -42,12 +55,37 @@ export interface Moto {
   preco_venda: number | null;
   notas_internas: string | null;
   documentos: Documento[];
+  numero_motor: string | null;
+  proprietario_data_nascimento: string | null;
+  proprietario_contacto_alt: string | null;
+  proprietario_familiar_nome: string | null;
+  proprietario_familiar_contacto: string | null;
+  proprietario_endereco: string | null;
+  data_compra: string | null;
+  local_compra: string | null;
+  foto_path: string | null;
+  codigo_recuperacao_prefixo: string | null;
+  data_reporte_roubo: string | null;
   created_at: string;
   updated_at: string;
 }
 
 /** Public-facing moto: removes BI, notas, documentos and masks contacto unless à venda */
-export interface MotoPublica extends Omit<Moto, "proprietario_bi" | "notas_internas" | "proprietario_contacto" | "documentos"> {
+export interface MotoPublica
+  extends Omit<
+    Moto,
+    | "proprietario_bi"
+    | "notas_internas"
+    | "proprietario_contacto"
+    | "documentos"
+    | "proprietario_data_nascimento"
+    | "proprietario_contacto_alt"
+    | "proprietario_familiar_nome"
+    | "proprietario_familiar_contacto"
+    | "proprietario_endereco"
+    | "codigo_recuperacao_prefixo"
+    | "local_compra"
+  > {
   proprietario_contacto: string | null;
 }
 
@@ -96,6 +134,9 @@ export const ESTADOS_LABEL: Record<EstadoMoto, string> = {
   a_venda: "À Venda",
   roubada: "Roubada",
   transferida: "Transferida",
+  recuperada: "Recuperada",
+  vendida: "Vendida",
+  abatida: "Abatida",
 };
 
 export function maskChassi(chassi: string): string {
@@ -126,6 +167,10 @@ export function publicizeMoto(m: Moto): MotoPublica {
     proprietario_provincia: m.proprietario_provincia,
     estado: m.estado,
     preco_venda: m.preco_venda,
+    numero_motor: m.numero_motor ? maskChassi(m.numero_motor) : null,
+    data_compra: m.data_compra,
+    foto_path: m.foto_path,
+    data_reporte_roubo: m.data_reporte_roubo,
     created_at: m.created_at,
     updated_at: m.updated_at,
   };
