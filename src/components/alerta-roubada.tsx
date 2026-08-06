@@ -1,6 +1,6 @@
 import { AlertTriangle, Phone } from "lucide-react";
 
-export function AlertaRoubada() {
+export function AlertaRoubada({ children }: { children?: React.ReactNode }) {
   return (
     <div className="relative overflow-hidden rounded-xl border-2 border-destructive bg-destructive/5 p-5">
       <div className="absolute inset-0 -z-10 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,oklch(0.58_0.22_27_/_0.06)_10px,oklch(0.58_0.22_27_/_0.06)_20px)]" />
@@ -17,6 +17,7 @@ export function AlertaRoubada() {
           <div className="mt-3 inline-flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-1.5 text-sm font-semibold text-destructive">
             <Phone className="h-4 w-4" /> Linha PRM: 119
           </div>
+          {children && <div className="mt-4">{children}</div>}
         </div>
       </div>
     </div>

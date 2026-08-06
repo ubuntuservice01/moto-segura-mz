@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingBag, Settings, ShieldAlert } from "lucide-react";
+import { Search, ShoppingBag, Settings, ShieldAlert, ShieldCheck } from "lucide-react";
 import logoUrl from "@/assets/motocheck-logo.png";
 
 export function SiteHeader() {
