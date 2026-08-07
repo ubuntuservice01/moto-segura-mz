@@ -197,9 +197,11 @@ export const updateMoto = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), patch: motoInputSchema.partial() }).parse(d),
   )
   .handler(async ({ data }): Promise<Moto> => {
+    // O município responsável nunca muda por edição normal.
+    const { municipio_id: _ignorado, ...patch } = data.patch;
     const { data: row, error } = await sb()
       .from("motos")
-      .update(data.patch)
+      .update(patch)
       .eq("id", data.id)
       .select("*")
       .single();
