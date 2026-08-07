@@ -1,79 +1,67 @@
-## MotoVerify MZ — Ubuntu Link
+# MotoGest Multi-Tenant — Plataforma Nacional Ubuntu Service
 
-Plataforma pública moçambicana para verificação de propriedade de motas + marketplace, com painel de gestão Ubuntu Link.
+Refactor do MotoCheck MZ para SaaS multi-tenant: uma base de dados nacional, isolamento lógico por Município, painel Ubuntu Service (super admin) e perfis Municipais e de Polícia.
 
-### Stack & Backend
-- TanStack Start + Tailwind v4 (já configurado)
-- Lovable Cloud (Supabase) — base de dados e histórico persistente
-- Painel de gestão **sem autenticação** nesta fase (decisão do utilizador)
-- Fontes: Inter via `@fontsource-variable/inter`
+Como é uma mudança estrutural grande, proponho entregar em 4 fases. Cada fase deixa a aplicação funcional.
 
-### Paleta (tokens em `src/styles.css`)
-- `--primary`: Azul escuro `#0A1628` (autoridade)
-- `--secondary`: Verde Moçambique `#009A44`
-- `--accent`: Âmbar `#F5A623` (CTAs)
-- `--background`: `#F7F8FA` / `--card`: `#FFFFFF`
-- `--destructive`: Vermelho para alerta "ROUBADA"
+---
 
-### Schema da BD
+## Fase 1 — Fundação: autenticação, municípios e isolamento
 
-**`motos`** — chassi (unique), matricula, marca, modelo, ano, cilindrada, cor, km, proprietario_nome, proprietario_bi, proprietario_contacto, proprietario_localidade, proprietario_provincia, estado (`activa`|`a_venda`|`roubada`|`transferida`), preco_venda, notas_internas, timestamps.
+Hoje o painel de gestão está aberto, sem login. O multi-tenant só é possível com autenticação real, por isso esta fase é obrigatória e vem primeiro.
 
-**`historico_motos`** — moto_id (FK), tipo_evento (`registo`|`transferencia`|`actualizacao`|`mudanca_estado`), campo_alterado, valor_antes, valor_depois (JSONB para diffs multi-campo), operador, motivo, created_at.
+**Base de dados**
+- `municipios` — nome, província, distrito, endereço, contactos, email, website, logótipo, brasão, cor principal/secundária, favicon, nome da plataforma, estado (activo/suspenso), licença (plano, validade).
+- `perfis` — liga cada utilizador autenticado a um município.
+- `utilizador_papeis` — tabela separada de papéis (nunca no perfil): `super_admin`, `admin_municipal`, `tecnico_municipal`, `policia`.
+- `esquadras` — nome, endereço, contacto, responsável, município.
+- `tenant_id` (município) adicionado a `motos`, `historico_motos`, `transferencias`, `pre_registos`, `avistamentos`, `reportes_roubo`, `notificacoes`.
+- Funções de segurança `tem_papel()` e `municipio_actual()` usadas nas políticas de acesso, de forma a que cada utilizador só veja dados do seu município e o Super Administrador veja tudo.
 
-**`transferencias`** — moto_id, proprietario_anterior (snapshot JSONB), proprietario_novo (JSONB), valor_transaccao, created_at.
+**Aplicação**
+- Página `/entrar` (email + palavra-passe) e área protegida.
+- Todas as leituras/escritas passam a filtrar pelo município do utilizador; o Super Admin pode escolher o município activo.
+- Os dados existentes ficam atribuídos a um município inicial ("Município de Lichinga", ajustável).
 
-Trigger PostgreSQL em `motos` regista automaticamente diffs em `historico_motos` no UPDATE. RLS: SELECT público (com colunas sensíveis filtradas via views/server fns); INSERT/UPDATE/DELETE permitido a `anon` por agora (painel aberto), com nota para fechar depois.
+---
 
-### Privacidade do contacto
-Contacto do proprietário **só visível quando `estado = 'a_venda'`**. Caso contrário ocultado totalmente. BI nunca exposto publicamente — apenas no painel de gestão.
+## Fase 2 — Painel Ubuntu Service (Super Administrador)
 
-### Rotas
-```
-/                          → Home (hero, 3 cards de entrada, stats rápidas)
-/verificar                 → Pesquisa por chassi (parcial), resultado partilhável
-/verificar/$chassi         → Página pública da mota: ficha, alerta roubada, timeline completa, CTA contacto se à venda
-/comprar                   → Marketplace (filtros marca/preço/província, grid de cards)
-/comprar/$id               → Detalhe da mota à venda + botão Ubuntu Link
-/gestao                    → Lista + filtros + estatísticas
-/gestao/nova               → Formulário de registo
-/gestao/$id                → Editar mota
-/gestao/$id/transferir     → Modal/página de transferência
-/gestao/historico          → Log global filtrável
-```
+Rota `/ubuntu` reservada ao super admin:
+- CRUD de Municípios (criar, editar, activar, suspender, eliminar apenas sem dados).
+- Ao criar um Município: criação automática do Administrador Municipal e do Técnico Municipal, com credenciais mostradas uma única vez.
+- Gestão de licenças, módulos activos por município e parâmetros globais.
+- Dashboard nacional: total de municípios (activos/suspensos), motorizadas por estado, utilizadores por tipo, esquadras, transferências pendentes, últimos registos/transferências/reportes, com gráficos.
+- Vista nacional de motorizadas e histórico.
+- Exportação de backup (JSON/CSV por município ou nacional) e importação de restauro.
 
-### Server functions (`src/lib/motos.functions.ts`)
-- `searchMotosByChassi(parcial)` — pesquisa pública, oculta contacto se não à venda
-- `getMotoByChassi(chassi)` — ficha + timeline
-- `listMarketplace(filtros)` — só `a_venda`, chassi mascarado (ex: `BR••••••KZ12`)
-- `listAllMotos(filtros)` — gestão
-- `createMoto`, `updateMoto`, `transferOwner`, `changeEstado` — todas registam histórico
-- `listHistorico(filtros)` — log global
-- `getStats()` — contadores + agregação por marca
+---
 
-### Componentes-chave
-- `<MotoCard>` — variantes `marketplace` | `gestao` | `resultado`
-- `<ChassisFingerprint>` — assinatura visual animada (SVG com padrão de "impressão digital" que aparece ao carregar resultado)
-- `<EstadoBadge>` — pills coloridas + badge "VERIFICADA" verde
-- `<Timeline>` — histórico vertical com ícones por tipo de evento e diffs antes→depois
-- `<AlertaRoubada>` — banner vermelho destacado
-- `<MotoForm>` — formulário partilhado registo/edição com validação Zod
-- `<TransferenciaModal>` — fluxo dedicado com snapshot do dono anterior
-- `<StatsChart>` — barras por marca (Recharts)
-- `<SiteHeader>` com nav para as 3 secções + footer
+## Fase 3 — Perfis, permissões e esquadras
 
-### Histórico — detalhe
-Diffs guardados como JSONB `{ campo: { antes, depois } }` para suportar múltiplas alterações num só UPDATE. Timeline na página pública mostra eventos legíveis ("Estado alterado: Activa → À Venda", "Transferida para Carlos M. por 45.000 MT"). BI e notas internas nunca aparecem na timeline pública.
+- Matriz de permissões aplicada em servidor (não só na UI):
+  - **Admin Municipal**: registar/editar motas, alterar proprietário, aprovar transferências, emitir comprovativos, relatórios, gerir técnicos e esquadras, configurar o município.
+  - **Técnico Municipal**: registar, actualizar, consultar, iniciar/receber/solicitar transferências. Sem criar utilizadores, eliminar motas ou configurar.
+  - **Polícia**: consultar motas do município (proprietário, contactos, fotografias, histórico, transferências), confirmar recuperação, registar ocorrências. Sem alterar proprietário, eliminar ou criar utilizadores.
+- Gestão de esquadras dentro do município, cada uma com utilizador próprio de perfil Polícia.
+- Identidade visual por município aplicada ao painel (cores, logótipo, favicon, nome da plataforma) e aos PDFs/livrete.
 
-### Entregáveis
-1. Migration: tabelas, trigger de histórico, RLS, GRANTs, seed com 6-8 motas de exemplo (incluindo 1 roubada, 3 à venda)
-2. Tokens de design + Inter
-3. Layout raiz com header/footer
-4. 9 rotas listadas acima
-5. Componentes partilhados
-6. Server functions + validação Zod
+---
 
-### Notas
-- Painel aberto agora — adicionar aviso visível "Acesso restrito a operadores Ubuntu Link" e marcar para proteger com login na próxima iteração
-- Marketplace mostra chassi mascarado; página `/verificar/$chassi` mostra completo (é o propósito de verificação)
-- Todas as mutações passam por server functions para garantir registo no histórico
+## Fase 4 — Pesquisa nacional e modularidade
+
+- Pesquisa nacional por matrícula, chassi ou número de motor, disponível a qualquer utilizador autenticado: devolve sempre o **Município de Registo** e o **Estado**; os detalhes adicionais dependem do perfil (fora do município, dados de proprietário ficam ocultos salvo mota roubada ou perfil Polícia/Super Admin).
+- Aviso de duplicação ao registar um chassi já existente noutro município.
+- Registo de módulos (`modulos` + `municipio_modulos`) com navegação gerada dinamicamente, para acrescentar futuros módulos (bicicletas, táxis, transporte escolar, viaturas e máquinas municipais, estacionamentos, reboques, integrações) sem mexer na estrutura principal.
+
+---
+
+## Notas técnicas
+
+- Isolamento por Row Level Security no Postgres, com funções `SECURITY DEFINER` para evitar recursão; nenhuma política dá acesso anónimo a dados pessoais.
+- Papéis em tabela dedicada, verificados no servidor em cada operação.
+- Rotas protegidas sob `_authenticated`; páginas públicas actuais (`/verificar`, `/comprar`, `/reportar-roubo`) mantêm-se abertas e sem exposição de dados sensíveis.
+- Server functions existentes (`motos`, `pre-registos`, `seguranca`) passam a resolver o tenant a partir da sessão em vez de operarem globalmente.
+- Estrutura de pastas por módulo (`src/modules/<modulo>/`) para suportar o crescimento.
+
+Se aprovar, começo pela Fase 1.
