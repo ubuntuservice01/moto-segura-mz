@@ -437,7 +437,7 @@ export const exportarBackup = createServerFn({ method: "POST" })
   .inputValidator((d: { municipioId?: string } | undefined) =>
     z.object({ municipioId: z.string().uuid().optional() }).parse(d ?? {}),
   )
-  .handler(async ({ context, data }): Promise<{ gerado_em: string; dados: Record<string, unknown[]> }> => {
+  .handler(async ({ context, data }): Promise<{ gerado_em: string; json: string }> => {
     const { contextoUtilizador } = await import("./auth.server");
     const { sbAdmin } = await import("./tenant.server");
     const ctx = await contextoUtilizador(context.userId);
@@ -455,28 +455,27 @@ export const exportarBackup = createServerFn({ method: "POST" })
     ] as const;
     const dados: Record<string, unknown[]> = {};
     for (const t of tabelas) {
-      let q = supa.from(t).select("*");
+      let q = supa.from(t as "motos").select("*");
       if (data.municipioId) {
         q = t === "municipios" ? q.eq("id", data.municipioId) : q.eq("municipio_id", data.municipioId);
       }
       const { data: rows } = await q;
-      dados[t] = rows ?? [];
+      dados[t] = (rows ?? []) as unknown[];
     }
-    return { gerado_em: new Date().toISOString(), dados };
+    return { gerado_em: new Date().toISOString(), json: JSON.stringify(dados) };
   });
 
 /** Restauro de backup: repõe registos em falta sem apagar dados existentes. */
 export const restaurarBackup = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ dados: z.record(z.string(), z.array(z.record(z.string(), z.unknown()))) }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ json: z.string().min(2) }).parse(d))
   .handler(async ({ context, data }): Promise<{ reposto: Record<string, number> }> => {
     const { contextoUtilizador } = await import("./auth.server");
     const { sbAdmin } = await import("./tenant.server");
     const ctx = await contextoUtilizador(context.userId);
     if (!ctx.superAdmin) throw new Error("Área exclusiva da Ubuntu Service.");
     const supa = sbAdmin();
+    const dados = JSON.parse(data.json) as Record<string, unknown[]>;
     const ordem = [
       "municipios",
       "esquadras",
@@ -489,10 +488,10 @@ export const restaurarBackup = createServerFn({ method: "POST" })
     ];
     const reposto: Record<string, number> = {};
     for (const tabela of ordem) {
-      const rows = data.dados[tabela];
+      const rows = dados[tabela];
       if (!rows?.length) continue;
       const { error } = await supa
-        .from(tabela as "municipios")
+        .from(tabela as "motos")
         .upsert(rows as never, { onConflict: "id", ignoreDuplicates: true });
       if (error) throw new Error(`${tabela}: ${error.message}`);
       reposto[tabela] = rows.length;
