@@ -24,6 +24,7 @@ export type Database = {
           id: string
           ip: string | null
           moto_id: string
+          municipio_id: string | null
           observacoes: string | null
           user_agent: string | null
         }
@@ -36,6 +37,7 @@ export type Database = {
           id?: string
           ip?: string | null
           moto_id: string
+          municipio_id?: string | null
           observacoes?: string | null
           user_agent?: string | null
         }
@@ -48,6 +50,7 @@ export type Database = {
           id?: string
           ip?: string | null
           moto_id?: string
+          municipio_id?: string | null
           observacoes?: string | null
           user_agent?: string | null
         }
@@ -57,6 +60,57 @@ export type Database = {
             columns: ["moto_id"]
             isOneToOne: false
             referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "avistamentos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      esquadras: {
+        Row: {
+          activa: boolean
+          contacto: string | null
+          created_at: string
+          endereco: string | null
+          id: string
+          municipio_id: string
+          nome: string
+          responsavel: string | null
+          updated_at: string
+        }
+        Insert: {
+          activa?: boolean
+          contacto?: string | null
+          created_at?: string
+          endereco?: string | null
+          id?: string
+          municipio_id: string
+          nome: string
+          responsavel?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activa?: boolean
+          contacto?: string | null
+          created_at?: string
+          endereco?: string | null
+          id?: string
+          municipio_id?: string
+          nome?: string
+          responsavel?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "esquadras_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
             referencedColumns: ["id"]
           },
         ]
@@ -69,6 +123,7 @@ export type Database = {
           id: string
           motivo: string | null
           moto_id: string
+          municipio_id: string
           operador: string
           tipo_evento: Database["public"]["Enums"]["historico_tipo"]
         }
@@ -79,6 +134,7 @@ export type Database = {
           id?: string
           motivo?: string | null
           moto_id: string
+          municipio_id: string
           operador?: string
           tipo_evento: Database["public"]["Enums"]["historico_tipo"]
         }
@@ -89,6 +145,7 @@ export type Database = {
           id?: string
           motivo?: string | null
           moto_id?: string
+          municipio_id?: string
           operador?: string
           tipo_evento?: Database["public"]["Enums"]["historico_tipo"]
         }
@@ -100,7 +157,50 @@ export type Database = {
             referencedRelation: "motos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "historico_motos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      modulos: {
+        Row: {
+          chave: string
+          created_at: string
+          descricao: string | null
+          disponivel: boolean
+          icone: string | null
+          id: string
+          nome: string
+          ordem: number
+          rota: string | null
+        }
+        Insert: {
+          chave: string
+          created_at?: string
+          descricao?: string | null
+          disponivel?: boolean
+          icone?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          rota?: string | null
+        }
+        Update: {
+          chave?: string
+          created_at?: string
+          descricao?: string | null
+          disponivel?: boolean
+          icone?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
+          rota?: string | null
+        }
+        Relationships: []
       }
       motos: {
         Row: {
@@ -122,6 +222,7 @@ export type Database = {
           marca: string
           matricula: string | null
           modelo: string
+          municipio_id: string
           notas_internas: string | null
           numero_motor: string | null
           preco_venda: number | null
@@ -158,6 +259,7 @@ export type Database = {
           marca: string
           matricula?: string | null
           modelo: string
+          municipio_id: string
           notas_internas?: string | null
           numero_motor?: string | null
           preco_venda?: number | null
@@ -194,6 +296,7 @@ export type Database = {
           marca?: string
           matricula?: string | null
           modelo?: string
+          municipio_id?: string
           notas_internas?: string | null
           numero_motor?: string | null
           preco_venda?: number | null
@@ -211,6 +314,128 @@ export type Database = {
           proprietario_provincia?: string | null
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "motos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      municipio_modulos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          modulo_id: string
+          municipio_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          modulo_id: string
+          municipio_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          modulo_id?: string
+          municipio_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "municipio_modulos_modulo_id_fkey"
+            columns: ["modulo_id"]
+            isOneToOne: false
+            referencedRelation: "modulos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "municipio_modulos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      municipios: {
+        Row: {
+          brasao_url: string | null
+          contacto: string | null
+          contacto_alt: string | null
+          cor_principal: string
+          cor_secundaria: string
+          created_at: string
+          distrito: string | null
+          email: string | null
+          endereco: string | null
+          estado: Database["public"]["Enums"]["municipio_estado"]
+          favicon_url: string | null
+          id: string
+          licenca_plano: string
+          licenca_validade: string | null
+          logo_url: string | null
+          nome: string
+          nome_plataforma: string | null
+          notas: string | null
+          provincia: string
+          slug: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          brasao_url?: string | null
+          contacto?: string | null
+          contacto_alt?: string | null
+          cor_principal?: string
+          cor_secundaria?: string
+          created_at?: string
+          distrito?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: Database["public"]["Enums"]["municipio_estado"]
+          favicon_url?: string | null
+          id?: string
+          licenca_plano?: string
+          licenca_validade?: string | null
+          logo_url?: string | null
+          nome: string
+          nome_plataforma?: string | null
+          notas?: string | null
+          provincia: string
+          slug: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          brasao_url?: string | null
+          contacto?: string | null
+          contacto_alt?: string | null
+          cor_principal?: string
+          cor_secundaria?: string
+          created_at?: string
+          distrito?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: Database["public"]["Enums"]["municipio_estado"]
+          favicon_url?: string | null
+          id?: string
+          licenca_plano?: string
+          licenca_validade?: string | null
+          logo_url?: string | null
+          nome?: string
+          nome_plataforma?: string | null
+          notas?: string | null
+          provincia?: string
+          slug?: string
+          updated_at?: string
+          website?: string | null
+        }
         Relationships: []
       }
       notificacoes: {
@@ -221,6 +446,7 @@ export type Database = {
           lida: boolean
           mensagem: string
           moto_id: string | null
+          municipio_id: string | null
           payload: Json
           tipo: string
           titulo: string
@@ -232,6 +458,7 @@ export type Database = {
           lida?: boolean
           mensagem: string
           moto_id?: string | null
+          municipio_id?: string | null
           payload?: Json
           tipo: string
           titulo: string
@@ -243,6 +470,7 @@ export type Database = {
           lida?: boolean
           mensagem?: string
           moto_id?: string | null
+          municipio_id?: string | null
           payload?: Json
           tipo?: string
           titulo?: string
@@ -253,6 +481,64 @@ export type Database = {
             columns: ["moto_id"]
             isOneToOne: false
             referencedRelation: "motos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notificacoes_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      perfis: {
+        Row: {
+          activo: boolean
+          created_at: string
+          email: string | null
+          esquadra_id: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          email?: string | null
+          esquadra_id?: string | null
+          id: string
+          municipio_id?: string | null
+          nome?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          email?: string | null
+          esquadra_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "perfis_esquadra_id_fkey"
+            columns: ["esquadra_id"]
+            isOneToOne: false
+            referencedRelation: "esquadras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "perfis_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
             referencedColumns: ["id"]
           },
         ]
@@ -267,6 +553,7 @@ export type Database = {
           id: string
           marca: string
           modelo: string
+          municipio_id: string
           notas: string | null
           origem_busca: string | null
           proprietario_contacto: string | null
@@ -283,6 +570,7 @@ export type Database = {
           id?: string
           marca: string
           modelo: string
+          municipio_id: string
           notas?: string | null
           origem_busca?: string | null
           proprietario_contacto?: string | null
@@ -299,6 +587,7 @@ export type Database = {
           id?: string
           marca?: string
           modelo?: string
+          municipio_id?: string
           notas?: string | null
           origem_busca?: string | null
           proprietario_contacto?: string | null
@@ -306,7 +595,15 @@ export type Database = {
           proprietario_provincia?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pre_registos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reportes_roubo: {
         Row: {
@@ -318,6 +615,7 @@ export type Database = {
           ip: string | null
           motivo_falha: string | null
           moto_id: string | null
+          municipio_id: string | null
           sucesso: boolean
           user_agent: string | null
         }
@@ -330,6 +628,7 @@ export type Database = {
           ip?: string | null
           motivo_falha?: string | null
           moto_id?: string | null
+          municipio_id?: string | null
           sucesso?: boolean
           user_agent?: string | null
         }
@@ -342,6 +641,7 @@ export type Database = {
           ip?: string | null
           motivo_falha?: string | null
           moto_id?: string | null
+          municipio_id?: string | null
           sucesso?: boolean
           user_agent?: string | null
         }
@@ -353,6 +653,13 @@ export type Database = {
             referencedRelation: "motos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reportes_roubo_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
         ]
       }
       transferencias: {
@@ -361,6 +668,7 @@ export type Database = {
           id: string
           motivo: string | null
           moto_id: string
+          municipio_id: string
           operador: string
           proprietario_anterior: Json
           proprietario_novo: Json
@@ -371,6 +679,7 @@ export type Database = {
           id?: string
           motivo?: string | null
           moto_id: string
+          municipio_id: string
           operador?: string
           proprietario_anterior: Json
           proprietario_novo: Json
@@ -381,6 +690,7 @@ export type Database = {
           id?: string
           motivo?: string | null
           moto_id?: string
+          municipio_id?: string
           operador?: string
           proprietario_anterior?: Json
           proprietario_novo?: Json
@@ -394,6 +704,45 @@ export type Database = {
             referencedRelation: "motos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "transferencias_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      utilizador_papeis: {
+        Row: {
+          created_at: string
+          id: string
+          municipio_id: string | null
+          papel: Database["public"]["Enums"]["app_papel"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          municipio_id?: string | null
+          papel: Database["public"]["Enums"]["app_papel"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          municipio_id?: string | null
+          papel?: Database["public"]["Enums"]["app_papel"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "utilizador_papeis_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -401,10 +750,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      e_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      meu_municipio: { Args: { _user_id: string }; Returns: string }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      tem_papel: {
+        Args: {
+          _papel: Database["public"]["Enums"]["app_papel"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_papel:
+        | "super_admin"
+        | "admin_municipal"
+        | "tecnico_municipal"
+        | "policia"
       historico_tipo:
         | "registo"
         | "transferencia"
@@ -420,6 +783,7 @@ export type Database = {
         | "recuperada"
         | "vendida"
         | "abatida"
+      municipio_estado: "activo" | "suspenso"
       pre_registo_estado: "pendente" | "aprovado" | "rejeitado"
     }
     CompositeTypes: {
@@ -548,6 +912,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_papel: [
+        "super_admin",
+        "admin_municipal",
+        "tecnico_municipal",
+        "policia",
+      ],
       historico_tipo: [
         "registo",
         "transferencia",
@@ -565,6 +935,7 @@ export const Constants = {
         "vendida",
         "abatida",
       ],
+      municipio_estado: ["activo", "suspenso"],
       pre_registo_estado: ["pendente", "aprovado", "rejeitado"],
     },
   },

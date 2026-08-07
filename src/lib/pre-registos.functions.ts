@@ -48,7 +48,10 @@ export type PreRegistoInput = z.infer<typeof inputSchema>;
 export const createPreRegisto = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => inputSchema.parse(d))
   .handler(async ({ data }): Promise<{ ok: true }> => {
-    const { error } = await sb().from("pre_registos" as never).insert(data as never);
+    const { municipioPadrao } = await import("./tenant.server");
+    const { error } = await sb()
+      .from("pre_registos" as never)
+      .insert({ ...data, municipio_id: await municipioPadrao() } as never);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -127,6 +130,7 @@ export const aprovarPreRegistoEConverter = createServerFn({ method: "POST" })
       .from("motos")
       .insert({
         chassi: p.chassi.trim().toUpperCase(),
+        municipio_id: (pr as { municipio_id: string }).municipio_id,
         marca: p.marca,
         modelo: p.modelo,
         ano: p.ano,

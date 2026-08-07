@@ -11,7 +11,7 @@ import {
   type PreRegistoEstado,
 } from "@/lib/pre-registos.functions";
 
-export const Route = createFileRoute("/gestao/pre-registos")({
+export const Route = createFileRoute("/_authenticated/gestao/pre-registos")({
   component: PreRegistosPage,
 });
 

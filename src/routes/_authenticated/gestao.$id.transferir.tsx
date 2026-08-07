@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { getMotoById, transferOwner } from "@/lib/motos.functions";
 import { PROVINCIAS_MZ } from "@/lib/moto-types";
 
-export const Route = createFileRoute("/gestao/$id/transferir")({
+export const Route = createFileRoute("/_authenticated/gestao/$id/transferir")({
   loader: async ({ params }) => {
     const moto = await getMotoById({ data: { id: params.id } });
     if (!moto) throw notFound();

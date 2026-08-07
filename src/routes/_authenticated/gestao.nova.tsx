@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { MotoForm } from "@/components/moto-form";
 import { createMoto, type MotoInput } from "@/lib/motos.functions";
 
-export const Route = createFileRoute("/gestao/nova")({
+export const Route = createFileRoute("/_authenticated/gestao/nova")({
   component: NovaMota,
 });
 

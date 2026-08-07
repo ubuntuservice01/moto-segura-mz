@@ -8,7 +8,7 @@ import { MotoCard } from "@/components/moto-card";
 import { MarcarRoubadaButton } from "@/components/marcar-roubada-button";
 import { ESTADOS_LABEL, type EstadoMoto } from "@/lib/moto-types";
 
-export const Route = createFileRoute("/gestao/")({
+export const Route = createFileRoute("/_authenticated/gestao/")({
   component: GestaoIndex,
 });
 

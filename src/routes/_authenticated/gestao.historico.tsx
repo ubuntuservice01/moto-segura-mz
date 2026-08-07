@@ -5,7 +5,7 @@ import { Plus, ArrowRightLeft, Pencil, Activity, ShieldAlert, Eye } from "lucide
 import { listHistorico } from "@/lib/motos.functions";
 import type { TipoEvento } from "@/lib/moto-types";
 
-export const Route = createFileRoute("/gestao/historico")({
+export const Route = createFileRoute("/_authenticated/gestao/historico")({
   component: HistoricoGlobal,
 });
 

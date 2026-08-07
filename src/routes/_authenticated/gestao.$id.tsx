@@ -8,7 +8,7 @@ import { MotoForm } from "@/components/moto-form";
 import { EstadoBadge } from "@/components/estado-badge";
 import { regenerarCodigoRecuperacao, marcarComoRecuperada } from "@/lib/seguranca.functions";
 
-export const Route = createFileRoute("/gestao/$id")({
+export const Route = createFileRoute("/_authenticated/gestao/$id")({
   loader: async ({ params }) => {
     const moto = await getMotoById({ data: { id: params.id } });
     if (!moto) throw notFound();
