@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+import { municipioDaMoto, resolverMunicipio } from "./tenant.server";
 import {
   type Moto,
   type MotoPublica,
@@ -30,6 +31,7 @@ const documentoSchema = z.object({
 });
 
 const motoInputSchema = z.object({
+  municipio_id: z.string().uuid().optional().nullable(),
   chassi: z.string().trim().min(6, "Chassi muito curto").max(40).toUpperCase(),
   matricula: z.string().trim().max(20).optional().nullable(),
   marca: z.string().trim().min(1).max(50),
@@ -180,6 +182,7 @@ export const createMoto = createServerFn({ method: "POST" })
       .from("motos")
       .insert({
         ...data,
+        municipio_id: await resolverMunicipio(data.municipio_id ?? null),
         codigo_recuperacao_hash: await hashCodigo(codigo),
         codigo_recuperacao_prefixo: prefixoCodigo(codigo),
       })
@@ -236,6 +239,7 @@ export const transferOwner = createServerFn({ method: "POST" })
       .single();
     if (e1 || !current) throw new Error(e1?.message || "Moto não encontrada");
     const old = current as unknown as Moto;
+    const municipioId = (current as unknown as { municipio_id: string }).municipio_id;
 
     const snapshotAnterior = {
       nome: old.proprietario_nome,
@@ -262,6 +266,7 @@ export const transferOwner = createServerFn({ method: "POST" })
 
     await supa.from("transferencias").insert({
       moto_id: data.motoId,
+      municipio_id: municipioId,
       proprietario_anterior: snapshotAnterior,
       proprietario_novo: data.novoProprietario,
       valor_transaccao: data.valor ?? null,
@@ -271,6 +276,7 @@ export const transferOwner = createServerFn({ method: "POST" })
     const valorTxt = data.valor != null ? ` por ${new Intl.NumberFormat("pt-PT").format(data.valor)} MT` : "";
     await supa.from("historico_motos").insert({
       moto_id: data.motoId,
+      municipio_id: municipioId,
       tipo_evento: "transferencia",
       descricao: `Transferida de ${snapshotAnterior.nome} para ${data.novoProprietario.nome}${valorTxt}`,
       diff: {
@@ -354,7 +360,7 @@ export const marcarComoRoubada = createServerFn({ method: "POST" })
     const supa = sb();
     const { data: current, error: e1 } = await supa
       .from("motos")
-      .select("id, estado")
+      .select("id, estado, municipio_id")
       .eq("id", data.id)
       .single();
     if (e1 || !current) throw new Error(e1?.message ?? "Mota não encontrada");
@@ -369,6 +375,7 @@ export const marcarComoRoubada = createServerFn({ method: "POST" })
 
     const { error: e3 } = await supa.from("historico_motos").insert({
       moto_id: data.id,
+      municipio_id: (current as { municipio_id: string }).municipio_id,
       tipo_evento: "mudanca_estado",
       descricao: "Mota declarada ROUBADA pelo operador",
       diff: { estado: { antes: anterior, depois: "roubada" } },

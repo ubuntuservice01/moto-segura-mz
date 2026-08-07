@@ -76,9 +76,15 @@ export const reportarRoubo = createServerFn({ method: "POST" })
       const userAgent = getRequestHeader("user-agent") ?? null;
       const ident = data.identificador.toUpperCase();
 
-      async function registar(motoId: string | null, sucesso: boolean, falha?: string) {
+      async function registar(
+        motoId: string | null,
+        sucesso: boolean,
+        falha?: string,
+        municipioId?: string | null,
+      ) {
         await supa.from("reportes_roubo").insert({
           moto_id: motoId,
+          municipio_id: municipioId ?? null,
           identificador: ident,
           sucesso,
           motivo_falha: falha ?? null,
@@ -115,6 +121,7 @@ export const reportarRoubo = createServerFn({ method: "POST" })
             marca: string;
             modelo: string;
             estado: string;
+            municipio_id: string;
             codigo_recuperacao_hash: string | null;
             proprietario_data_nascimento: string | null;
             data_compra: string | null;
@@ -173,6 +180,7 @@ export const reportarRoubo = createServerFn({ method: "POST" })
 
       await supa.from("historico_motos").insert({
         moto_id: moto.id,
+        municipio_id: moto.municipio_id,
         tipo_evento: "reporte_roubo",
         descricao: "Roubo reportado pelo proprietário via portal público",
         operador: "Proprietário (código de recuperação)",
@@ -190,6 +198,7 @@ export const reportarRoubo = createServerFn({ method: "POST" })
 
       await supa.from("notificacoes").insert({
         tipo: "reporte_roubo",
+        municipio_id: moto.municipio_id,
         titulo: `Roubo reportado — ${moto.marca} ${moto.modelo}`,
         mensagem: `Chassi ${moto.chassi} foi reportado como ROUBADO pelo proprietário.`,
         moto_id: moto.id,
@@ -265,14 +274,15 @@ export const registarAvistamento = createServerFn({ method: "POST" })
 
     const { data: moto } = await supa
       .from("motos")
-      .select("id, chassi, marca, modelo, estado")
+      .select("id, chassi, marca, modelo, estado, municipio_id")
       .eq("id", data.motoId)
       .maybeSingle();
     if (!moto) throw new Error("Motorizada não encontrada");
-    const m = moto as { id: string; chassi: string; marca: string; modelo: string };
+    const m = moto as { id: string; chassi: string; marca: string; modelo: string; municipio_id: string };
 
     const { error } = await supa.from("avistamentos").insert({
       moto_id: data.motoId,
+      municipio_id: m.municipio_id,
       foto_path: data.foto_path ?? null,
       gps_lat: data.gps_lat ?? null,
       gps_lng: data.gps_lng ?? null,
@@ -290,6 +300,7 @@ export const registarAvistamento = createServerFn({ method: "POST" })
 
     await supa.from("historico_motos").insert({
       moto_id: data.motoId,
+      municipio_id: m.municipio_id,
       tipo_evento: "avistamento",
       descricao: `Avistamento comunicado por cidadão (${local})`,
       operador: "Cidadão",
@@ -299,6 +310,7 @@ export const registarAvistamento = createServerFn({ method: "POST" })
 
     await supa.from("notificacoes").insert({
       tipo: "avistamento",
+      municipio_id: m.municipio_id,
       titulo: `Avistamento — ${m.marca} ${m.modelo}`,
       mensagem: `Um cidadão comunicou ter visto a mota ${m.chassi} em ${local}.`,
       moto_id: data.motoId,
@@ -391,8 +403,13 @@ export const marcarComoRecuperada = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const supa = sbAdmin();
-    const { data: row } = await supa.from("motos").select("id, estado").eq("id", data.id).single();
+    const { data: row } = await supa
+      .from("motos")
+      .select("id, estado, municipio_id")
+      .eq("id", data.id)
+      .single();
     const anterior = (row as { estado: string } | null)?.estado ?? "roubada";
+    const municipioId = (row as { municipio_id: string }).municipio_id;
     const { error } = await supa
       .from("motos")
       .update({ estado: "recuperada", data_reporte_roubo: null })
@@ -400,6 +417,7 @@ export const marcarComoRecuperada = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await supa.from("historico_motos").insert({
       moto_id: data.id,
+      municipio_id: municipioId,
       tipo_evento: "mudanca_estado",
       descricao: "Motorizada declarada RECUPERADA",
       motivo: data.motivo,
