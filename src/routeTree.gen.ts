@@ -9,31 +9,41 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
-import { Route as ComprarRouteImport } from './routes/comprar'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ComprarRouteImport } from './routes/comprar'
+import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
+import { Route as AuthenticatedGestaoRouteImport } from './routes/_authenticated/gestao'
+import { Route as AuthenticatedPesquisaNacionalRouteImport } from './routes/_authenticated/pesquisa-nacional'
+import { Route as AuthenticatedPoliciaRouteImport } from './routes/_authenticated/policia'
+import { Route as AuthenticatedUbuntuRouteImport } from './routes/_authenticated/ubuntu'
+import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
 import { Route as VerificarIndexRouteImport } from './routes/verificar.index'
 import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
-import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
-import { Route as AuthenticatedGestaoRouteImport } from './routes/_authenticated/gestao'
 import { Route as AuthenticatedGestaoIndexRouteImport } from './routes/_authenticated/gestao.index'
-import { Route as AuthenticatedGestaoSegurancaRouteImport } from './routes/_authenticated/gestao.seguranca'
-import { Route as AuthenticatedGestaoPreRegistosRouteImport } from './routes/_authenticated/gestao.pre-registos'
-import { Route as AuthenticatedGestaoNovaRouteImport } from './routes/_authenticated/gestao.nova'
-import { Route as AuthenticatedGestaoHistoricoRouteImport } from './routes/_authenticated/gestao.historico'
 import { Route as AuthenticatedGestaoIdRouteImport } from './routes/_authenticated/gestao.$id'
+import { Route as AuthenticatedGestaoEsquadrasRouteImport } from './routes/_authenticated/gestao.esquadras'
+import { Route as AuthenticatedGestaoHistoricoRouteImport } from './routes/_authenticated/gestao.historico'
+import { Route as AuthenticatedGestaoNovaRouteImport } from './routes/_authenticated/gestao.nova'
+import { Route as AuthenticatedGestaoPreRegistosRouteImport } from './routes/_authenticated/gestao.pre-registos'
+import { Route as AuthenticatedGestaoSegurancaRouteImport } from './routes/_authenticated/gestao.seguranca'
+import { Route as AuthenticatedPoliciaIndexRouteImport } from './routes/_authenticated/policia.index'
+import { Route as AuthenticatedPoliciaOcorrenciasRouteImport } from './routes/_authenticated/policia.ocorrencias'
+import { Route as AuthenticatedUbuntuIndexRouteImport } from './routes/_authenticated/ubuntu.index'
+import { Route as AuthenticatedUbuntuBackupsRouteImport } from './routes/_authenticated/ubuntu.backups'
+import { Route as AuthenticatedUbuntuModulosRouteImport } from './routes/_authenticated/ubuntu.modulos'
+import { Route as AuthenticatedUbuntuMunicipiosRouteImport } from './routes/_authenticated/ubuntu.municipios'
+import { Route as AuthenticatedUbuntuUtilizadoresRouteImport } from './routes/_authenticated/ubuntu.utilizadores'
 import { Route as AuthenticatedGestaoIdTransferirRouteImport } from './routes/_authenticated/gestao.$id.transferir'
 
-const ReportarRouboRoute = ReportarRouboRouteImport.update({
-  id: '/reportar-roubo',
-  path: '/reportar-roubo',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComprarRoute = ComprarRouteImport.update({
-  id: '/comprar',
-  path: '/comprar',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -41,14 +51,41 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const ComprarRoute = ComprarRouteImport.update({
+  id: '/comprar',
+  path: '/comprar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ReportarRouboRoute = ReportarRouboRouteImport.update({
+  id: '/reportar-roubo',
+  path: '/reportar-roubo',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedGestaoRoute = AuthenticatedGestaoRouteImport.update({
+  id: '/gestao',
+  path: '/gestao',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPesquisaNacionalRoute =
+  AuthenticatedPesquisaNacionalRouteImport.update({
+    id: '/pesquisa-nacional',
+    path: '/pesquisa-nacional',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPoliciaRoute = AuthenticatedPoliciaRouteImport.update({
+  id: '/policia',
+  path: '/policia',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUbuntuRoute = AuthenticatedUbuntuRouteImport.update({
+  id: '/ubuntu',
+  path: '/ubuntu',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ComprarIdRoute = ComprarIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ComprarRoute,
 } as any)
 const VerificarIndexRoute = VerificarIndexRouteImport.update({
   id: '/verificar/',
@@ -60,20 +97,38 @@ const VerificarChassiRoute = VerificarChassiRouteImport.update({
   path: '/verificar/$chassi',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComprarIdRoute = ComprarIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ComprarRoute,
-} as any)
-const AuthenticatedGestaoRoute = AuthenticatedGestaoRouteImport.update({
-  id: '/gestao',
-  path: '/gestao',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedGestaoIndexRoute =
   AuthenticatedGestaoIndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoIdRoute = AuthenticatedGestaoIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedGestaoRoute,
+} as any)
+const AuthenticatedGestaoEsquadrasRoute =
+  AuthenticatedGestaoEsquadrasRouteImport.update({
+    id: '/esquadras',
+    path: '/esquadras',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoHistoricoRoute =
+  AuthenticatedGestaoHistoricoRouteImport.update({
+    id: '/historico',
+    path: '/historico',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoNovaRoute = AuthenticatedGestaoNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AuthenticatedGestaoRoute,
+} as any)
+const AuthenticatedGestaoPreRegistosRoute =
+  AuthenticatedGestaoPreRegistosRouteImport.update({
+    id: '/pre-registos',
+    path: '/pre-registos',
     getParentRoute: () => AuthenticatedGestaoRoute,
   } as any)
 const AuthenticatedGestaoSegurancaRoute =
@@ -82,28 +137,48 @@ const AuthenticatedGestaoSegurancaRoute =
     path: '/seguranca',
     getParentRoute: () => AuthenticatedGestaoRoute,
   } as any)
-const AuthenticatedGestaoPreRegistosRoute =
-  AuthenticatedGestaoPreRegistosRouteImport.update({
-    id: '/pre-registos',
-    path: '/pre-registos',
-    getParentRoute: () => AuthenticatedGestaoRoute,
+const AuthenticatedPoliciaIndexRoute =
+  AuthenticatedPoliciaIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPoliciaRoute,
   } as any)
-const AuthenticatedGestaoNovaRoute = AuthenticatedGestaoNovaRouteImport.update({
-  id: '/nova',
-  path: '/nova',
-  getParentRoute: () => AuthenticatedGestaoRoute,
-} as any)
-const AuthenticatedGestaoHistoricoRoute =
-  AuthenticatedGestaoHistoricoRouteImport.update({
-    id: '/historico',
-    path: '/historico',
-    getParentRoute: () => AuthenticatedGestaoRoute,
+const AuthenticatedPoliciaOcorrenciasRoute =
+  AuthenticatedPoliciaOcorrenciasRouteImport.update({
+    id: '/ocorrencias',
+    path: '/ocorrencias',
+    getParentRoute: () => AuthenticatedPoliciaRoute,
   } as any)
-const AuthenticatedGestaoIdRoute = AuthenticatedGestaoIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AuthenticatedGestaoRoute,
-} as any)
+const AuthenticatedUbuntuIndexRoute =
+  AuthenticatedUbuntuIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedUbuntuRoute,
+  } as any)
+const AuthenticatedUbuntuBackupsRoute =
+  AuthenticatedUbuntuBackupsRouteImport.update({
+    id: '/backups',
+    path: '/backups',
+    getParentRoute: () => AuthenticatedUbuntuRoute,
+  } as any)
+const AuthenticatedUbuntuModulosRoute =
+  AuthenticatedUbuntuModulosRouteImport.update({
+    id: '/modulos',
+    path: '/modulos',
+    getParentRoute: () => AuthenticatedUbuntuRoute,
+  } as any)
+const AuthenticatedUbuntuMunicipiosRoute =
+  AuthenticatedUbuntuMunicipiosRouteImport.update({
+    id: '/municipios',
+    path: '/municipios',
+    getParentRoute: () => AuthenticatedUbuntuRoute,
+  } as any)
+const AuthenticatedUbuntuUtilizadoresRoute =
+  AuthenticatedUbuntuUtilizadoresRouteImport.update({
+    id: '/utilizadores',
+    path: '/utilizadores',
+    getParentRoute: () => AuthenticatedUbuntuRoute,
+  } as any)
 const AuthenticatedGestaoIdTransferirRoute =
   AuthenticatedGestaoIdTransferirRouteImport.update({
     id: '/transferir',
@@ -117,15 +192,26 @@ export interface FileRoutesByFullPath {
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/gestao': typeof AuthenticatedGestaoRouteWithChildren
+  '/pesquisa-nacional': typeof AuthenticatedPesquisaNacionalRoute
+  '/policia': typeof AuthenticatedPoliciaRouteWithChildren
+  '/ubuntu': typeof AuthenticatedUbuntuRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/verificar/': typeof VerificarIndexRoute
   '/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/gestao/esquadras': typeof AuthenticatedGestaoEsquadrasRoute
   '/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
   '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
+  '/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
+  '/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
+  '/ubuntu/municipios': typeof AuthenticatedUbuntuMunicipiosRoute
+  '/ubuntu/utilizadores': typeof AuthenticatedUbuntuUtilizadoresRoute
   '/gestao/': typeof AuthenticatedGestaoIndexRoute
+  '/policia/': typeof AuthenticatedPoliciaIndexRoute
+  '/ubuntu/': typeof AuthenticatedUbuntuIndexRoute
   '/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRoutesByTo {
@@ -133,15 +219,24 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
+  '/pesquisa-nacional': typeof AuthenticatedPesquisaNacionalRoute
   '/comprar/$id': typeof ComprarIdRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/verificar': typeof VerificarIndexRoute
   '/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/gestao/esquadras': typeof AuthenticatedGestaoEsquadrasRoute
   '/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
   '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
+  '/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
+  '/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
+  '/ubuntu/municipios': typeof AuthenticatedUbuntuMunicipiosRoute
+  '/ubuntu/utilizadores': typeof AuthenticatedUbuntuUtilizadoresRoute
   '/gestao': typeof AuthenticatedGestaoIndexRoute
+  '/policia': typeof AuthenticatedPoliciaIndexRoute
+  '/ubuntu': typeof AuthenticatedUbuntuIndexRoute
   '/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRoutesById {
@@ -152,15 +247,26 @@ export interface FileRoutesById {
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/_authenticated/gestao': typeof AuthenticatedGestaoRouteWithChildren
+  '/_authenticated/pesquisa-nacional': typeof AuthenticatedPesquisaNacionalRoute
+  '/_authenticated/policia': typeof AuthenticatedPoliciaRouteWithChildren
+  '/_authenticated/ubuntu': typeof AuthenticatedUbuntuRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
   '/verificar/': typeof VerificarIndexRoute
   '/_authenticated/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/_authenticated/gestao/esquadras': typeof AuthenticatedGestaoEsquadrasRoute
   '/_authenticated/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
   '/_authenticated/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/_authenticated/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/_authenticated/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/_authenticated/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
+  '/_authenticated/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
+  '/_authenticated/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
+  '/_authenticated/ubuntu/municipios': typeof AuthenticatedUbuntuMunicipiosRoute
+  '/_authenticated/ubuntu/utilizadores': typeof AuthenticatedUbuntuUtilizadoresRoute
   '/_authenticated/gestao/': typeof AuthenticatedGestaoIndexRoute
+  '/_authenticated/policia/': typeof AuthenticatedPoliciaIndexRoute
+  '/_authenticated/ubuntu/': typeof AuthenticatedUbuntuIndexRoute
   '/_authenticated/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRouteTypes {
@@ -171,15 +277,26 @@ export interface FileRouteTypes {
     | '/comprar'
     | '/reportar-roubo'
     | '/gestao'
+    | '/pesquisa-nacional'
+    | '/policia'
+    | '/ubuntu'
     | '/comprar/$id'
     | '/verificar/$chassi'
     | '/verificar/'
     | '/gestao/$id'
+    | '/gestao/esquadras'
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
+    | '/policia/ocorrencias'
+    | '/ubuntu/backups'
+    | '/ubuntu/modulos'
+    | '/ubuntu/municipios'
+    | '/ubuntu/utilizadores'
     | '/gestao/'
+    | '/policia/'
+    | '/ubuntu/'
     | '/gestao/$id/transferir'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -187,15 +304,24 @@ export interface FileRouteTypes {
     | '/auth'
     | '/comprar'
     | '/reportar-roubo'
+    | '/pesquisa-nacional'
     | '/comprar/$id'
     | '/verificar/$chassi'
     | '/verificar'
     | '/gestao/$id'
+    | '/gestao/esquadras'
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
+    | '/policia/ocorrencias'
+    | '/ubuntu/backups'
+    | '/ubuntu/modulos'
+    | '/ubuntu/municipios'
+    | '/ubuntu/utilizadores'
     | '/gestao'
+    | '/policia'
+    | '/ubuntu'
     | '/gestao/$id/transferir'
   id:
     | '__root__'
@@ -205,15 +331,26 @@ export interface FileRouteTypes {
     | '/comprar'
     | '/reportar-roubo'
     | '/_authenticated/gestao'
+    | '/_authenticated/pesquisa-nacional'
+    | '/_authenticated/policia'
+    | '/_authenticated/ubuntu'
     | '/comprar/$id'
     | '/verificar/$chassi'
     | '/verificar/'
     | '/_authenticated/gestao/$id'
+    | '/_authenticated/gestao/esquadras'
     | '/_authenticated/gestao/historico'
     | '/_authenticated/gestao/nova'
     | '/_authenticated/gestao/pre-registos'
     | '/_authenticated/gestao/seguranca'
+    | '/_authenticated/policia/ocorrencias'
+    | '/_authenticated/ubuntu/backups'
+    | '/_authenticated/ubuntu/modulos'
+    | '/_authenticated/ubuntu/municipios'
+    | '/_authenticated/ubuntu/utilizadores'
     | '/_authenticated/gestao/'
+    | '/_authenticated/policia/'
+    | '/_authenticated/ubuntu/'
     | '/_authenticated/gestao/$id/transferir'
   fileRoutesById: FileRoutesById
 }
@@ -229,25 +366,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reportar-roubo': {
-      id: '/reportar-roubo'
-      path: '/reportar-roubo'
-      fullPath: '/reportar-roubo'
-      preLoaderRoute: typeof ReportarRouboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/comprar': {
-      id: '/comprar'
-      path: '/comprar'
-      fullPath: '/comprar'
-      preLoaderRoute: typeof ComprarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -257,12 +380,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/comprar': {
+      id: '/comprar'
+      path: '/comprar'
+      fullPath: '/comprar'
+      preLoaderRoute: typeof ComprarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reportar-roubo': {
+      id: '/reportar-roubo'
+      path: '/reportar-roubo'
+      fullPath: '/reportar-roubo'
+      preLoaderRoute: typeof ReportarRouboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/gestao': {
+      id: '/_authenticated/gestao'
+      path: '/gestao'
+      fullPath: '/gestao'
+      preLoaderRoute: typeof AuthenticatedGestaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pesquisa-nacional': {
+      id: '/_authenticated/pesquisa-nacional'
+      path: '/pesquisa-nacional'
+      fullPath: '/pesquisa-nacional'
+      preLoaderRoute: typeof AuthenticatedPesquisaNacionalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/policia': {
+      id: '/_authenticated/policia'
+      path: '/policia'
+      fullPath: '/policia'
+      preLoaderRoute: typeof AuthenticatedPoliciaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ubuntu': {
+      id: '/_authenticated/ubuntu'
+      path: '/ubuntu'
+      fullPath: '/ubuntu'
+      preLoaderRoute: typeof AuthenticatedUbuntuRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/comprar/$id': {
+      id: '/comprar/$id'
+      path: '/$id'
+      fullPath: '/comprar/$id'
+      preLoaderRoute: typeof ComprarIdRouteImport
+      parentRoute: typeof ComprarRoute
     }
     '/verificar/': {
       id: '/verificar/'
@@ -278,20 +450,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerificarChassiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/comprar/$id': {
-      id: '/comprar/$id'
-      path: '/$id'
-      fullPath: '/comprar/$id'
-      preLoaderRoute: typeof ComprarIdRouteImport
-      parentRoute: typeof ComprarRoute
-    }
-    '/_authenticated/gestao': {
-      id: '/_authenticated/gestao'
-      path: '/gestao'
-      fullPath: '/gestao'
-      preLoaderRoute: typeof AuthenticatedGestaoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/gestao/': {
       id: '/_authenticated/gestao/'
       path: '/'
@@ -299,25 +457,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGestaoIndexRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
     }
-    '/_authenticated/gestao/seguranca': {
-      id: '/_authenticated/gestao/seguranca'
-      path: '/seguranca'
-      fullPath: '/gestao/seguranca'
-      preLoaderRoute: typeof AuthenticatedGestaoSegurancaRouteImport
+    '/_authenticated/gestao/$id': {
+      id: '/_authenticated/gestao/$id'
+      path: '/$id'
+      fullPath: '/gestao/$id'
+      preLoaderRoute: typeof AuthenticatedGestaoIdRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
     }
-    '/_authenticated/gestao/pre-registos': {
-      id: '/_authenticated/gestao/pre-registos'
-      path: '/pre-registos'
-      fullPath: '/gestao/pre-registos'
-      preLoaderRoute: typeof AuthenticatedGestaoPreRegistosRouteImport
-      parentRoute: typeof AuthenticatedGestaoRoute
-    }
-    '/_authenticated/gestao/nova': {
-      id: '/_authenticated/gestao/nova'
-      path: '/nova'
-      fullPath: '/gestao/nova'
-      preLoaderRoute: typeof AuthenticatedGestaoNovaRouteImport
+    '/_authenticated/gestao/esquadras': {
+      id: '/_authenticated/gestao/esquadras'
+      path: '/esquadras'
+      fullPath: '/gestao/esquadras'
+      preLoaderRoute: typeof AuthenticatedGestaoEsquadrasRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
     }
     '/_authenticated/gestao/historico': {
@@ -327,12 +478,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGestaoHistoricoRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
     }
-    '/_authenticated/gestao/$id': {
-      id: '/_authenticated/gestao/$id'
-      path: '/$id'
-      fullPath: '/gestao/$id'
-      preLoaderRoute: typeof AuthenticatedGestaoIdRouteImport
+    '/_authenticated/gestao/nova': {
+      id: '/_authenticated/gestao/nova'
+      path: '/nova'
+      fullPath: '/gestao/nova'
+      preLoaderRoute: typeof AuthenticatedGestaoNovaRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/pre-registos': {
+      id: '/_authenticated/gestao/pre-registos'
+      path: '/pre-registos'
+      fullPath: '/gestao/pre-registos'
+      preLoaderRoute: typeof AuthenticatedGestaoPreRegistosRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/seguranca': {
+      id: '/_authenticated/gestao/seguranca'
+      path: '/seguranca'
+      fullPath: '/gestao/seguranca'
+      preLoaderRoute: typeof AuthenticatedGestaoSegurancaRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/policia/': {
+      id: '/_authenticated/policia/'
+      path: '/'
+      fullPath: '/policia/'
+      preLoaderRoute: typeof AuthenticatedPoliciaIndexRouteImport
+      parentRoute: typeof AuthenticatedPoliciaRoute
+    }
+    '/_authenticated/policia/ocorrencias': {
+      id: '/_authenticated/policia/ocorrencias'
+      path: '/ocorrencias'
+      fullPath: '/policia/ocorrencias'
+      preLoaderRoute: typeof AuthenticatedPoliciaOcorrenciasRouteImport
+      parentRoute: typeof AuthenticatedPoliciaRoute
+    }
+    '/_authenticated/ubuntu/': {
+      id: '/_authenticated/ubuntu/'
+      path: '/'
+      fullPath: '/ubuntu/'
+      preLoaderRoute: typeof AuthenticatedUbuntuIndexRouteImport
+      parentRoute: typeof AuthenticatedUbuntuRoute
+    }
+    '/_authenticated/ubuntu/backups': {
+      id: '/_authenticated/ubuntu/backups'
+      path: '/backups'
+      fullPath: '/ubuntu/backups'
+      preLoaderRoute: typeof AuthenticatedUbuntuBackupsRouteImport
+      parentRoute: typeof AuthenticatedUbuntuRoute
+    }
+    '/_authenticated/ubuntu/modulos': {
+      id: '/_authenticated/ubuntu/modulos'
+      path: '/modulos'
+      fullPath: '/ubuntu/modulos'
+      preLoaderRoute: typeof AuthenticatedUbuntuModulosRouteImport
+      parentRoute: typeof AuthenticatedUbuntuRoute
+    }
+    '/_authenticated/ubuntu/municipios': {
+      id: '/_authenticated/ubuntu/municipios'
+      path: '/municipios'
+      fullPath: '/ubuntu/municipios'
+      preLoaderRoute: typeof AuthenticatedUbuntuMunicipiosRouteImport
+      parentRoute: typeof AuthenticatedUbuntuRoute
+    }
+    '/_authenticated/ubuntu/utilizadores': {
+      id: '/_authenticated/ubuntu/utilizadores'
+      path: '/utilizadores'
+      fullPath: '/ubuntu/utilizadores'
+      preLoaderRoute: typeof AuthenticatedUbuntuUtilizadoresRouteImport
+      parentRoute: typeof AuthenticatedUbuntuRoute
     }
     '/_authenticated/gestao/$id/transferir': {
       id: '/_authenticated/gestao/$id/transferir'
@@ -359,6 +573,7 @@ const AuthenticatedGestaoIdRouteWithChildren =
 
 interface AuthenticatedGestaoRouteChildren {
   AuthenticatedGestaoIdRoute: typeof AuthenticatedGestaoIdRouteWithChildren
+  AuthenticatedGestaoEsquadrasRoute: typeof AuthenticatedGestaoEsquadrasRoute
   AuthenticatedGestaoHistoricoRoute: typeof AuthenticatedGestaoHistoricoRoute
   AuthenticatedGestaoNovaRoute: typeof AuthenticatedGestaoNovaRoute
   AuthenticatedGestaoPreRegistosRoute: typeof AuthenticatedGestaoPreRegistosRoute
@@ -368,6 +583,7 @@ interface AuthenticatedGestaoRouteChildren {
 
 const AuthenticatedGestaoRouteChildren: AuthenticatedGestaoRouteChildren = {
   AuthenticatedGestaoIdRoute: AuthenticatedGestaoIdRouteWithChildren,
+  AuthenticatedGestaoEsquadrasRoute: AuthenticatedGestaoEsquadrasRoute,
   AuthenticatedGestaoHistoricoRoute: AuthenticatedGestaoHistoricoRoute,
   AuthenticatedGestaoNovaRoute: AuthenticatedGestaoNovaRoute,
   AuthenticatedGestaoPreRegistosRoute: AuthenticatedGestaoPreRegistosRoute,
@@ -378,12 +594,50 @@ const AuthenticatedGestaoRouteChildren: AuthenticatedGestaoRouteChildren = {
 const AuthenticatedGestaoRouteWithChildren =
   AuthenticatedGestaoRoute._addFileChildren(AuthenticatedGestaoRouteChildren)
 
+interface AuthenticatedPoliciaRouteChildren {
+  AuthenticatedPoliciaOcorrenciasRoute: typeof AuthenticatedPoliciaOcorrenciasRoute
+  AuthenticatedPoliciaIndexRoute: typeof AuthenticatedPoliciaIndexRoute
+}
+
+const AuthenticatedPoliciaRouteChildren: AuthenticatedPoliciaRouteChildren = {
+  AuthenticatedPoliciaOcorrenciasRoute: AuthenticatedPoliciaOcorrenciasRoute,
+  AuthenticatedPoliciaIndexRoute: AuthenticatedPoliciaIndexRoute,
+}
+
+const AuthenticatedPoliciaRouteWithChildren =
+  AuthenticatedPoliciaRoute._addFileChildren(AuthenticatedPoliciaRouteChildren)
+
+interface AuthenticatedUbuntuRouteChildren {
+  AuthenticatedUbuntuBackupsRoute: typeof AuthenticatedUbuntuBackupsRoute
+  AuthenticatedUbuntuModulosRoute: typeof AuthenticatedUbuntuModulosRoute
+  AuthenticatedUbuntuMunicipiosRoute: typeof AuthenticatedUbuntuMunicipiosRoute
+  AuthenticatedUbuntuUtilizadoresRoute: typeof AuthenticatedUbuntuUtilizadoresRoute
+  AuthenticatedUbuntuIndexRoute: typeof AuthenticatedUbuntuIndexRoute
+}
+
+const AuthenticatedUbuntuRouteChildren: AuthenticatedUbuntuRouteChildren = {
+  AuthenticatedUbuntuBackupsRoute: AuthenticatedUbuntuBackupsRoute,
+  AuthenticatedUbuntuModulosRoute: AuthenticatedUbuntuModulosRoute,
+  AuthenticatedUbuntuMunicipiosRoute: AuthenticatedUbuntuMunicipiosRoute,
+  AuthenticatedUbuntuUtilizadoresRoute: AuthenticatedUbuntuUtilizadoresRoute,
+  AuthenticatedUbuntuIndexRoute: AuthenticatedUbuntuIndexRoute,
+}
+
+const AuthenticatedUbuntuRouteWithChildren =
+  AuthenticatedUbuntuRoute._addFileChildren(AuthenticatedUbuntuRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedGestaoRoute: typeof AuthenticatedGestaoRouteWithChildren
+  AuthenticatedPesquisaNacionalRoute: typeof AuthenticatedPesquisaNacionalRoute
+  AuthenticatedPoliciaRoute: typeof AuthenticatedPoliciaRouteWithChildren
+  AuthenticatedUbuntuRoute: typeof AuthenticatedUbuntuRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGestaoRoute: AuthenticatedGestaoRouteWithChildren,
+  AuthenticatedPesquisaNacionalRoute: AuthenticatedPesquisaNacionalRoute,
+  AuthenticatedPoliciaRoute: AuthenticatedPoliciaRouteWithChildren,
+  AuthenticatedUbuntuRoute: AuthenticatedUbuntuRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -412,3 +666,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
