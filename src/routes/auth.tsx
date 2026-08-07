@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Loader2, LogIn, ShieldCheck, Sparkles } from "lucide-react";
+import { Loader2, LogIn, ShieldCheck, Sparkles, User, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { criarPrimeiroSuperAdmin, estadoInstalacao } from "@/lib/plataforma.functions";
@@ -61,62 +61,71 @@ function AuthPage() {
   }
 
   return (
-    <div className="container mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
-      <div className="rounded-2xl border bg-card p-7 shadow-sm">
-        <div className="flex items-center gap-2 text-primary">
-          <ShieldCheck className="h-5 w-5" />
-          <span className="text-xs font-bold uppercase tracking-wider">Plataforma MotoGest</span>
-        </div>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight">Entrar na plataforma</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Acesso reservado a municípios, técnicos, polícia e Ubuntu Service.
-        </p>
+    <div className="flex min-h-[calc(100vh-140px)] w-full flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-200 to-gray-400 p-4">
+      <div className="relative flex h-[420px] w-[420px] flex-col items-center justify-center rounded-full border-[12px] border-blue-600 bg-white p-10 shadow-2xl">
+        <h1 className="mb-6 text-3xl font-medium tracking-wide text-blue-600">LOGIN</h1>
 
         <form
-          className="mt-6 space-y-4"
+          className="w-full max-w-[240px] space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
             entrar.mutate();
           }}
         >
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold">Email</span>
+          {/* Username Input */}
+          <div className="flex w-full items-center overflow-hidden rounded bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-gray-200">
+            <div className="flex h-10 w-10 items-center justify-center bg-blue-600 text-white">
+              <User className="h-5 w-5" />
+            </div>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-              placeholder="nome@municipio.gov.mz"
+              className="h-10 flex-1 px-3 text-sm text-gray-500 outline-none placeholder:text-gray-400"
+              placeholder="Username"
             />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold">Palavra-passe</span>
+          </div>
+
+          {/* Password Input */}
+          <div className="flex w-full items-center overflow-hidden rounded bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-gray-200">
+            <div className="flex h-10 w-10 items-center justify-center bg-blue-600 text-white">
+              <Lock className="h-5 w-5" />
+            </div>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="h-10 flex-1 px-3 text-sm text-gray-500 outline-none placeholder:text-gray-400"
+              placeholder="Password"
             />
-          </label>
-          <button
-            type="submit"
-            disabled={entrar.isPending}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
-          >
-            {entrar.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <LogIn className="h-4 w-4" />
-            )}
-            Entrar
-          </button>
+          </div>
+
+          {/* Remember me and Forgot password */}
+          <div className="flex items-center justify-between px-1 text-[10px] text-gray-600 font-medium">
+            <label className="flex cursor-pointer items-center gap-1.5">
+              <input type="checkbox" className="h-3 w-3 accent-blue-600 cursor-pointer" />
+              Remember me
+            </label>
+            <button type="button" className="flex items-center gap-1.5 hover:text-blue-600 hover:underline">
+              <div className="h-2 w-2 rounded-sm bg-blue-500" />
+              Forgot password?
+            </button>
+          </div>
+
+          {/* Login Button */}
+          <div className="mt-6 flex justify-center pt-2">
+            <button
+              type="submit"
+              disabled={entrar.isPending}
+              className="flex w-32 items-center justify-center rounded-full bg-blue-600 py-2.5 text-sm font-semibold tracking-wider text-white shadow-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            >
+              {entrar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "LOGIN"}
+            </button>
+          </div>
         </form>
       </div>
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        Esqueceu a palavra-passe? Contacte o Administrador do seu Município.
-      </p>
     </div>
   );
 }
