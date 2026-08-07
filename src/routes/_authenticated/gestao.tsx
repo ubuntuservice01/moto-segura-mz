@@ -8,10 +8,11 @@ import {
   ShieldAlert,
   Shield,
   Globe,
-  Building2,
+  ArrowRightLeft,
 } from "lucide-react";
 import { countPreRegistosPendentes } from "@/lib/pre-registos.functions";
 import { countNotificacoesNaoLidas } from "@/lib/seguranca.functions";
+import { listTransferencias } from "@/lib/transferencias.functions";
 import { useSessao } from "@/hooks/use-sessao";
 
 export const Route = createFileRoute("/_authenticated/gestao")({
@@ -40,9 +41,17 @@ function GestaoLayout() {
     refetchInterval: 60_000,
   });
 
+  const { data: transferenciasPendentes } = useQuery({
+    queryKey: ["transferencias-pendentes-count"],
+    queryFn: () => listTransferencias({ data: { aba: "pendentes" } }),
+    refetchInterval: 60_000,
+  });
+
   const nomePlataforma =
     sessao?.municipio?.nome_plataforma ||
     (sessao?.municipio?.nome ? `MotoGest ${sessao.municipio.nome}` : "MotoGest");
+
+  const totalPendentesTransf = transferenciasPendentes?.length ?? 0;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -80,6 +89,14 @@ function GestaoLayout() {
           </TabLink>
           <TabLink to="/gestao/nova" icon={<Plus className="h-4 w-4" />} active={path === "/gestao/nova"}>
             Nova
+          </TabLink>
+          <TabLink
+            to="/gestao/transferencias"
+            icon={<ArrowRightLeft className="h-4 w-4" />}
+            active={path.startsWith("/gestao/transferencias")}
+            badge={totalPendentesTransf}
+          >
+            Transferências
           </TabLink>
           <TabLink
             to="/gestao/pre-registos"

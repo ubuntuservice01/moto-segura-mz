@@ -28,6 +28,7 @@ import { Route as AuthenticatedGestaoHistoricoRouteImport } from './routes/_auth
 import { Route as AuthenticatedGestaoNovaRouteImport } from './routes/_authenticated/gestao.nova'
 import { Route as AuthenticatedGestaoPreRegistosRouteImport } from './routes/_authenticated/gestao.pre-registos'
 import { Route as AuthenticatedGestaoSegurancaRouteImport } from './routes/_authenticated/gestao.seguranca'
+import { Route as AuthenticatedGestaoTransferenciasRouteImport } from './routes/_authenticated/gestao.transferencias'
 import { Route as AuthenticatedPoliciaIndexRouteImport } from './routes/_authenticated/policia.index'
 import { Route as AuthenticatedPoliciaOcorrenciasRouteImport } from './routes/_authenticated/policia.ocorrencias'
 import { Route as AuthenticatedUbuntuIndexRouteImport } from './routes/_authenticated/ubuntu.index'
@@ -137,6 +138,12 @@ const AuthenticatedGestaoSegurancaRoute =
     path: '/seguranca',
     getParentRoute: () => AuthenticatedGestaoRoute,
   } as any)
+const AuthenticatedGestaoTransferenciasRoute =
+  AuthenticatedGestaoTransferenciasRouteImport.update({
+    id: '/transferencias',
+    path: '/transferencias',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
 const AuthenticatedPoliciaIndexRoute =
   AuthenticatedPoliciaIndexRouteImport.update({
     id: '/',
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/gestao/transferencias': typeof AuthenticatedGestaoTransferenciasRoute
   '/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
   '/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
   '/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
@@ -229,6 +237,7 @@ export interface FileRoutesByTo {
   '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/gestao/transferencias': typeof AuthenticatedGestaoTransferenciasRoute
   '/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
   '/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
   '/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
@@ -259,6 +268,7 @@ export interface FileRoutesById {
   '/_authenticated/gestao/nova': typeof AuthenticatedGestaoNovaRoute
   '/_authenticated/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
   '/_authenticated/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/_authenticated/gestao/transferencias': typeof AuthenticatedGestaoTransferenciasRoute
   '/_authenticated/policia/ocorrencias': typeof AuthenticatedPoliciaOcorrenciasRoute
   '/_authenticated/ubuntu/backups': typeof AuthenticatedUbuntuBackupsRoute
   '/_authenticated/ubuntu/modulos': typeof AuthenticatedUbuntuModulosRoute
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
+    | '/gestao/transferencias'
     | '/policia/ocorrencias'
     | '/ubuntu/backups'
     | '/ubuntu/modulos'
@@ -314,6 +325,7 @@ export interface FileRouteTypes {
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
+    | '/gestao/transferencias'
     | '/policia/ocorrencias'
     | '/ubuntu/backups'
     | '/ubuntu/modulos'
@@ -343,6 +355,7 @@ export interface FileRouteTypes {
     | '/_authenticated/gestao/nova'
     | '/_authenticated/gestao/pre-registos'
     | '/_authenticated/gestao/seguranca'
+    | '/_authenticated/gestao/transferencias'
     | '/_authenticated/policia/ocorrencias'
     | '/_authenticated/ubuntu/backups'
     | '/_authenticated/ubuntu/modulos'
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGestaoSegurancaRouteImport
       parentRoute: typeof AuthenticatedGestaoRoute
     }
+    '/_authenticated/gestao/transferencias': {
+      id: '/_authenticated/gestao/transferencias'
+      path: '/transferencias'
+      fullPath: '/gestao/transferencias'
+      preLoaderRoute: typeof AuthenticatedGestaoTransferenciasRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
     '/_authenticated/policia/': {
       id: '/_authenticated/policia/'
       path: '/'
@@ -578,6 +598,7 @@ interface AuthenticatedGestaoRouteChildren {
   AuthenticatedGestaoNovaRoute: typeof AuthenticatedGestaoNovaRoute
   AuthenticatedGestaoPreRegistosRoute: typeof AuthenticatedGestaoPreRegistosRoute
   AuthenticatedGestaoSegurancaRoute: typeof AuthenticatedGestaoSegurancaRoute
+  AuthenticatedGestaoTransferenciasRoute: typeof AuthenticatedGestaoTransferenciasRoute
   AuthenticatedGestaoIndexRoute: typeof AuthenticatedGestaoIndexRoute
 }
 
@@ -588,6 +609,8 @@ const AuthenticatedGestaoRouteChildren: AuthenticatedGestaoRouteChildren = {
   AuthenticatedGestaoNovaRoute: AuthenticatedGestaoNovaRoute,
   AuthenticatedGestaoPreRegistosRoute: AuthenticatedGestaoPreRegistosRoute,
   AuthenticatedGestaoSegurancaRoute: AuthenticatedGestaoSegurancaRoute,
+  AuthenticatedGestaoTransferenciasRoute:
+    AuthenticatedGestaoTransferenciasRoute,
   AuthenticatedGestaoIndexRoute: AuthenticatedGestaoIndexRoute,
 }
 

@@ -1,21 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Globe,
   Search,
   Bike,
   Building2,
-  ShieldCheck,
-  ShieldAlert,
   User,
   Phone,
-  MapPin,
   Loader2,
   Info,
   Lock,
+  ArrowRightLeft,
+  X,
+  Check,
 } from "lucide-react";
-import { pesquisaNacional, type TipoPesquisa } from "@/lib/pesquisa.functions";
+import { pesquisaNacional, type TipoPesquisa, type ResultadoPesquisaNacional } from "@/lib/pesquisa.functions";
+import { solicitarTransferenciaDestino } from "@/lib/transferencias.functions";
 import { useSessao } from "@/hooks/use-sessao";
 
 export const Route = createFileRoute("/_authenticated/pesquisa-nacional")({
@@ -26,8 +28,10 @@ export const Route = createFileRoute("/_authenticated/pesquisa-nacional")({
 
 function PesquisaNacionalPage() {
   const { sessao } = useSessao();
+  const qc = useQueryClient();
   const [termo, setTermo] = useState("");
   const [tipo, setTipo] = useState<TipoPesquisa>("chassi");
+  const [modalSolicitar, setModalSolicitar] = useState<ResultadoPesquisaNacional | null>(null);
 
   const { data, isLoading, isFetched, refetch } = useQuery({
     queryKey: ["pesquisa-nacional", termo, tipo],
@@ -112,93 +116,255 @@ function PesquisaNacionalPage() {
               Nenhum veículo encontrado no território nacional com este {tipo}.
             </div>
           ) : (
-            (data?.resultados ?? []).map((m) => (
-              <div key={m.id} className="rounded-xl border bg-card p-5 shadow-sm space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
-                      <Bike className="h-5 w-5" />
+            (data?.resultados ?? []).map((m) => {
+              const pertencaOutroMunicipio = sessao?.municipioId && m.municipio_id !== sessao.municipioId;
+
+              return (
+                <div key={m.id} className="rounded-xl border bg-card p-5 shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                        <Bike className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base">
+                          {m.marca} {m.modelo}
+                        </h3>
+                        <p className="text-xs font-mono text-muted-foreground">
+                          Chassi: <strong className="text-foreground">{m.chassi}</strong>
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-base">
-                        {m.marca} {m.modelo}
-                      </h3>
-                      <p className="text-xs font-mono text-muted-foreground">
-                        Chassi: <strong className="text-foreground">{m.chassi}</strong>
+
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                        <Building2 className="h-3.5 w-3.5" />
+                        {m.municipio_nome}
+                      </span>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
+                          m.estado === "roubada"
+                            ? "bg-destructive text-white animate-pulse"
+                            : m.estado === "activa"
+                              ? "bg-success/15 text-success"
+                              : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {m.estado}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Banner para motorizadas de outro município */}
+                  {pertencaOutroMunicipio && (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs">
+                      <div>
+                        <p className="font-bold text-primary">
+                          Esta motorizada está registada no {m.municipio_nome}.
+                        </p>
+                        <p className="text-muted-foreground">
+                          Como técnico do {sessao?.municipio?.nome}, pode solicitar a transferência deste veículo para o seu município.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setModalSolicitar(m)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90 shrink-0"
+                      >
+                        <ArrowRightLeft className="h-3.5 w-3.5" />
+                        Solicitar Transferência
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-xs">
+                    <div className="space-y-1">
+                      <p className="font-bold text-muted-foreground">ESPECIFICAÇÕES DO VEÍCULO</p>
+                      <p>
+                        <strong>Matrícula:</strong> {m.matricula || "—"}
+                      </p>
+                      <p>
+                        <strong>Nº Motor:</strong> {m.numero_motor || "—"}
+                      </p>
+                      <p>
+                        <strong>Cor:</strong> {m.cor || "—"}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                      <Building2 className="h-3.5 w-3.5" />
-                      {m.municipio_nome}
-                    </span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
-                        m.estado === "roubada"
-                          ? "bg-destructive text-white animate-pulse"
-                          : m.estado === "activa"
-                            ? "bg-success/15 text-success"
-                            : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {m.estado}
-                    </span>
-                  </div>
-                </div>
+                    <div className="space-y-1">
+                      <p className="font-bold text-muted-foreground">MUNICÍPIO DE REGISTO</p>
+                      <p className="font-semibold text-foreground">{m.municipio_nome}</p>
+                      <p className="text-muted-foreground">
+                        Registado em: {new Date(m.created_at).toLocaleDateString("pt-MZ")}
+                      </p>
+                    </div>
 
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-xs">
-                  <div className="space-y-1">
-                    <p className="font-bold text-muted-foreground">ESPECIFICAÇÕES DO VEÍCULO</p>
-                    <p>
-                      <strong>Matrícula:</strong> {m.matricula || "—"}
-                    </p>
-                    <p>
-                      <strong>Nº Motor:</strong> {m.numero_motor || "—"}
-                    </p>
-                    <p>
-                      <strong>Cor:</strong> {m.cor || "—"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <p className="font-bold text-muted-foreground">MUNICÍPIO DE REGISTO</p>
-                    <p className="font-semibold text-foreground">{m.municipio_nome}</p>
-                    <p className="text-muted-foreground">
-                      Registado em: {new Date(m.created_at).toLocaleDateString("pt-MZ")}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 border-t sm:border-t-0 sm:border-l sm:pl-4 pt-3 sm:pt-0">
-                    <p className="font-bold text-muted-foreground">PROPRIETÁRIO</p>
-                    {m.proprietario_nome ? (
-                      <>
-                        <p className="font-semibold text-foreground flex items-center gap-1">
-                          <User className="h-3.5 w-3.5" />
-                          {m.proprietario_nome}
-                        </p>
-                        {m.proprietario_bi && <p><strong>BI:</strong> {m.proprietario_bi}</p>}
-                        {m.proprietario_contacto && (
-                          <p className="flex items-center gap-1 text-success">
-                            <Phone className="h-3.5 w-3.5" />
-                            {m.proprietario_contacto}
+                    <div className="space-y-1 border-t sm:border-t-0 sm:border-l sm:pl-4 pt-3 sm:pt-0">
+                      <p className="font-bold text-muted-foreground">PROPRIETÁRIO</p>
+                      {m.proprietario_nome ? (
+                        <>
+                          <p className="font-semibold text-foreground flex items-center gap-1">
+                            <User className="h-3.5 w-3.5" />
+                            {m.proprietario_nome}
                           </p>
-                        )}
-                      </>
-                    ) : (
-                      <div className="flex items-center gap-1.5 text-muted-foreground/70 py-1">
-                        <Lock className="h-3.5 w-3.5" />
-                        <span className="text-[11px]">Dados do proprietário omissos (Isolamento por Município)</span>
-                      </div>
-                    )}
+                          {m.proprietario_bi && <p><strong>BI:</strong> {m.proprietario_bi}</p>}
+                          {m.proprietario_contacto && (
+                            <p className="flex items-center gap-1 text-success">
+                              <Phone className="h-3.5 w-3.5" />
+                              {m.proprietario_contacto}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-muted-foreground/70 py-1">
+                          <Lock className="h-3.5 w-3.5" />
+                          <span className="text-[11px]">Dados do proprietário omissos (Isolamento por Município)</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
+
+      {/* Modal Solicitar Transferência (Forma B) */}
+      {modalSolicitar && (
+        <ModalSolicitarTransferencia
+          moto={modalSolicitar}
+          onClose={() => setModalSolicitar(null)}
+          onSucesso={() => {
+            setModalSolicitar(null);
+            qc.invalidateQueries({ queryKey: ["pesquisa-nacional"] });
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ModalSolicitarTransferencia({
+  moto,
+  onClose,
+  onSucesso,
+}: {
+  moto: ResultadoPesquisaNacional;
+  onClose: () => void;
+  onSucesso: () => void;
+}) {
+  const [motivo, setMotivo] = useState("");
+  const [nome, setNome] = useState("");
+  const [contacto, setContacto] = useState("");
+  const [bi, setBi] = useState("");
+
+  const solicitar = useMutation({
+    mutationFn: () =>
+      solicitarTransferenciaDestino({
+        data: {
+          motoId: moto.id,
+          motivo,
+          novoProprietario: {
+            nome: nome.trim(),
+            bi: bi || null,
+            contacto: contacto || null,
+          },
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Solicitação enviada com sucesso! O município de origem foi notificado.");
+      onSucesso();
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+      <div className="w-full max-w-lg rounded-2xl bg-card p-6 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between border-b pb-3">
+          <h2 className="text-lg font-bold">Solicitar Transferência de Motorizada</h2>
+          <button onClick={onClose} className="rounded-md p-1.5 hover:bg-muted">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
+          <p>
+            <strong>Veículo:</strong> {moto.marca} {moto.modelo} ({moto.chassi})
+          </p>
+          <p>
+            <strong>Município de Origem:</strong> {moto.municipio_nome}
+          </p>
+        </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            solicitar.mutate();
+          }}
+          className="space-y-4 text-sm"
+        >
+          <div>
+            <label className="mb-1 block text-xs font-semibold">Motivo da Solicitação *</label>
+            <textarea
+              required
+              rows={2}
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              className="w-full rounded-lg border p-2.5 text-sm outline-none focus:border-primary"
+              placeholder="Ex: Compra e venda de veículo registado noutro município..."
+            />
+          </div>
+
+          <div className="space-y-3 border-t pt-3">
+            <p className="text-xs font-bold uppercase text-muted-foreground">
+              Dados Iniciais do Novo Proprietário
+            </p>
+            <div>
+              <label className="mb-1 block text-xs font-semibold">Nome Completo *</label>
+              <input
+                required
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-primary"
+                placeholder="Ex: António Ernesto"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-semibold">BI / NUIT</label>
+                <input
+                  value={bi}
+                  onChange={(e) => setBi(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-primary font-mono"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold">Contacto</label>
+                <input
+                  value={contacto}
+                  onChange={(e) => setContacto(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2 border-t">
+            <button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={solicitar.isPending || !motivo.trim() || !nome.trim()}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+            >
+              {solicitar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              Enviar Solicitação
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
