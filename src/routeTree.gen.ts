@@ -10,33 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
-import { Route as GestaoRouteImport } from './routes/gestao'
 import { Route as ComprarRouteImport } from './routes/comprar'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerificarIndexRouteImport } from './routes/verificar.index'
-import { Route as GestaoIndexRouteImport } from './routes/gestao.index'
 import { Route as VerificarChassiRouteImport } from './routes/verificar.$chassi'
-import { Route as GestaoSegurancaRouteImport } from './routes/gestao.seguranca'
-import { Route as GestaoPreRegistosRouteImport } from './routes/gestao.pre-registos'
-import { Route as GestaoNovaRouteImport } from './routes/gestao.nova'
-import { Route as GestaoHistoricoRouteImport } from './routes/gestao.historico'
-import { Route as GestaoIdRouteImport } from './routes/gestao.$id'
 import { Route as ComprarIdRouteImport } from './routes/comprar.$id'
-import { Route as GestaoIdTransferirRouteImport } from './routes/gestao.$id.transferir'
+import { Route as AuthenticatedGestaoRouteImport } from './routes/_authenticated/gestao'
+import { Route as AuthenticatedGestaoIndexRouteImport } from './routes/_authenticated/gestao.index'
+import { Route as AuthenticatedGestaoSegurancaRouteImport } from './routes/_authenticated/gestao.seguranca'
+import { Route as AuthenticatedGestaoPreRegistosRouteImport } from './routes/_authenticated/gestao.pre-registos'
+import { Route as AuthenticatedGestaoNovaRouteImport } from './routes/_authenticated/gestao.nova'
+import { Route as AuthenticatedGestaoHistoricoRouteImport } from './routes/_authenticated/gestao.historico'
+import { Route as AuthenticatedGestaoIdRouteImport } from './routes/_authenticated/gestao.$id'
+import { Route as AuthenticatedGestaoIdTransferirRouteImport } from './routes/_authenticated/gestao.$id.transferir'
 
 const ReportarRouboRoute = ReportarRouboRouteImport.update({
   id: '/reportar-roubo',
   path: '/reportar-roubo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GestaoRoute = GestaoRouteImport.update({
-  id: '/gestao',
-  path: '/gestao',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ComprarRoute = ComprarRouteImport.update({
   id: '/comprar',
   path: '/comprar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,116 +49,127 @@ const VerificarIndexRoute = VerificarIndexRouteImport.update({
   path: '/verificar/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GestaoIndexRoute = GestaoIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => GestaoRoute,
-} as any)
 const VerificarChassiRoute = VerificarChassiRouteImport.update({
   id: '/verificar/$chassi',
   path: '/verificar/$chassi',
   getParentRoute: () => rootRouteImport,
-} as any)
-const GestaoSegurancaRoute = GestaoSegurancaRouteImport.update({
-  id: '/seguranca',
-  path: '/seguranca',
-  getParentRoute: () => GestaoRoute,
-} as any)
-const GestaoPreRegistosRoute = GestaoPreRegistosRouteImport.update({
-  id: '/pre-registos',
-  path: '/pre-registos',
-  getParentRoute: () => GestaoRoute,
-} as any)
-const GestaoNovaRoute = GestaoNovaRouteImport.update({
-  id: '/nova',
-  path: '/nova',
-  getParentRoute: () => GestaoRoute,
-} as any)
-const GestaoHistoricoRoute = GestaoHistoricoRouteImport.update({
-  id: '/historico',
-  path: '/historico',
-  getParentRoute: () => GestaoRoute,
-} as any)
-const GestaoIdRoute = GestaoIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => GestaoRoute,
 } as any)
 const ComprarIdRoute = ComprarIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ComprarRoute,
 } as any)
-const GestaoIdTransferirRoute = GestaoIdTransferirRouteImport.update({
-  id: '/transferir',
-  path: '/transferir',
-  getParentRoute: () => GestaoIdRoute,
+const AuthenticatedGestaoRoute = AuthenticatedGestaoRouteImport.update({
+  id: '/gestao',
+  path: '/gestao',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGestaoIndexRoute =
+  AuthenticatedGestaoIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoSegurancaRoute =
+  AuthenticatedGestaoSegurancaRouteImport.update({
+    id: '/seguranca',
+    path: '/seguranca',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoPreRegistosRoute =
+  AuthenticatedGestaoPreRegistosRouteImport.update({
+    id: '/pre-registos',
+    path: '/pre-registos',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoNovaRoute = AuthenticatedGestaoNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AuthenticatedGestaoRoute,
+} as any)
+const AuthenticatedGestaoHistoricoRoute =
+  AuthenticatedGestaoHistoricoRouteImport.update({
+    id: '/historico',
+    path: '/historico',
+    getParentRoute: () => AuthenticatedGestaoRoute,
+  } as any)
+const AuthenticatedGestaoIdRoute = AuthenticatedGestaoIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedGestaoRoute,
+} as any)
+const AuthenticatedGestaoIdTransferirRoute =
+  AuthenticatedGestaoIdTransferirRouteImport.update({
+    id: '/transferir',
+    path: '/transferir',
+    getParentRoute: () => AuthenticatedGestaoIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
-  '/gestao': typeof GestaoRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
+  '/gestao': typeof AuthenticatedGestaoRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
-  '/gestao/$id': typeof GestaoIdRouteWithChildren
-  '/gestao/historico': typeof GestaoHistoricoRoute
-  '/gestao/nova': typeof GestaoNovaRoute
-  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
-  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
-  '/gestao/': typeof GestaoIndexRoute
   '/verificar/': typeof VerificarIndexRoute
-  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
+  '/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
+  '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
+  '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
+  '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/gestao/': typeof AuthenticatedGestaoIndexRoute
+  '/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/comprar/$id': typeof ComprarIdRoute
-  '/gestao/$id': typeof GestaoIdRouteWithChildren
-  '/gestao/historico': typeof GestaoHistoricoRoute
-  '/gestao/nova': typeof GestaoNovaRoute
-  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
-  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
-  '/gestao': typeof GestaoIndexRoute
   '/verificar': typeof VerificarIndexRoute
-  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
+  '/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
+  '/gestao/nova': typeof AuthenticatedGestaoNovaRoute
+  '/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
+  '/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/gestao': typeof AuthenticatedGestaoIndexRoute
+  '/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/comprar': typeof ComprarRouteWithChildren
-  '/gestao': typeof GestaoRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
+  '/_authenticated/gestao': typeof AuthenticatedGestaoRouteWithChildren
   '/comprar/$id': typeof ComprarIdRoute
-  '/gestao/$id': typeof GestaoIdRouteWithChildren
-  '/gestao/historico': typeof GestaoHistoricoRoute
-  '/gestao/nova': typeof GestaoNovaRoute
-  '/gestao/pre-registos': typeof GestaoPreRegistosRoute
-  '/gestao/seguranca': typeof GestaoSegurancaRoute
   '/verificar/$chassi': typeof VerificarChassiRoute
-  '/gestao/': typeof GestaoIndexRoute
   '/verificar/': typeof VerificarIndexRoute
-  '/gestao/$id/transferir': typeof GestaoIdTransferirRoute
+  '/_authenticated/gestao/$id': typeof AuthenticatedGestaoIdRouteWithChildren
+  '/_authenticated/gestao/historico': typeof AuthenticatedGestaoHistoricoRoute
+  '/_authenticated/gestao/nova': typeof AuthenticatedGestaoNovaRoute
+  '/_authenticated/gestao/pre-registos': typeof AuthenticatedGestaoPreRegistosRoute
+  '/_authenticated/gestao/seguranca': typeof AuthenticatedGestaoSegurancaRoute
+  '/_authenticated/gestao/': typeof AuthenticatedGestaoIndexRoute
+  '/_authenticated/gestao/$id/transferir': typeof AuthenticatedGestaoIdTransferirRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/comprar'
-    | '/gestao'
     | '/reportar-roubo'
+    | '/gestao'
     | '/comprar/$id'
+    | '/verificar/$chassi'
+    | '/verificar/'
     | '/gestao/$id'
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
-    | '/verificar/$chassi'
     | '/gestao/'
-    | '/verificar/'
     | '/gestao/$id/transferir'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,37 +177,38 @@ export interface FileRouteTypes {
     | '/comprar'
     | '/reportar-roubo'
     | '/comprar/$id'
+    | '/verificar/$chassi'
+    | '/verificar'
     | '/gestao/$id'
     | '/gestao/historico'
     | '/gestao/nova'
     | '/gestao/pre-registos'
     | '/gestao/seguranca'
-    | '/verificar/$chassi'
     | '/gestao'
-    | '/verificar'
     | '/gestao/$id/transferir'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/comprar'
-    | '/gestao'
     | '/reportar-roubo'
+    | '/_authenticated/gestao'
     | '/comprar/$id'
-    | '/gestao/$id'
-    | '/gestao/historico'
-    | '/gestao/nova'
-    | '/gestao/pre-registos'
-    | '/gestao/seguranca'
     | '/verificar/$chassi'
-    | '/gestao/'
     | '/verificar/'
-    | '/gestao/$id/transferir'
+    | '/_authenticated/gestao/$id'
+    | '/_authenticated/gestao/historico'
+    | '/_authenticated/gestao/nova'
+    | '/_authenticated/gestao/pre-registos'
+    | '/_authenticated/gestao/seguranca'
+    | '/_authenticated/gestao/'
+    | '/_authenticated/gestao/$id/transferir'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ComprarRoute: typeof ComprarRouteWithChildren
-  GestaoRoute: typeof GestaoRouteWithChildren
   ReportarRouboRoute: typeof ReportarRouboRoute
   VerificarChassiRoute: typeof VerificarChassiRoute
   VerificarIndexRoute: typeof VerificarIndexRoute
@@ -211,18 +223,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportarRouboRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gestao': {
-      id: '/gestao'
-      path: '/gestao'
-      fullPath: '/gestao'
-      preLoaderRoute: typeof GestaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/comprar': {
       id: '/comprar'
       path: '/comprar'
       fullPath: '/comprar'
       preLoaderRoute: typeof ComprarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -239,54 +251,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerificarIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gestao/': {
-      id: '/gestao/'
-      path: '/'
-      fullPath: '/gestao/'
-      preLoaderRoute: typeof GestaoIndexRouteImport
-      parentRoute: typeof GestaoRoute
-    }
     '/verificar/$chassi': {
       id: '/verificar/$chassi'
       path: '/verificar/$chassi'
       fullPath: '/verificar/$chassi'
       preLoaderRoute: typeof VerificarChassiRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/gestao/seguranca': {
-      id: '/gestao/seguranca'
-      path: '/seguranca'
-      fullPath: '/gestao/seguranca'
-      preLoaderRoute: typeof GestaoSegurancaRouteImport
-      parentRoute: typeof GestaoRoute
-    }
-    '/gestao/pre-registos': {
-      id: '/gestao/pre-registos'
-      path: '/pre-registos'
-      fullPath: '/gestao/pre-registos'
-      preLoaderRoute: typeof GestaoPreRegistosRouteImport
-      parentRoute: typeof GestaoRoute
-    }
-    '/gestao/nova': {
-      id: '/gestao/nova'
-      path: '/nova'
-      fullPath: '/gestao/nova'
-      preLoaderRoute: typeof GestaoNovaRouteImport
-      parentRoute: typeof GestaoRoute
-    }
-    '/gestao/historico': {
-      id: '/gestao/historico'
-      path: '/historico'
-      fullPath: '/gestao/historico'
-      preLoaderRoute: typeof GestaoHistoricoRouteImport
-      parentRoute: typeof GestaoRoute
-    }
-    '/gestao/$id': {
-      id: '/gestao/$id'
-      path: '/$id'
-      fullPath: '/gestao/$id'
-      preLoaderRoute: typeof GestaoIdRouteImport
-      parentRoute: typeof GestaoRoute
     }
     '/comprar/$id': {
       id: '/comprar/$id'
@@ -295,15 +265,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComprarIdRouteImport
       parentRoute: typeof ComprarRoute
     }
-    '/gestao/$id/transferir': {
-      id: '/gestao/$id/transferir'
+    '/_authenticated/gestao': {
+      id: '/_authenticated/gestao'
+      path: '/gestao'
+      fullPath: '/gestao'
+      preLoaderRoute: typeof AuthenticatedGestaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gestao/': {
+      id: '/_authenticated/gestao/'
+      path: '/'
+      fullPath: '/gestao/'
+      preLoaderRoute: typeof AuthenticatedGestaoIndexRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/seguranca': {
+      id: '/_authenticated/gestao/seguranca'
+      path: '/seguranca'
+      fullPath: '/gestao/seguranca'
+      preLoaderRoute: typeof AuthenticatedGestaoSegurancaRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/pre-registos': {
+      id: '/_authenticated/gestao/pre-registos'
+      path: '/pre-registos'
+      fullPath: '/gestao/pre-registos'
+      preLoaderRoute: typeof AuthenticatedGestaoPreRegistosRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/nova': {
+      id: '/_authenticated/gestao/nova'
+      path: '/nova'
+      fullPath: '/gestao/nova'
+      preLoaderRoute: typeof AuthenticatedGestaoNovaRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/historico': {
+      id: '/_authenticated/gestao/historico'
+      path: '/historico'
+      fullPath: '/gestao/historico'
+      preLoaderRoute: typeof AuthenticatedGestaoHistoricoRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/$id': {
+      id: '/_authenticated/gestao/$id'
+      path: '/$id'
+      fullPath: '/gestao/$id'
+      preLoaderRoute: typeof AuthenticatedGestaoIdRouteImport
+      parentRoute: typeof AuthenticatedGestaoRoute
+    }
+    '/_authenticated/gestao/$id/transferir': {
+      id: '/_authenticated/gestao/$id/transferir'
       path: '/transferir'
       fullPath: '/gestao/$id/transferir'
-      preLoaderRoute: typeof GestaoIdTransferirRouteImport
-      parentRoute: typeof GestaoIdRoute
+      preLoaderRoute: typeof AuthenticatedGestaoIdTransferirRouteImport
+      parentRoute: typeof AuthenticatedGestaoIdRoute
     }
   }
 }
+
+interface AuthenticatedGestaoIdRouteChildren {
+  AuthenticatedGestaoIdTransferirRoute: typeof AuthenticatedGestaoIdTransferirRoute
+}
+
+const AuthenticatedGestaoIdRouteChildren: AuthenticatedGestaoIdRouteChildren = {
+  AuthenticatedGestaoIdTransferirRoute: AuthenticatedGestaoIdTransferirRoute,
+}
+
+const AuthenticatedGestaoIdRouteWithChildren =
+  AuthenticatedGestaoIdRoute._addFileChildren(
+    AuthenticatedGestaoIdRouteChildren,
+  )
+
+interface AuthenticatedGestaoRouteChildren {
+  AuthenticatedGestaoIdRoute: typeof AuthenticatedGestaoIdRouteWithChildren
+  AuthenticatedGestaoHistoricoRoute: typeof AuthenticatedGestaoHistoricoRoute
+  AuthenticatedGestaoNovaRoute: typeof AuthenticatedGestaoNovaRoute
+  AuthenticatedGestaoPreRegistosRoute: typeof AuthenticatedGestaoPreRegistosRoute
+  AuthenticatedGestaoSegurancaRoute: typeof AuthenticatedGestaoSegurancaRoute
+  AuthenticatedGestaoIndexRoute: typeof AuthenticatedGestaoIndexRoute
+}
+
+const AuthenticatedGestaoRouteChildren: AuthenticatedGestaoRouteChildren = {
+  AuthenticatedGestaoIdRoute: AuthenticatedGestaoIdRouteWithChildren,
+  AuthenticatedGestaoHistoricoRoute: AuthenticatedGestaoHistoricoRoute,
+  AuthenticatedGestaoNovaRoute: AuthenticatedGestaoNovaRoute,
+  AuthenticatedGestaoPreRegistosRoute: AuthenticatedGestaoPreRegistosRoute,
+  AuthenticatedGestaoSegurancaRoute: AuthenticatedGestaoSegurancaRoute,
+  AuthenticatedGestaoIndexRoute: AuthenticatedGestaoIndexRoute,
+}
+
+const AuthenticatedGestaoRouteWithChildren =
+  AuthenticatedGestaoRoute._addFileChildren(AuthenticatedGestaoRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedGestaoRoute: typeof AuthenticatedGestaoRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedGestaoRoute: AuthenticatedGestaoRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ComprarRouteChildren {
   ComprarIdRoute: typeof ComprarIdRoute
@@ -316,43 +380,10 @@ const ComprarRouteChildren: ComprarRouteChildren = {
 const ComprarRouteWithChildren =
   ComprarRoute._addFileChildren(ComprarRouteChildren)
 
-interface GestaoIdRouteChildren {
-  GestaoIdTransferirRoute: typeof GestaoIdTransferirRoute
-}
-
-const GestaoIdRouteChildren: GestaoIdRouteChildren = {
-  GestaoIdTransferirRoute: GestaoIdTransferirRoute,
-}
-
-const GestaoIdRouteWithChildren = GestaoIdRoute._addFileChildren(
-  GestaoIdRouteChildren,
-)
-
-interface GestaoRouteChildren {
-  GestaoIdRoute: typeof GestaoIdRouteWithChildren
-  GestaoHistoricoRoute: typeof GestaoHistoricoRoute
-  GestaoNovaRoute: typeof GestaoNovaRoute
-  GestaoPreRegistosRoute: typeof GestaoPreRegistosRoute
-  GestaoSegurancaRoute: typeof GestaoSegurancaRoute
-  GestaoIndexRoute: typeof GestaoIndexRoute
-}
-
-const GestaoRouteChildren: GestaoRouteChildren = {
-  GestaoIdRoute: GestaoIdRouteWithChildren,
-  GestaoHistoricoRoute: GestaoHistoricoRoute,
-  GestaoNovaRoute: GestaoNovaRoute,
-  GestaoPreRegistosRoute: GestaoPreRegistosRoute,
-  GestaoSegurancaRoute: GestaoSegurancaRoute,
-  GestaoIndexRoute: GestaoIndexRoute,
-}
-
-const GestaoRouteWithChildren =
-  GestaoRoute._addFileChildren(GestaoRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ComprarRoute: ComprarRouteWithChildren,
-  GestaoRoute: GestaoRouteWithChildren,
   ReportarRouboRoute: ReportarRouboRoute,
   VerificarChassiRoute: VerificarChassiRoute,
   VerificarIndexRoute: VerificarIndexRoute,
@@ -360,13 +391,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
