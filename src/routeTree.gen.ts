@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
 import { Route as ComprarRouteImport } from './routes/comprar'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerificarIndexRouteImport } from './routes/verificar.index'
@@ -33,6 +34,11 @@ const ReportarRouboRoute = ReportarRouboRouteImport.update({
 const ComprarRoute = ComprarRouteImport.update({
   id: '/comprar',
   path: '/comprar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -107,6 +113,7 @@ const AuthenticatedGestaoIdTransferirRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/gestao': typeof AuthenticatedGestaoRouteWithChildren
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/comprar/$id': typeof ComprarIdRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/_authenticated/gestao': typeof AuthenticatedGestaoRouteWithChildren
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/comprar'
     | '/reportar-roubo'
     | '/gestao'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/comprar'
     | '/reportar-roubo'
     | '/comprar/$id'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/auth'
     | '/comprar'
     | '/reportar-roubo'
     | '/_authenticated/gestao'
@@ -208,6 +220,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   ComprarRoute: typeof ComprarRouteWithChildren
   ReportarRouboRoute: typeof ReportarRouboRoute
   VerificarChassiRoute: typeof VerificarChassiRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/comprar'
       fullPath: '/comprar'
       preLoaderRoute: typeof ComprarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -383,6 +403,7 @@ const ComprarRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   ComprarRoute: ComprarRouteWithChildren,
   ReportarRouboRoute: ReportarRouboRoute,
   VerificarChassiRoute: VerificarChassiRoute,
