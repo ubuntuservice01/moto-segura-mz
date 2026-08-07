@@ -4,7 +4,7 @@ import { LayoutGrid, Plus, History, AlertTriangle, Inbox, ShieldAlert } from "lu
 import { countPreRegistosPendentes } from "@/lib/pre-registos.functions";
 import { countNotificacoesNaoLidas } from "@/lib/seguranca.functions";
 
-export const Route = createFileRoute("/gestao")({
+export const Route = createFileRoute("/_authenticated/gestao")({
   head: () => ({
     meta: [
       { title: "Painel Ubuntu Service — MotoCheck MZ" },

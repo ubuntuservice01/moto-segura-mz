@@ -9,7 +9,7 @@ import {
   createAvistamentoReadUrl,
 } from "@/lib/seguranca.functions";
 
-export const Route = createFileRoute("/gestao/seguranca")({
+export const Route = createFileRoute("/_authenticated/gestao/seguranca")({
   component: SegurancaPainel,
 });
 
