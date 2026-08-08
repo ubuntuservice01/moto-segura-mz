@@ -157,7 +157,6 @@ function OcorrenciasPage() {
 }
 
 function ModalNovaOcorrencia({
-  municipioId,
   onClose,
   onSucesso,
 }: {
@@ -171,39 +170,26 @@ function ModalNovaOcorrencia({
   const [contacto, setContacto] = useState("");
 
   const criar = useMutation({
-    mutationFn: async () => {
-      // Tentar associar mota se existir no município
-      const campo = tipo === "chassi" ? "chassi" : tipo === "matricula" ? "matricula" : "numero_motor";
-      const { data: mota } = await supabase
-        .from("motos")
-        .select("id")
-        .eq("municipio_id", municipioId)
-        .ilike(campo, identificador.trim().toUpperCase())
-        .maybeSingle();
-
-      const { error } = await supabase.from("reportes_roubo").insert({
-        municipio_id: municipioId,
-        identificador: identificador.trim().toUpperCase(),
-        tipo_identificador: tipo,
-        descricao,
-        contacto: contacto || null,
-        sucesso: false,
-        moto_id: mota?.id || null,
-      });
-
-      if (error) throw new Error(error.message);
-
-      // Se mota existia no sistema, mudar estado para roubada
-      if (mota?.id) {
-        await supabase.from("motos").update({ estado: "roubada" }).eq("id", mota.id);
-      }
-    },
-    onSuccess: () => {
-      toast.success("Ocorrência registrada com sucesso!");
+    mutationFn: () =>
+      registarOcorrencia({
+        data: {
+          identificador: identificador.trim().toUpperCase(),
+          tipo,
+          descricao,
+          contacto: contacto || null,
+        },
+      }),
+    onSuccess: (r) => {
+      toast.success(
+        r.motoEncontrada
+          ? "Ocorrência registada — motorizada marcada como roubada."
+          : "Ocorrência registada com sucesso.",
+      );
       onSucesso();
     },
     onError: (e) => toast.error((e as Error).message),
   });
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
