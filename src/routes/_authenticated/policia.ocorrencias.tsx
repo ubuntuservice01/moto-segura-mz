@@ -14,26 +14,19 @@ import {
   Calendar,
   Clock,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useSessao } from "@/hooks/use-sessao";
+import {
+  listOcorrencias,
+  registarOcorrencia,
+  confirmarRecuperacao,
+  type Ocorrencia as Reporte,
+} from "@/lib/ocorrencias.functions";
 
 export const Route = createFileRoute("/_authenticated/policia/ocorrencias")({
   ssr: false,
   head: () => ({ meta: [{ title: "Ocorrências — Polícia MotoGest" }] }),
   component: OcorrenciasPage,
 });
-
-type Reporte = {
-  id: string;
-  identificador: string;
-  tipo_identificador: string;
-  descricao: string;
-  contacto: string | null;
-  sucesso: boolean;
-  moto_id: string | null;
-  municipio_id: string;
-  created_at: string;
-};
 
 function OcorrenciasPage() {
   const qc = useQueryClient();
@@ -42,43 +35,20 @@ function OcorrenciasPage() {
 
   const { data: reportes, isLoading } = useQuery({
     queryKey: ["reportes-policia", sessao?.municipioId],
-    queryFn: async () => {
-      if (!sessao?.municipioId) return [];
-      const { data, error } = await supabase
-        .from("reportes_roubo")
-        .select("*")
-        .eq("municipio_id", sessao.municipioId)
-        .order("created_at", { ascending: false });
-      if (error) throw new Error(error.message);
-      return (data ?? []) as Reporte[];
-    },
-    enabled: !!sessao?.municipioId,
+    queryFn: () => listOcorrencias(),
+    enabled: !!sessao,
   });
 
   const marcarRecuperada = useMutation({
-    mutationFn: async ({ reporteId, motoId }: { reporteId: string; motoId: string | null }) => {
-      // 1. Atualiza o reporte
-      const { error: e1 } = await supabase
-        .from("reportes_roubo")
-        .update({ sucesso: true })
-        .eq("id", reporteId);
-      if (e1) throw new Error(e1.message);
-
-      // 2. Se houver mota associada, muda estado para recuperada
-      if (motoId) {
-        const { error: e2 } = await supabase
-          .from("motos")
-          .update({ estado: "recuperada" })
-          .eq("id", motoId);
-        if (e2) throw new Error(e2.message);
-      }
-    },
+    mutationFn: ({ reporteId }: { reporteId: string; motoId: string | null }) =>
+      confirmarRecuperacao({ data: { reporteId } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["reportes-policia"] });
       toast.success("Ocorrência actualizada — Veículo marcado como Recuperado!");
     },
     onError: (e) => toast.error((e as Error).message),
   });
+
 
   return (
     <div className="space-y-6">
