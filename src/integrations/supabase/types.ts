@@ -607,7 +607,9 @@ export type Database = {
       }
       reportes_roubo: {
         Row: {
+          contacto: string | null
           created_at: string
+          descricao: string
           gps_lat: number | null
           gps_lng: number | null
           id: string
@@ -617,10 +619,13 @@ export type Database = {
           moto_id: string | null
           municipio_id: string | null
           sucesso: boolean
+          tipo_identificador: string
           user_agent: string | null
         }
         Insert: {
+          contacto?: string | null
           created_at?: string
+          descricao?: string
           gps_lat?: number | null
           gps_lng?: number | null
           id?: string
@@ -630,10 +635,13 @@ export type Database = {
           moto_id?: string | null
           municipio_id?: string | null
           sucesso?: boolean
+          tipo_identificador?: string
           user_agent?: string | null
         }
         Update: {
+          contacto?: string | null
           created_at?: string
+          descricao?: string
           gps_lat?: number | null
           gps_lng?: number | null
           id?: string
@@ -643,6 +651,7 @@ export type Database = {
           moto_id?: string | null
           municipio_id?: string | null
           sucesso?: boolean
+          tipo_identificador?: string
           user_agent?: string | null
         }
         Relationships: [
@@ -665,35 +674,59 @@ export type Database = {
       transferencias: {
         Row: {
           created_at: string
+          data_conclusao: string | null
+          estado: string
           id: string
           motivo: string | null
+          motivo_rejeicao: string | null
           moto_id: string
+          municipio_destino_id: string | null
           municipio_id: string
+          municipio_origem_id: string | null
           operador: string
           proprietario_anterior: Json
           proprietario_novo: Json
+          tipo_fluxo: string
+          utilizador_destino_id: string | null
+          utilizador_origem_id: string | null
           valor_transaccao: number | null
         }
         Insert: {
           created_at?: string
+          data_conclusao?: string | null
+          estado?: string
           id?: string
           motivo?: string | null
+          motivo_rejeicao?: string | null
           moto_id: string
+          municipio_destino_id?: string | null
           municipio_id: string
+          municipio_origem_id?: string | null
           operador?: string
           proprietario_anterior: Json
           proprietario_novo: Json
+          tipo_fluxo?: string
+          utilizador_destino_id?: string | null
+          utilizador_origem_id?: string | null
           valor_transaccao?: number | null
         }
         Update: {
           created_at?: string
+          data_conclusao?: string | null
+          estado?: string
           id?: string
           motivo?: string | null
+          motivo_rejeicao?: string | null
           moto_id?: string
+          municipio_destino_id?: string | null
           municipio_id?: string
+          municipio_origem_id?: string | null
           operador?: string
           proprietario_anterior?: Json
           proprietario_novo?: Json
+          tipo_fluxo?: string
+          utilizador_destino_id?: string | null
+          utilizador_origem_id?: string | null
           valor_transaccao?: number | null
         }
         Relationships: [
@@ -705,8 +738,22 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transferencias_municipio_destino_id_fkey"
+            columns: ["municipio_destino_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transferencias_municipio_id_fkey"
             columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transferencias_municipio_origem_id_fkey"
+            columns: ["municipio_origem_id"]
             isOneToOne: false
             referencedRelation: "municipios"
             referencedColumns: ["id"]
