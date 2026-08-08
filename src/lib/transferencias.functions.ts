@@ -10,7 +10,7 @@ export type EstadoTransferencia =
   | "rejeitada";
 export type TipoFluxoTransferencia = "origem_inicia" | "destino_solicita";
 
-export type DadosProprietario = Record<string, string | number | boolean | null>;
+export type DadosProprietario = Record<string, string>;
 
 export interface ItemTransferencia {
   id: string;
