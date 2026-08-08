@@ -91,20 +91,18 @@ function UbuntuDashboard() {
   }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
       {/* Cabeçalho */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard Nacional</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="page-header">
+        <h1 className="page-title">Dashboard Nacional</h1>
+        <p className="page-subtitle">
           Visão em tempo real de toda a plataforma MotoGest.
         </p>
       </div>
 
       {/* KPIs — Municípios */}
       <section>
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Municípios
-        </h2>
+        <p className="section-label mb-3">Municípios</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <KpiCard
             icon={<Building2 className="h-5 w-5" />}
@@ -129,9 +127,7 @@ function UbuntuDashboard() {
 
       {/* KPIs — Motorizadas */}
       <section>
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Motorizadas
-        </h2>
+        <p className="section-label mb-3">Motorizadas</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           <KpiCard
             icon={<Bike className="h-5 w-5" />}
@@ -151,11 +147,9 @@ function UbuntuDashboard() {
         </div>
       </section>
 
-      {/* KPIs — Utilizadores */}
+      {/* Utilizadores & Infraestrutura */}
       <section>
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Utilizadores & Infraestrutura
-        </h2>
+        <p className="section-label mb-3">Utilizadores &amp; Infraestrutura</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           <KpiCard
             icon={<Users className="h-5 w-5" />}
@@ -190,7 +184,7 @@ function UbuntuDashboard() {
       {/* Gráficos */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Motorizadas por município */}
-        <div className="rounded-xl border bg-card p-5">
+        <div className="mg-card p-5">
           <div className="mb-4 flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-bold">Motorizadas por Município</h3>

@@ -87,17 +87,18 @@ function MunicipiosPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in">
+      {/* Cabeçalho */}
+      <div className="page-header flex-row items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Municípios</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Gerir todos os municípios da plataforma nacional.
+          <h1 className="page-title">Municípios</h1>
+          <p className="page-subtitle">
+            Gestão de municípios e subscrições da plataforma.
           </p>
         </div>
         <button
           onClick={() => setModalCriar(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow"
         >
           <Plus className="h-4 w-4" />
           Novo Município
@@ -109,18 +110,18 @@ function MunicipiosPage() {
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="rounded-xl border bg-card">
-          <table className="w-full text-sm">
+        <div className="mg-table-wrapper">
+          <table className="mg-table">
             <thead>
-              <tr className="border-b text-left text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-3">Município</th>
-                <th className="hidden px-4 py-3 sm:table-cell">Província</th>
-                <th className="hidden px-4 py-3 md:table-cell">Plano</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3 text-right">Acções</th>
+              <tr>
+                <th>Município</th>
+                <th className="hidden sm:table-cell">Província</th>
+                <th className="hidden md:table-cell">Plano</th>
+                <th>Estado</th>
+                <th className="text-right">Acções</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {(municipios ?? []).length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-muted-foreground">

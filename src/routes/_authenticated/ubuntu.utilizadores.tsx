@@ -74,17 +74,18 @@ function UtilizadoresPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-6 animate-fade-in">
+      {/* Cabeçalho */}
+      <div className="page-header flex-row items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Utilizadores da Plataforma</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="page-title">Utilizadores da Plataforma</h1>
+          <p className="page-subtitle">
             Gerir administradores, técnicos e agentes da polícia de todos os municípios.
           </p>
         </div>
         <button
           onClick={() => setModalCriar(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow"
         >
           <UserPlus className="h-4 w-4" />
           Novo Utilizador
@@ -92,13 +93,13 @@ function UtilizadoresPage() {
       </div>
 
       {/* Filtros */}
-      <div className="flex items-center gap-3 rounded-xl border bg-card p-3 shadow-sm">
+      <div className="mg-filter-bar">
         <Filter className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs font-semibold text-muted-foreground">Filtrar por Município:</span>
+        <span className="text-xs font-medium text-muted-foreground">Filtrar por Município:</span>
         <select
           value={municipioFiltro}
           onChange={(e) => setMunicipioFiltro(e.target.value)}
-          className="rounded-md border border-input bg-background px-3 py-1.5 text-xs outline-none focus:border-primary"
+          className="rounded-md border border-input bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
         >
           <option value="">Todos os Municípios</option>
           {(municipios ?? []).map((m) => (
@@ -114,18 +115,18 @@ function UtilizadoresPage() {
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="rounded-xl border bg-card overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="mg-table-wrapper">
+          <table className="mg-table">
             <thead>
-              <tr className="border-b text-left text-xs font-bold uppercase tracking-wider text-muted-foreground bg-muted/40">
-                <th className="px-4 py-3">Nome / Email</th>
-                <th className="px-4 py-3">Papel</th>
-                <th className="hidden px-4 py-3 sm:table-cell">Município</th>
-                <th className="hidden px-4 py-3 md:table-cell">Data de Registo</th>
-                <th className="px-4 py-3 text-right">Acções</th>
+              <tr>
+                <th>Nome / Email</th>
+                <th>Papel</th>
+                <th className="hidden sm:table-cell">Município</th>
+                <th className="hidden md:table-cell">Data de Registo</th>
+                <th className="text-right">Acções</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {(utilizadores ?? []).length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-muted-foreground">

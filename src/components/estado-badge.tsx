@@ -10,31 +10,32 @@ import {
   Ban,
 } from "lucide-react";
 
+// Contraste garantido (WCAG AA) em modo claro e escuro
 const STYLES: Record<EstadoMoto, string> = {
-  activa: "bg-secondary/10 text-secondary border-secondary/30",
-  a_venda: "bg-accent/15 text-accent-foreground border-accent/40",
-  roubada: "bg-destructive/10 text-destructive border-destructive/40",
-  transferida: "bg-muted text-muted-foreground border-border",
-  recuperada: "bg-secondary/15 text-secondary border-secondary/40",
-  vendida: "bg-muted text-muted-foreground border-border",
-  abatida: "bg-muted text-muted-foreground border-border line-through",
+  activa:      "border-emerald-200 bg-emerald-50 text-emerald-800",
+  a_venda:     "border-amber-200  bg-amber-50  text-amber-800",
+  roubada:     "border-red-200    bg-red-50    text-red-800",
+  transferida: "border-blue-200   bg-blue-50   text-blue-800",
+  recuperada:  "border-teal-200   bg-teal-50   text-teal-800",
+  vendida:     "border-slate-200  bg-slate-50  text-slate-700",
+  abatida:     "border-slate-200  bg-slate-50  text-slate-500 line-through",
 };
 
 const ICONS: Record<EstadoMoto, React.ReactNode> = {
-  activa: <CheckCircle2 className="h-3.5 w-3.5" />,
-  a_venda: <Tag className="h-3.5 w-3.5" />,
-  roubada: <AlertTriangle className="h-3.5 w-3.5" />,
+  activa:      <CheckCircle2  className="h-3.5 w-3.5" />,
+  a_venda:     <Tag           className="h-3.5 w-3.5" />,
+  roubada:     <AlertTriangle className="h-3.5 w-3.5" />,
   transferida: <ArrowRightLeft className="h-3.5 w-3.5" />,
-  recuperada: <ShieldCheck className="h-3.5 w-3.5" />,
-  vendida: <Banknote className="h-3.5 w-3.5" />,
-  abatida: <Ban className="h-3.5 w-3.5" />,
+  recuperada:  <ShieldCheck   className="h-3.5 w-3.5" />,
+  vendida:     <Banknote      className="h-3.5 w-3.5" />,
+  abatida:     <Ban           className="h-3.5 w-3.5" />,
 };
 
 export function EstadoBadge({ estado, className }: { estado: EstadoMoto; className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold leading-none",
         STYLES[estado],
         className,
       )}
@@ -49,7 +50,7 @@ export function VerificadaBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-secondary-foreground",
+        "inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-800",
         className,
       )}
     >

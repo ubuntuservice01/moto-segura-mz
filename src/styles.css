@@ -36,6 +36,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-input-bg: var(--input-bg);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -50,113 +51,283 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-muted: var(--sidebar-muted);
 
-  --shadow-elegant: 0 10px 40px -10px color-mix(in oklab, var(--primary) 25%, transparent);
   --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-elevated: 0 4px 16px -4px rgb(0 0 0 / 0.10), 0 1px 3px -1px rgb(0 0 0 / 0.06);
+  --shadow-modal: 0 20px 60px -10px rgb(0 0 0 / 0.20), 0 4px 20px -4px rgb(0 0 0 / 0.10);
 }
 
+/* ─────────────────────────────────────────────
+   MODO CLARO — Paleta Institucional MotoGest
+   Princípio: todo texto ≥ 4.5:1 de contraste
+   ───────────────────────────────────────────── */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.375rem;
 
-  /* MotoVerify MZ palette */
-  --background: oklch(0.985 0.002 247);     /* #F7F8FA */
-  --foreground: oklch(0.18 0.04 255);        /* near #0A1628 */
-  --card: oklch(1 0 0);                       /* #FFFFFF */
-  --card-foreground: oklch(0.18 0.04 255);
+  /* Background system */
+  --background: oklch(0.971 0.004 250);      /* azul-acinzentado muito claro */
+  --foreground: oklch(0.13 0.025 255);       /* azul-carvão: ~18:1 sobre bg */
+
+  /* Card */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.025 255);
+
+  /* Popover */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 255);
+  --popover-foreground: oklch(0.13 0.025 255);
 
-  --primary: oklch(0.22 0.05 255);            /* azul escuro do logo MotoCheck */
-  --primary-foreground: oklch(0.985 0.002 247);
+  /* Primary — Azul Institucional Profundo */
+  --primary: oklch(0.26 0.09 255);           /* azul-navy profissional */
+  --primary-foreground: oklch(0.985 0 0);    /* branco — contraste >12:1 */
 
-  --secondary: oklch(0.45 0.14 148);          /* #006633 Forest Green */
-  --secondary-foreground: oklch(1 0 0);
+  /* Secondary — Verde Institucional Moçambique */
+  --secondary: oklch(0.48 0.14 155);         /* verde profissional */
+  --secondary-foreground: oklch(1 0 0);      /* branco — contraste >8:1 */
 
-  --accent: oklch(0.94 0.19 105);             /* #FAF92A Maximum Yellow */
-  --accent-foreground: oklch(0.22 0.05 255);
+  /* Accent — Azul Médio (ações de informação) */
+  --accent: oklch(0.52 0.14 240);
+  --accent-foreground: oklch(1 0 0);
 
+  /* Muted — fundos neutros para secções, tabelas */
+  --muted: oklch(0.94 0.006 250);
+  --muted-foreground: oklch(0.40 0.025 255); /* ~7:1 sobre branco */
 
-  --muted: oklch(0.96 0.005 247);
-  --muted-foreground: oklch(0.45 0.02 255);
-
-  --destructive: oklch(0.58 0.22 27);
+  /* Destructive — vermelho claro visível */
+  --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
 
-  --success: oklch(0.58 0.17 152);
+  /* Success — verde escuro legível */
+  --success: oklch(0.48 0.16 150);
   --success-foreground: oklch(1 0 0);
 
-  --warning: oklch(0.78 0.14 75);
-  --warning-foreground: oklch(0.18 0.04 255);
+  /* Warning — âmbar com foreground escuro (contraste 7:1) */
+  --warning: oklch(0.74 0.16 70);
+  --warning-foreground: oklch(0.18 0.04 60);
 
-  --border: oklch(0.92 0.01 247);
-  --input: oklch(0.92 0.01 247);
-  --ring: oklch(0.58 0.17 152);
+  /* Border e Input */
+  --border: oklch(0.88 0.008 250);
+  --input: oklch(0.88 0.008 250);
+  --input-bg: oklch(1 0 0);
+  --ring: oklch(0.52 0.14 240);
 
-  --chart-1: oklch(0.18 0.04 255);
-  --chart-2: oklch(0.58 0.17 152);
-  --chart-3: oklch(0.78 0.14 75);
-  --chart-4: oklch(0.55 0.18 240);
-  --chart-5: oklch(0.65 0.18 20);
+  /* Charts */
+  --chart-1: oklch(0.26 0.09 255);   /* primary */
+  --chart-2: oklch(0.48 0.14 155);   /* secondary */
+  --chart-3: oklch(0.74 0.16 70);    /* warning */
+  --chart-4: oklch(0.52 0.14 240);   /* accent */
+  --chart-5: oklch(0.55 0.22 27);    /* destructive */
 
-  --sidebar: oklch(0.18 0.04 255);
-  --sidebar-foreground: oklch(0.985 0.002 247);
-  --sidebar-primary: oklch(0.58 0.17 152);
+  /* ─── Sidebar ─── */
+  --sidebar: oklch(0.17 0.055 257);            /* azul petróleo profundo */
+  --sidebar-foreground: oklch(0.91 0.012 250); /* branco-azulado — contraste >9:1 */
+  --sidebar-primary: oklch(0.48 0.14 155);     /* verde para ativos */
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.25 0.04 255);
-  --sidebar-accent-foreground: oklch(0.985 0.002 247);
-  --sidebar-border: oklch(0.25 0.04 255);
-  --sidebar-ring: oklch(0.58 0.17 152);
+  --sidebar-accent: oklch(0.23 0.055 257);     /* hover sutil */
+  --sidebar-accent-foreground: oklch(0.96 0.008 250);
+  --sidebar-border: oklch(0.24 0.05 257);
+  --sidebar-ring: oklch(0.48 0.14 155);
+  --sidebar-muted: oklch(0.65 0.02 255);       /* ícones e labels secundários */
 }
 
+/* ─────────────────────────────────────────────
+   MODO ESCURO
+   ───────────────────────────────────────────── */
 .dark {
-  --background: oklch(0.14 0.03 255);
-  --foreground: oklch(0.985 0.002 247);
-  --card: oklch(0.2 0.04 255);
-  --card-foreground: oklch(0.985 0.002 247);
-  --popover: oklch(0.2 0.04 255);
-  --popover-foreground: oklch(0.985 0.002 247);
-  --primary: oklch(0.985 0.002 247);
-  --primary-foreground: oklch(0.18 0.04 255);
-  --secondary: oklch(0.58 0.17 152);
+  --background: oklch(0.13 0.03 255);
+  --foreground: oklch(0.94 0.008 250);
+  --card: oklch(0.19 0.04 255);
+  --card-foreground: oklch(0.94 0.008 250);
+  --popover: oklch(0.19 0.04 255);
+  --popover-foreground: oklch(0.94 0.008 250);
+  --primary: oklch(0.62 0.13 245);
+  --primary-foreground: oklch(0.13 0.03 255);
+  --secondary: oklch(0.55 0.15 155);
   --secondary-foreground: oklch(1 0 0);
-  --accent: oklch(0.78 0.14 75);
-  --accent-foreground: oklch(0.18 0.04 255);
-  --muted: oklch(0.25 0.04 255);
-  --muted-foreground: oklch(0.7 0.02 255);
+  --accent: oklch(0.62 0.13 245);
+  --accent-foreground: oklch(0.13 0.03 255);
+  --muted: oklch(0.24 0.04 255);
+  --muted-foreground: oklch(0.68 0.02 255);
   --destructive: oklch(0.65 0.22 27);
   --destructive-foreground: oklch(1 0 0);
-  --success: oklch(0.65 0.17 152);
+  --success: oklch(0.60 0.17 152);
   --success-foreground: oklch(1 0 0);
   --warning: oklch(0.78 0.14 75);
-  --warning-foreground: oklch(0.18 0.04 255);
+  --warning-foreground: oklch(0.13 0.04 60);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.58 0.17 152);
+  --input: oklch(1 0 0 / 12%);
+  --input-bg: oklch(0.24 0.04 255);
+  --ring: oklch(0.62 0.13 245);
 }
 
+/* ─────────────────────────────────────────────
+   BASE STYLES
+   ───────────────────────────────────────────── */
 @layer base {
   * {
     border-color: var(--color-border);
+    box-sizing: border-box;
   }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
   }
-  h1, h2, h3, h4 {
+
+  h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  /* Inputs base — garantem fundo e contraste sempre */
+  input, select, textarea {
+    background-color: var(--color-input-bg);
+    color: var(--color-foreground);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--color-muted-foreground);
+    opacity: 0.75;
   }
 }
 
-/* Fingerprint scan animation for chassi verification */
+/* ─────────────────────────────────────────────
+   COMPONENTES BASE UTILITÁRIOS
+   ───────────────────────────────────────────── */
+@layer components {
+  /* Page Header — consistente em todas as páginas */
+  .page-header {
+    @apply mb-6 flex flex-col gap-1;
+  }
+  .page-title {
+    @apply text-[22px] font-bold tracking-tight text-foreground;
+  }
+  .page-subtitle {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Section Label */
+  .section-label {
+    @apply text-[11px] font-bold uppercase tracking-widest text-muted-foreground;
+  }
+
+  /* Card base */
+  .mg-card {
+    @apply rounded-lg border border-border bg-card shadow-[var(--shadow-card)];
+  }
+
+  /* Table base */
+  .mg-table {
+    @apply w-full text-left text-sm;
+  }
+  .mg-table thead {
+    @apply border-b border-border bg-muted;
+  }
+  .mg-table thead th {
+    @apply px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground;
+  }
+  .mg-table tbody tr {
+    @apply border-b border-border/60 transition-colors hover:bg-muted/40;
+  }
+  .mg-table tbody td {
+    @apply px-4 py-3 text-sm text-foreground;
+  }
+  .mg-table tbody tr:last-child {
+    @apply border-b-0;
+  }
+
+  /* Tabs navigation */
+  .mg-tabs-nav {
+    @apply flex gap-0 border-b border-border overflow-x-auto;
+  }
+  .mg-tab-btn {
+    @apply whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground;
+  }
+  .mg-tab-btn[data-active="true"] {
+    @apply border-primary text-primary;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-muted active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-success {
+    @apply inline-flex items-center gap-2 rounded-md bg-success px-4 py-2 text-sm font-semibold text-success-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-danger {
+    @apply inline-flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-ghost-danger {
+    @apply inline-flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm font-semibold text-destructive shadow-sm transition-all hover:bg-destructive/10 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  /* Form fields */
+  .form-label {
+    @apply mb-1.5 block text-[13px] font-semibold text-foreground;
+  }
+  .form-input {
+    @apply w-full rounded-md border border-input bg-input-bg px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:ring-2 focus:ring-ring/20;
+  }
+  .form-select {
+    @apply w-full rounded-md border border-input bg-input-bg px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20;
+  }
+
+  /* Status badges */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold;
+  }
+  .badge-active {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+  }
+  .badge-warning {
+    @apply border-amber-200 bg-amber-50 text-amber-800;
+  }
+  .badge-error {
+    @apply border-red-200 bg-red-50 text-red-800;
+  }
+  .badge-info {
+    @apply border-blue-200 bg-blue-50 text-blue-800;
+  }
+  .badge-neutral {
+    @apply border-border bg-muted text-muted-foreground;
+  }
+
+  /* Empty state */
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-muted/30 px-6 py-12 text-center;
+  }
+  .empty-state-icon {
+    @apply h-10 w-10 text-muted-foreground/40;
+  }
+  .empty-state-title {
+    @apply text-sm font-semibold text-foreground;
+  }
+  .empty-state-text {
+    @apply text-xs text-muted-foreground;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   ANIMAÇÕES
+   ───────────────────────────────────────────── */
+
+/* Fingerprint scan animation */
 @keyframes fingerprint-scan {
   0% { stroke-dashoffset: 1200; opacity: 0; }
   20% { opacity: 1; }
   100% { stroke-dashoffset: 0; opacity: 1; }
 }
-
 @keyframes fingerprint-pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
@@ -166,7 +337,15 @@
   stroke-dasharray: 1200;
   animation: fingerprint-scan 1.6s ease-out forwards;
 }
-
 .fingerprint-pulse {
   animation: fingerprint-pulse 2s ease-in-out infinite;
+}
+
+/* Fade in suave para entrada de conteúdo */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
 }
