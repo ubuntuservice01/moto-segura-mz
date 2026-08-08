@@ -60,7 +60,13 @@ export const PERMISSOES: Record<Papel, Permissao[]> = {
     "municipio.configurar",
   ],
   tecnico_municipal: [...MUNICIPAL_BASE],
-  policia: ["motos.ver", "seguranca.ver", "seguranca.recuperar", "ocorrencias.registar", "relatorios.ver"],
+  policia: [
+    "motos.ver",
+    "seguranca.ver",
+    "seguranca.recuperar",
+    "ocorrencias.registar",
+    "relatorios.ver",
+  ],
 };
 
 export function pode(papel: Papel | null | undefined, permissao: Permissao): boolean {

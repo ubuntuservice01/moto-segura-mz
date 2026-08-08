@@ -49,7 +49,12 @@ const PAPEL_LABEL: Record<string, string> = {
 };
 
 function UbuntuDashboard() {
-  const { data: stats, isLoading, error, refetch } = useQuery({
+  const {
+    data: stats,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["ubuntu-stats"],
     queryFn: () => estatisticasNacionais(),
     staleTime: 30_000,
@@ -192,7 +197,10 @@ function UbuntuDashboard() {
           </div>
           {stats.porMunicipio.length > 0 ? (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={stats.porMunicipio} margin={{ top: 0, right: 0, left: -10, bottom: 0 }}>
+              <BarChart
+                data={stats.porMunicipio}
+                margin={{ top: 0, right: 0, left: -10, bottom: 0 }}
+              >
                 <XAxis
                   dataKey="nome"
                   tick={{ fontSize: 10 }}
@@ -207,7 +215,9 @@ function UbuntuDashboard() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="py-10 text-center text-sm text-muted-foreground">Sem dados disponíveis.</p>
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              Sem dados disponíveis.
+            </p>
           )}
         </div>
 
@@ -239,7 +249,9 @@ function UbuntuDashboard() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="py-10 text-center text-sm text-muted-foreground">Sem dados disponíveis.</p>
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              Sem dados disponíveis.
+            </p>
           )}
         </div>
       </div>

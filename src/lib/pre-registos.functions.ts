@@ -4,11 +4,9 @@ import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 
 function sb() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
 
 export type PreRegistoEstado = "pendente" | "aprovado" | "rejeitado";
@@ -61,7 +59,9 @@ export const listPreRegistos = createServerFn({ method: "GET" })
     z.object({ estado: z.string().optional() }).parse(d ?? {}),
   )
   .handler(async ({ data }): Promise<PreRegisto[]> => {
-    let q = sb().from("pre_registos" as never).select("*");
+    let q = sb()
+      .from("pre_registos" as never)
+      .select("*");
     if (data.estado && data.estado !== "todos") q = q.eq("estado", data.estado);
     const { data: rows, error } = await q.order("created_at", { ascending: false }).limit(200);
     if (error) throw new Error(error.message);
@@ -70,10 +70,12 @@ export const listPreRegistos = createServerFn({ method: "GET" })
 
 export const updatePreRegistoEstado = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      estado: z.enum(["pendente", "aprovado", "rejeitado"]),
-    }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        estado: z.enum(["pendente", "aprovado", "rejeitado"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { error } = await sb()
@@ -87,7 +89,10 @@ export const updatePreRegistoEstado = createServerFn({ method: "POST" })
 export const deletePreRegisto = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    const { error } = await sb().from("pre_registos" as never).delete().eq("id", data.id);
+    const { error } = await sb()
+      .from("pre_registos" as never)
+      .delete()
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -138,7 +143,9 @@ export const aprovarPreRegistoEConverter = createServerFn({ method: "POST" })
         proprietario_nome: p.proprietario_nome,
         proprietario_contacto: p.proprietario_contacto,
         proprietario_provincia: p.proprietario_provincia,
-        notas_internas: p.notas ? `Origem: pré-registo público. ${p.notas}` : "Origem: pré-registo público.",
+        notas_internas: p.notas
+          ? `Origem: pré-registo público. ${p.notas}`
+          : "Origem: pré-registo público.",
         estado: "activa",
       })
       .select("id")

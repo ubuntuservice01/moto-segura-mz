@@ -1,5 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Phone, MapPin, Calendar, Gauge, Palette, Hash, FileText, ArrowLeft, Tag } from "lucide-react";
+import {
+  Phone,
+  MapPin,
+  Calendar,
+  Gauge,
+  Palette,
+  Hash,
+  FileText,
+  ArrowLeft,
+  Tag,
+} from "lucide-react";
 import { getMotoByChassi } from "@/lib/motos.functions";
 import { EstadoBadge, VerificadaBadge } from "@/components/estado-badge";
 import { ChassisFingerprint } from "@/components/chassis-fingerprint";
@@ -56,7 +66,10 @@ function VerificarChassi() {
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
-      <Link to="/verificar" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/verificar"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Nova pesquisa
       </Link>
 
@@ -109,7 +122,11 @@ function VerificarChassi() {
             </h2>
             <dl className="mt-3 space-y-2.5 text-sm">
               <Row icon={<Calendar />} label="Ano" value={moto.ano ?? "—"} />
-              <Row icon={<Hash />} label="Cilindrada" value={moto.cilindrada ? `${moto.cilindrada} cc` : "—"} />
+              <Row
+                icon={<Hash />}
+                label="Cilindrada"
+                value={moto.cilindrada ? `${moto.cilindrada} cc` : "—"}
+              />
               <Row icon={<Palette />} label="Cor" value={moto.cor ?? "—"} />
               <Row icon={<Gauge />} label="Quilometragem" value={formatKm(moto.km)} />
             </dl>
@@ -127,7 +144,7 @@ function VerificarChassi() {
                 value={
                   moto.proprietario_localidade
                     ? `${moto.proprietario_localidade}, ${moto.proprietario_provincia ?? ""}`
-                    : moto.proprietario_provincia ?? "—"
+                    : (moto.proprietario_provincia ?? "—")
                 }
               />
               <Row
@@ -135,7 +152,10 @@ function VerificarChassi() {
                 label="Contacto"
                 value={
                   isAVenda && moto.proprietario_contacto ? (
-                    <a href={`tel:${moto.proprietario_contacto}`} className="font-semibold text-secondary hover:underline">
+                    <a
+                      href={`tel:${moto.proprietario_contacto}`}
+                      className="font-semibold text-secondary hover:underline"
+                    >
                       {moto.proprietario_contacto}
                     </a>
                   ) : (
@@ -192,12 +212,19 @@ function VerificarChassi() {
           <Timeline eventos={historico} />
         </div>
       </section>
-
     </div>
   );
 }
 
-function Row({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
+function Row({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div className="flex items-start gap-3">
       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-muted-foreground [&>svg]:h-4 [&>svg]:w-4">

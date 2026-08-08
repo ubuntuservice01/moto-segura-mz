@@ -79,15 +79,22 @@ function EditarMota() {
 
   return (
     <div>
-      <Link to="/gestao" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/gestao"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Voltar à lista
       </Link>
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold">{moto.marca} {moto.modelo}</h2>
+          <h2 className="text-2xl font-bold">
+            {moto.marca} {moto.modelo}
+          </h2>
           <p className="mt-1 font-mono text-xs text-muted-foreground">{moto.chassi}</p>
-          <div className="mt-2"><EstadoBadge estado={moto.estado} /></div>
+          <div className="mt-2">
+            <EstadoBadge estado={moto.estado} />
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link

@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, MapPin, Loader2, CheckCircle2 } from "lucide-react";
-import {
-  registarAvistamento,
-  createAvistamentoUploadUrl,
-} from "@/lib/seguranca.functions";
+import { registarAvistamento, createAvistamentoUploadUrl } from "@/lib/seguranca.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 const BUCKET = "moto-documentos";
@@ -44,11 +41,9 @@ export function AvistamentoForm({ motoId }: { motoId: string }) {
       const { path, token } = await createAvistamentoUploadUrl({
         data: { motoId, filename: file.name },
       });
-      const { error } = await supabase.storage
-        .from(BUCKET)
-        .uploadToSignedUrl(path, token, file, {
-          contentType: file.type || "application/octet-stream",
-        });
+      const { error } = await supabase.storage.from(BUCKET).uploadToSignedUrl(path, token, file, {
+        contentType: file.type || "application/octet-stream",
+      });
       if (error) throw error;
       setFotoPath(path);
     } catch (e) {
@@ -164,7 +159,11 @@ export function AvistamentoForm({ motoId }: { motoId: string }) {
           disabled={mut.isPending || aCarregar}
           className="inline-flex items-center gap-2 rounded-md bg-destructive px-5 py-2.5 text-sm font-bold text-destructive-foreground hover:opacity-90 disabled:opacity-50"
         >
-          {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
+          {mut.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Eye className="h-4 w-4" />
+          )}
           Enviar comunicação
         </button>
         <button

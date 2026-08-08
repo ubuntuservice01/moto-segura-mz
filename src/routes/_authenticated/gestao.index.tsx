@@ -79,7 +79,9 @@ function GestaoIndex() {
         >
           <option value="todos">Todos os estados</option>
           {(Object.keys(ESTADOS_LABEL) as EstadoMoto[]).map((s) => (
-            <option key={s} value={s}>{ESTADOS_LABEL[s]}</option>
+            <option key={s} value={s}>
+              {ESTADOS_LABEL[s]}
+            </option>
           ))}
         </select>
       </div>
@@ -110,13 +112,22 @@ function GestaoIndex() {
 }
 
 function StatCard({
-  label, value, tone,
-}: { label: string; value: number; tone?: "secondary" | "accent" | "destructive" }) {
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone?: "secondary" | "accent" | "destructive";
+}) {
   const colors =
-    tone === "secondary" ? "border-secondary/30 bg-secondary/5 text-secondary"
-    : tone === "accent" ? "border-accent/40 bg-accent/10 text-accent-foreground"
-    : tone === "destructive" ? "border-destructive/30 bg-destructive/5 text-destructive"
-    : "bg-card";
+    tone === "secondary"
+      ? "border-secondary/30 bg-secondary/5 text-secondary"
+      : tone === "accent"
+        ? "border-accent/40 bg-accent/10 text-accent-foreground"
+        : tone === "destructive"
+          ? "border-destructive/30 bg-destructive/5 text-destructive"
+          : "bg-card";
   return (
     <div className={`rounded-xl border p-4 ${colors}`}>
       <p className="text-[10px] font-semibold uppercase tracking-wider opacity-80">{label}</p>

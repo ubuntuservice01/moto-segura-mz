@@ -31,13 +31,13 @@ type MotoDetalhe = {
   marca: string;
   modelo: string;
   cor: string | null;
-  ano_fabrico: number | null;
-  cilindrada: string | null;
+  ano: number | null;
+  cilindrada: number | null;
   estado: string;
   proprietario_nome: string;
-  proprietario_bi: string;
-  proprietario_contacto: string;
-  proprietario_morada: string | null;
+  proprietario_bi: string | null;
+  proprietario_contacto: string | null;
+  proprietario_endereco: string | null;
   created_at: string;
 };
 
@@ -46,11 +46,16 @@ function PoliciaIndexPage() {
   const [termo, setTermo] = useState("");
   const [tipo, setTipo] = useState<"chassi" | "matricula" | "motor">("chassi");
 
-  const { data: motas, isLoading, refetch } = useQuery({
+  const {
+    data: motas,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["policia-pesquisa-local", termo, tipo, sessao?.municipioId],
     queryFn: async () => {
       if (!termo || !sessao?.municipioId) return [];
-      const campo = tipo === "chassi" ? "chassi" : tipo === "matricula" ? "matricula" : "numero_motor";
+      const campo =
+        tipo === "chassi" ? "chassi" : tipo === "matricula" ? "matricula" : "numero_motor";
       const { data, error } = await supabase
         .from("motos")
         .select("*")
@@ -70,7 +75,8 @@ function PoliciaIndexPage() {
       <div className="rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-base font-bold mb-1">Fiscalização de Veículo no Município</h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Insira o Chassi, Matrícula ou Número do Motor para visualizar a ficha completa do veículo e proprietário.
+          Insira o Chassi, Matrícula ou Número do Motor para visualizar a ficha completa do veículo
+          e proprietário.
         </p>
 
         <form
@@ -113,7 +119,11 @@ function PoliciaIndexPage() {
               disabled={isLoading}
               className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-5 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="h-4 w-4" />
+              )}
               Pesquisar
             </button>
           </div>
@@ -176,7 +186,7 @@ function PoliciaIndexPage() {
                       <strong>Cor:</strong> {m.cor || "—"}
                     </p>
                     <p>
-                      <strong>Cilindrada / Ano:</strong> {m.cilindrada || "—"} ({m.ano_fabrico || "—"})
+                      <strong>Cilindrada / Ano:</strong> {m.cilindrada || "—"} ({m.ano || "—"})
                     </p>
                   </div>
 
@@ -195,7 +205,7 @@ function PoliciaIndexPage() {
                     </p>
                     <p className="flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" />
-                      {m.proprietario_morada || "Sem morada"}
+                      {m.proprietario_endereco || "Sem morada"}
                     </p>
                   </div>
 

@@ -71,24 +71,22 @@ export interface Moto {
 }
 
 /** Public-facing moto: removes BI, notas, documentos and masks contacto unless à venda */
-export interface MotoPublica
-  extends Omit<
-    Moto,
-    | "proprietario_bi"
-    | "notas_internas"
-    | "proprietario_contacto"
-    | "documentos"
-    | "proprietario_data_nascimento"
-    | "proprietario_contacto_alt"
-    | "proprietario_familiar_nome"
-    | "proprietario_familiar_contacto"
-    | "proprietario_endereco"
-    | "codigo_recuperacao_prefixo"
-    | "local_compra"
-  > {
+export interface MotoPublica extends Omit<
+  Moto,
+  | "proprietario_bi"
+  | "notas_internas"
+  | "proprietario_contacto"
+  | "documentos"
+  | "proprietario_data_nascimento"
+  | "proprietario_contacto_alt"
+  | "proprietario_familiar_nome"
+  | "proprietario_familiar_contacto"
+  | "proprietario_endereco"
+  | "codigo_recuperacao_prefixo"
+  | "local_compra"
+> {
   proprietario_contacto: string | null;
 }
-
 
 export type DiffValue = string | number | boolean | null;
 export type DiffMap = Record<string, { antes: DiffValue; depois: DiffValue }>;

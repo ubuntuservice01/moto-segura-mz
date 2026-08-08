@@ -5,7 +5,10 @@ import { ArrowLeft, ArrowRightLeft, AlertTriangle, Building2, Loader2, Check } f
 import { toast } from "sonner";
 import { getMotoById } from "@/lib/motos.functions";
 import { listMunicipios } from "@/lib/plataforma.functions";
-import { iniciarTransferenciaOrigem, obterTransferenciaAtivaMoto } from "@/lib/transferencias.functions";
+import {
+  iniciarTransferenciaOrigem,
+  obterTransferenciaAtivaMoto,
+} from "@/lib/transferencias.functions";
 import { useSessao } from "@/hooks/use-sessao";
 import { PROVINCIAS_MZ } from "@/lib/moto-types";
 
@@ -52,7 +55,7 @@ function TransferirMota() {
       iniciarTransferenciaOrigem({
         data: {
           motoId: moto.id,
-          municipioDestinoId: municipioDestinoId || sessao?.municipioId!,
+          municipioDestinoId: municipioDestinoId || (sessao?.municipioId ?? ""),
           novoProprietario: {
             nome: form.nome.trim(),
             bi: form.bi || null,
@@ -65,7 +68,9 @@ function TransferirMota() {
         },
       }),
     onSuccess: () => {
-      toast.success("Processo de transferência iniciado. O município de destino receberá a notificação.");
+      toast.success(
+        "Processo de transferência iniciado. O município de destino receberá a notificação.",
+      );
       qc.invalidateQueries();
       navigate({ to: "/gestao/transferencias" });
     },
@@ -230,7 +235,11 @@ function TransferirMota() {
                 disabled={mut.isPending || !form.nome.trim() || !municipioDestinoId}
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
               >
-                {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                {mut.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
                 Iniciar Transferência
               </button>
             </div>

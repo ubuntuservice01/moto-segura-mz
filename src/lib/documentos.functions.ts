@@ -6,18 +6,16 @@ import type { Database } from "@/integrations/supabase/types";
 const BUCKET = "moto-documentos";
 
 function admin() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
 
 const safePathSchema = z
   .string()
   .min(1)
   .max(500)
-  .regex(/^motos\/[A-Za-z0-9._-]+\/[A-Za-z0-9._\-\/]+$/, "Caminho inválido");
+  .regex(/^motos\/[A-Za-z0-9._-]+\/[A-Za-z0-9._\-/]+$/, "Caminho inválido");
 
 export const createDocUploadUrl = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
@@ -37,9 +35,7 @@ export const createDocUploadUrl = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const safeName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
     const path = `motos/${data.chassi}/${data.tipo}-${Date.now()}-${safeName}`;
-    const { data: signed, error } = await admin()
-      .storage.from(BUCKET)
-      .createSignedUploadUrl(path);
+    const { data: signed, error } = await admin().storage.from(BUCKET).createSignedUploadUrl(path);
     if (error || !signed) throw new Error(error?.message ?? "Falha ao criar URL de upload");
     return { path: signed.path, token: signed.token };
   });

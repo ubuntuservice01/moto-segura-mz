@@ -83,7 +83,9 @@ function HistoricoGlobal() {
                   })}
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${COLORS[e.tipo_evento]}`}>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${COLORS[e.tipo_evento]}`}
+                  >
                     {ICONS[e.tipo_evento]}
                     {LABELS[e.tipo_evento]}
                   </span>
@@ -108,13 +110,17 @@ function HistoricoGlobal() {
                   <p>{e.descricao}</p>
                   {e.diff && Object.keys(e.diff).length > 0 && (
                     <ul className="mt-1 space-y-0.5 text-[11px] text-muted-foreground">
-                      {Object.entries(e.diff).slice(0, 3).map(([k, v]) => (
-                        <li key={k} className="truncate">
-                          <span className="font-mono">{k}:</span>{" "}
-                          <span className="line-through opacity-70">{String(v.antes ?? "—")}</span>{" "}
-                          → <span className="text-secondary">{String(v.depois ?? "—")}</span>
-                        </li>
-                      ))}
+                      {Object.entries(e.diff)
+                        .slice(0, 3)
+                        .map(([k, v]) => (
+                          <li key={k} className="truncate">
+                            <span className="font-mono">{k}:</span>{" "}
+                            <span className="line-through opacity-70">
+                              {String(v.antes ?? "—")}
+                            </span>{" "}
+                            → <span className="text-secondary">{String(v.depois ?? "—")}</span>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </td>
@@ -128,7 +134,15 @@ function HistoricoGlobal() {
   );
 }
 
-function FilterBtn({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+function FilterBtn({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}

@@ -14,7 +14,9 @@ export const Route = createFileRoute("/comprar/$id")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.marca} ${loaderData.modelo} — ${formatMTN(loaderData.preco_venda)}` },
+          {
+            title: `${loaderData.marca} ${loaderData.modelo} — ${formatMTN(loaderData.preco_venda)}`,
+          },
           {
             name: "description",
             content: `${loaderData.marca} ${loaderData.modelo} (${loaderData.ano ?? "?"}) à venda em ${loaderData.proprietario_provincia ?? "Moçambique"}.`,
@@ -26,7 +28,9 @@ export const Route = createFileRoute("/comprar/$id")({
   notFoundComponent: () => (
     <div className="p-12 text-center">
       <p>Esta mota já não está disponível.</p>
-      <Link to="/comprar" className="text-secondary hover:underline">Voltar ao marketplace</Link>
+      <Link to="/comprar" className="text-secondary hover:underline">
+        Voltar ao marketplace
+      </Link>
     </div>
   ),
   component: MotoDetalhe,
@@ -36,7 +40,10 @@ function MotoDetalhe() {
   const m = Route.useLoaderData();
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
-      <Link to="/comprar" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/comprar"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Voltar ao marketplace
       </Link>
 
@@ -49,27 +56,39 @@ function MotoDetalhe() {
                 <EstadoBadge estado={m.estado} />
                 <VerificadaBadge />
               </div>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight">{m.marca} {m.modelo}</h1>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight">
+                {m.marca} {m.modelo}
+              </h1>
               <p className="mt-1 font-mono text-sm text-muted-foreground">
                 Chassi: <span className="text-foreground">{maskChassi(m.chassi)}</span>
               </p>
             </div>
           </div>
           <div className="rounded-lg bg-accent/15 px-5 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-accent-foreground/80">Preço</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-accent-foreground/80">
+              Preço
+            </p>
             <p className="text-3xl font-bold">{formatMTN(m.preco_venda)}</p>
           </div>
         </header>
 
         <div className="grid gap-6 p-6 md:grid-cols-2 md:p-8">
           <Spec icon={<Calendar />} label="Ano" value={m.ano ?? "—"} />
-          <Spec icon={<Hash />} label="Cilindrada" value={m.cilindrada ? `${m.cilindrada} cc` : "—"} />
+          <Spec
+            icon={<Hash />}
+            label="Cilindrada"
+            value={m.cilindrada ? `${m.cilindrada} cc` : "—"}
+          />
           <Spec icon={<Palette />} label="Cor" value={m.cor ?? "—"} />
           <Spec icon={<Gauge />} label="Quilometragem" value={formatKm(m.km)} />
           <Spec
             icon={<MapPin />}
             label="Localização"
-            value={m.proprietario_localidade ? `${m.proprietario_localidade}, ${m.proprietario_provincia ?? ""}` : m.proprietario_provincia ?? "—"}
+            value={
+              m.proprietario_localidade
+                ? `${m.proprietario_localidade}, ${m.proprietario_provincia ?? ""}`
+                : (m.proprietario_provincia ?? "—")
+            }
           />
           <Spec label="Proprietário" value={m.proprietario_nome} />
         </div>
@@ -102,7 +121,15 @@ function MotoDetalhe() {
   );
 }
 
-function Spec({ icon, label, value }: { icon?: React.ReactNode; label: string; value: React.ReactNode }) {
+function Spec({
+  icon,
+  label,
+  value,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div className="flex items-start gap-3">
       {icon && (

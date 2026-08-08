@@ -14,11 +14,9 @@ import {
 // Server-side client using the service role key.
 // Bypasses RLS — all public-facing reads MUST be sanitized (see publicizeMoto).
 function sb() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
 
 const documentoSchema = z.object({
@@ -64,7 +62,6 @@ const motoInputSchema = z.object({
   documentos: z.array(documentoSchema).default([]),
 });
 
-
 export type MotoInput = z.infer<typeof motoInputSchema>;
 
 // =========== PUBLIC ===========
@@ -83,40 +80,44 @@ export const searchMotosByChassi = createServerFn({ method: "GET" })
   });
 
 export const getMotoByChassi = createServerFn({ method: "GET" })
-  .inputValidator((d: { chassi: string }) => z.object({ chassi: z.string().trim().min(2).max(40) }).parse(d))
-  .handler(async ({ data }): Promise<{ moto: MotoPublica; historico: HistoricoEvento[] } | null> => {
-    const supa = sb();
-    const { data: row, error } = await supa
-      .from("motos")
-      .select("*")
-      .eq("chassi", data.chassi.toUpperCase())
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    if (!row) return null;
-    const moto = row as unknown as Moto;
-    const { data: hist } = await supa
-      .from("historico_motos")
-      .select("*")
-      .eq("moto_id", moto.id)
-      .order("created_at", { ascending: false });
-    const PII_KEYS = new Set([
-      "proprietario_nome",
-      "proprietario_bi",
-      "proprietario_contacto",
-      "proprietario_localidade",
-      "proprietario_provincia",
-    ]);
-    const sanitizedHist = ((hist ?? []) as HistoricoEvento[]).map((h) => ({
-      ...h,
-      diff: h.diff
-        ? Object.fromEntries(Object.entries(h.diff).filter(([k]) => !PII_KEYS.has(k)))
-        : h.diff,
-    }));
-    return {
-      moto: publicizeMoto(moto),
-      historico: sanitizedHist,
-    };
-  });
+  .inputValidator((d: { chassi: string }) =>
+    z.object({ chassi: z.string().trim().min(2).max(40) }).parse(d),
+  )
+  .handler(
+    async ({ data }): Promise<{ moto: MotoPublica; historico: HistoricoEvento[] } | null> => {
+      const supa = sb();
+      const { data: row, error } = await supa
+        .from("motos")
+        .select("*")
+        .eq("chassi", data.chassi.toUpperCase())
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      if (!row) return null;
+      const moto = row as unknown as Moto;
+      const { data: hist } = await supa
+        .from("historico_motos")
+        .select("*")
+        .eq("moto_id", moto.id)
+        .order("created_at", { ascending: false });
+      const PII_KEYS = new Set([
+        "proprietario_nome",
+        "proprietario_bi",
+        "proprietario_contacto",
+        "proprietario_localidade",
+        "proprietario_provincia",
+      ]);
+      const sanitizedHist = ((hist ?? []) as HistoricoEvento[]).map((h) => ({
+        ...h,
+        diff: h.diff
+          ? Object.fromEntries(Object.entries(h.diff).filter(([k]) => !PII_KEYS.has(k)))
+          : h.diff,
+      }));
+      return {
+        moto: publicizeMoto(moto),
+        historico: sanitizedHist,
+      };
+    },
+  );
 
 export const listMarketplace = createServerFn({ method: "GET" })
   .inputValidator((d: { marca?: string; provincia?: string; precoMax?: number }) =>
@@ -141,7 +142,11 @@ export const listMarketplace = createServerFn({ method: "GET" })
 export const getMotoMarketplaceById = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }): Promise<MotoPublica | null> => {
-    const { data: row, error } = await sb().from("motos").select("*").eq("id", data.id).maybeSingle();
+    const { data: row, error } = await sb()
+      .from("motos")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
     return publicizeMoto(row as unknown as Moto);
@@ -155,10 +160,13 @@ export const listAllMotos = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<Moto[]> => {
     let q = sb().from("motos").select("*");
-    if (data.estado && data.estado !== "todos") q = q.eq("estado", data.estado as unknown as Moto["estado"]);
+    if (data.estado && data.estado !== "todos")
+      q = q.eq("estado", data.estado as unknown as Moto["estado"]);
     if (data.busca) {
       const term = `%${data.busca}%`;
-      q = q.or(`chassi.ilike.${term},matricula.ilike.${term},proprietario_nome.ilike.${term},marca.ilike.${term},modelo.ilike.${term}`);
+      q = q.or(
+        `chassi.ilike.${term},matricula.ilike.${term},proprietario_nome.ilike.${term},marca.ilike.${term},modelo.ilike.${term}`,
+      );
     }
     const { data: rows, error } = await q.order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -168,7 +176,11 @@ export const listAllMotos = createServerFn({ method: "GET" })
 export const getMotoById = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }): Promise<Moto | null> => {
-    const { data: row, error } = await sb().from("motos").select("*").eq("id", data.id).maybeSingle();
+    const { data: row, error } = await sb()
+      .from("motos")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
     if (error) throw new Error(error.message);
     return (row as unknown as Moto) ?? null;
   });
@@ -176,7 +188,8 @@ export const getMotoById = createServerFn({ method: "GET" })
 export const createMoto = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => motoInputSchema.parse(d))
   .handler(async ({ data }): Promise<{ moto: Moto; codigo_recuperacao: string }> => {
-    const { gerarCodigoRecuperacao, hashCodigo, prefixoCodigo } = await import("./seguranca.server");
+    const { gerarCodigoRecuperacao, hashCodigo, prefixoCodigo } =
+      await import("./seguranca.server");
     const codigo = gerarCodigoRecuperacao();
     const { data: row, error } = await sb()
       .from("motos")
@@ -275,7 +288,8 @@ export const transferOwner = createServerFn({ method: "POST" })
       motivo: data.motivo ?? null,
     });
 
-    const valorTxt = data.valor != null ? ` por ${new Intl.NumberFormat("pt-PT").format(data.valor)} MT` : "";
+    const valorTxt =
+      data.valor != null ? ` por ${new Intl.NumberFormat("pt-PT").format(data.valor)} MT` : "";
     await supa.from("historico_motos").insert({
       moto_id: data.motoId,
       municipio_id: municipioId,
@@ -353,10 +367,12 @@ export type Transferencia_ = Transferencia;
 /** Marca uma mota como roubada, registando o motivo no histórico. */
 export const marcarComoRoubada = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      motivo: z.string().trim().min(5, "Descreva o motivo (mín. 5 caracteres)").max(500),
-    }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        motivo: z.string().trim().min(5, "Descreva o motivo (mín. 5 caracteres)").max(500),
+      })
+      .parse(d),
   )
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const supa = sb();
@@ -369,10 +385,7 @@ export const marcarComoRoubada = createServerFn({ method: "POST" })
     const anterior = (current as { estado: string }).estado;
     if (anterior === "roubada") throw new Error("Esta mota já está marcada como roubada.");
 
-    const { error: e2 } = await supa
-      .from("motos")
-      .update({ estado: "roubada" })
-      .eq("id", data.id);
+    const { error: e2 } = await supa.from("motos").update({ estado: "roubada" }).eq("id", data.id);
     if (e2) throw new Error(e2.message);
 
     const { error: e3 } = await supa.from("historico_motos").insert({

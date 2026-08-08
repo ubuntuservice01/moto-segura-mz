@@ -1,9 +1,7 @@
 /** Animated "chassi fingerprint" — visual signature of the verification system */
 export function ChassisFingerprint({ chassi, size = 120 }: { chassi: string; size?: number }) {
   // Derive deterministic offsets from chassi characters so each chassi gets a unique fingerprint
-  const seed = chassi
-    .split("")
-    .reduce((acc, c) => (acc * 33 + c.charCodeAt(0)) % 997, 7);
+  const seed = chassi.split("").reduce((acc, c) => (acc * 33 + c.charCodeAt(0)) % 997, 7);
   const offset = (seed % 8) - 4;
 
   return (

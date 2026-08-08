@@ -3,8 +3,14 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import type { Moto } from "./moto-types";
 
-export type EstadoTransferencia = "pendente_aceitacao" | "aguardando_origem" | "concluida" | "rejeitada";
+export type EstadoTransferencia =
+  | "pendente_aceitacao"
+  | "aguardando_origem"
+  | "concluida"
+  | "rejeitada";
 export type TipoFluxoTransferencia = "origem_inicia" | "destino_solicita";
+
+export type DadosProprietario = Record<string, string>;
 
 export interface ItemTransferencia {
   id: string;
@@ -18,8 +24,8 @@ export interface ItemTransferencia {
   utilizador_destino_id: string | null;
   estado: EstadoTransferencia;
   tipo_fluxo: TipoFluxoTransferencia;
-  proprietario_anterior: Record<string, any>;
-  proprietario_novo: Record<string, any>;
+  proprietario_anterior: DadosProprietario;
+  proprietario_novo: DadosProprietario;
   valor_transaccao: number | null;
   motivo: string | null;
   motivo_rejeicao: string | null;
@@ -300,7 +306,7 @@ export const aprovarSolicitacaoOrigem = createServerFn({ method: "POST" })
 
     if (e1 || !trans) throw new Error("Transferência não encontrada.");
 
-    if (!ctx.superAdmin && trans.municipio_origem_id !== ctx.municipioId) {
+    if (!ctx.superAdmin && (trans.municipio_origem_id ?? trans.municipio_id) !== ctx.municipioId) {
       throw new Error("Sem permissão para aprovar esta solicitação.");
     }
 
@@ -321,14 +327,17 @@ export const aprovarSolicitacaoOrigem = createServerFn({ method: "POST" })
     const { data: munis } = await supa
       .from("municipios")
       .select("id, nome")
-      .in("id", [trans.municipio_origem_id, trans.municipio_destino_id]);
+      .in("id", [
+        trans.municipio_origem_id ?? trans.municipio_id,
+        trans.municipio_destino_id ?? trans.municipio_id,
+      ]);
     const nomesMap = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
     await supa.from("notificacoes").insert({
       tipo: "transferencia_aprovada",
-      municipio_id: trans.municipio_destino_id,
+      municipio_id: trans.municipio_destino_id ?? trans.municipio_id,
       titulo: "Solicitação de transferência aprovada",
-      mensagem: `O ${nomesMap.get(trans.municipio_origem_id) ?? "Município de Origem"} aprovou o pedido para a motorizada ${trans.moto?.chassi}. Já pode concluir o processo.`,
+      mensagem: `O ${nomesMap.get(trans.municipio_origem_id ?? trans.municipio_id) ?? "Município de Origem"} aprovou o pedido para a motorizada ${trans.moto?.chassi}. Já pode concluir o processo.`,
       moto_id: trans.moto_id,
       payload: { transferencia_id: trans.id },
     });
@@ -367,12 +376,13 @@ export const concluirTransferencia = createServerFn({ method: "POST" })
 
     if (e1 || !trans) throw new Error("Transferência não encontrada.");
 
-    if (!ctx.superAdmin && trans.municipio_destino_id !== ctx.municipioId) {
+    if (!ctx.superAdmin && (trans.municipio_destino_id ?? trans.municipio_id) !== ctx.municipioId) {
       throw new Error("Apenas o município de destino pode concluir esta transferência.");
     }
 
     if (trans.estado === "concluida") throw new Error("Esta transferência já foi concluída.");
-    if (trans.estado === "rejeitada") throw new Error("Não é possível concluir uma transferência rejeitada.");
+    if (trans.estado === "rejeitada")
+      throw new Error("Não é possível concluir uma transferência rejeitada.");
 
     const { data: moto, error: e2 } = await supa
       .from("motos")
@@ -385,17 +395,20 @@ export const concluirTransferencia = createServerFn({ method: "POST" })
     const { data: munis } = await supa
       .from("municipios")
       .select("id, nome")
-      .in("id", [trans.municipio_origem_id, trans.municipio_destino_id]);
+      .in("id", [
+        trans.municipio_origem_id ?? trans.municipio_id,
+        trans.municipio_destino_id ?? trans.municipio_id,
+      ]);
     const nomesMap = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
-    const nomeOrigem = nomesMap.get(trans.municipio_origem_id) ?? "—";
-    const nomeDestino = nomesMap.get(trans.municipio_destino_id) ?? "—";
+    const nomeOrigem = nomesMap.get(trans.municipio_origem_id ?? trans.municipio_id) ?? "—";
+    const nomeDestino = nomesMap.get(trans.municipio_destino_id ?? trans.municipio_id) ?? "—";
 
     // 1. Atualizar Mota (mudança de município e proprietário)
     const { error: e3 } = await supa
       .from("motos")
       .update({
-        municipio_id: trans.municipio_destino_id,
+        municipio_id: trans.municipio_destino_id ?? trans.municipio_id,
         proprietario_nome: data.novoProprietario.nome,
         proprietario_bi: data.novoProprietario.bi ?? null,
         proprietario_contacto: data.novoProprietario.contacto ?? null,
@@ -431,15 +444,21 @@ export const concluirTransferencia = createServerFn({ method: "POST" })
     // 3. Registar no Histórico com Diff Completo de Auditoria
     await supa.from("historico_motos").insert({
       moto_id: trans.moto_id,
-      municipio_id: trans.municipio_destino_id,
+      municipio_id: trans.municipio_destino_id ?? trans.municipio_id,
       tipo_evento: "transferencia",
       descricao: `Transferência concluída. Município alterado de ${nomeOrigem} para ${nomeDestino}. Proprietário alterado de ${moto.proprietario_nome} para ${data.novoProprietario.nome}.`,
       diff: {
         municipio: { antes: nomeOrigem, depois: nomeDestino },
         proprietario_nome: { antes: moto.proprietario_nome, depois: data.novoProprietario.nome },
         proprietario_bi: { antes: moto.proprietario_bi, depois: data.novoProprietario.bi },
-        proprietario_contacto: { antes: moto.proprietario_contacto, depois: data.novoProprietario.contacto },
-        proprietario_endereco: { antes: moto.proprietario_endereco, depois: data.novoProprietario.endereco },
+        proprietario_contacto: {
+          antes: moto.proprietario_contacto,
+          depois: data.novoProprietario.contacto,
+        },
+        proprietario_endereco: {
+          antes: moto.proprietario_endereco,
+          depois: data.novoProprietario.endereco,
+        },
       },
       operador: ctx.nome,
       motivo: data.observacoes ?? trans.motivo,
@@ -449,7 +468,7 @@ export const concluirTransferencia = createServerFn({ method: "POST" })
     await supa.from("notificacoes").insert([
       {
         tipo: "transferencia_concluida",
-        municipio_id: trans.municipio_origem_id,
+        municipio_id: trans.municipio_origem_id ?? trans.municipio_id,
         titulo: "Transferência concluída",
         mensagem: `A transferência da motorizada ${moto.marca} ${moto.modelo} (${moto.chassi}) para o ${nomeDestino} foi concluída com sucesso.`,
         moto_id: trans.moto_id,
@@ -457,7 +476,7 @@ export const concluirTransferencia = createServerFn({ method: "POST" })
       },
       {
         tipo: "transferencia_concluida",
-        municipio_id: trans.municipio_destino_id,
+        municipio_id: trans.municipio_destino_id ?? trans.municipio_id,
         titulo: "Transferência concluída",
         mensagem: `A motorizada ${moto.marca} ${moto.modelo} (${moto.chassi}) foi transferida e registada com sucesso no seu Município.`,
         moto_id: trans.moto_id,
@@ -495,14 +514,15 @@ export const rejeitarTransferencia = createServerFn({ method: "POST" })
 
     if (e1 || !trans) throw new Error("Transferência não encontrada.");
 
-    const eOrigem = trans.municipio_origem_id === ctx.municipioId;
-    const eDestino = trans.municipio_destino_id === ctx.municipioId;
+    const eOrigem = (trans.municipio_origem_id ?? trans.municipio_id) === ctx.municipioId;
+    const eDestino = (trans.municipio_destino_id ?? trans.municipio_id) === ctx.municipioId;
 
     if (!ctx.superAdmin && !eOrigem && !eDestino) {
       throw new Error("Sem permissão para rejeitar esta transferência.");
     }
 
-    if (trans.estado === "concluida") throw new Error("Não é possível rejeitar uma transferência já concluída.");
+    if (trans.estado === "concluida")
+      throw new Error("Não é possível rejeitar uma transferência já concluída.");
 
     const { error: e2 } = await supa
       .from("transferencias")
@@ -517,11 +537,17 @@ export const rejeitarTransferencia = createServerFn({ method: "POST" })
     const { data: munis } = await supa
       .from("municipios")
       .select("id, nome")
-      .in("id", [trans.municipio_origem_id, trans.municipio_destino_id]);
+      .in("id", [
+        trans.municipio_origem_id ?? trans.municipio_id,
+        trans.municipio_destino_id ?? trans.municipio_id,
+      ]);
     const nomesMap = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
-    const quemRejeitou = ctx.municipioId === trans.municipio_origem_id ? "Origem" : "Destino";
-    const municipioNotificar = eOrigem ? trans.municipio_destino_id : trans.municipio_origem_id;
+    const quemRejeitou =
+      ctx.municipioId === (trans.municipio_origem_id ?? trans.municipio_id) ? "Origem" : "Destino";
+    const municipioNotificar = eOrigem
+      ? (trans.municipio_destino_id ?? trans.municipio_id)
+      : (trans.municipio_origem_id ?? trans.municipio_id);
 
     await supa.from("notificacoes").insert({
       tipo: "transferencia_rejeitada",
@@ -534,7 +560,7 @@ export const rejeitarTransferencia = createServerFn({ method: "POST" })
 
     await supa.from("historico_motos").insert({
       moto_id: trans.moto_id,
-      municipio_id: trans.municipio_origem_id,
+      municipio_id: trans.municipio_origem_id ?? trans.municipio_id,
       tipo_evento: "mudanca_estado",
       descricao: `Transferência rejeitada pelo ${nomesMap.get(ctx.municipioId!) ?? "Município"}. Motivo: ${data.motivoRejeicao}`,
       operador: ctx.nome,
@@ -577,15 +603,21 @@ export const listTransferencias = createServerFn({ method: "GET" })
         q = q.eq("municipio_origem_id", ctx.municipioId!);
       } else if (data.aba === "pendentes") {
         q = q
-          .or(`municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`)
+          .or(
+            `municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`,
+          )
           .in("estado", ["pendente_aceitacao", "aguardando_origem"]);
       } else if (data.aba === "concluidas") {
         q = q
-          .or(`municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`)
+          .or(
+            `municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`,
+          )
           .eq("estado", "concluida");
       } else if (data.aba === "rejeitadas") {
         q = q
-          .or(`municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`)
+          .or(
+            `municipio_origem_id.eq.${ctx.municipioId},municipio_destino_id.eq.${ctx.municipioId}`,
+          )
           .eq("estado", "rejeitada");
       } else {
         q = q.or(
@@ -627,8 +659,8 @@ export const listTransferencias = createServerFn({ method: "GET" })
       utilizador_destino_id: r.utilizador_destino_id ?? null,
       estado: (r.estado as EstadoTransferencia) ?? "concluida",
       tipo_fluxo: (r.tipo_fluxo as TipoFluxoTransferencia) ?? "origem_inicia",
-      proprietario_anterior: r.proprietario_anterior ?? {},
-      proprietario_novo: r.proprietario_novo ?? {},
+      proprietario_anterior: (r.proprietario_anterior ?? {}) as DadosProprietario,
+      proprietario_novo: (r.proprietario_novo ?? {}) as DadosProprietario,
       valor_transaccao: r.valor_transaccao ?? null,
       motivo: r.motivo ?? null,
       motivo_rejeicao: r.motivo_rejeicao ?? null,
@@ -661,7 +693,10 @@ export const obterTransferenciaAtivaMoto = createServerFn({ method: "GET" })
     const { data: munis } = await supa
       .from("municipios")
       .select("id, nome")
-      .in("id", [r.municipio_origem_id ?? r.municipio_id, r.municipio_destino_id ?? r.municipio_id]);
+      .in("id", [
+        r.municipio_origem_id ?? r.municipio_id,
+        r.municipio_destino_id ?? r.municipio_id,
+      ]);
     const nomesMap = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
     return {
@@ -676,8 +711,8 @@ export const obterTransferenciaAtivaMoto = createServerFn({ method: "GET" })
       utilizador_destino_id: r.utilizador_destino_id ?? null,
       estado: (r.estado as EstadoTransferencia) ?? "concluida",
       tipo_fluxo: (r.tipo_fluxo as TipoFluxoTransferencia) ?? "origem_inicia",
-      proprietario_anterior: r.proprietario_anterior ?? {},
-      proprietario_novo: r.proprietario_novo ?? {},
+      proprietario_anterior: (r.proprietario_anterior ?? {}) as DadosProprietario,
+      proprietario_novo: (r.proprietario_novo ?? {}) as DadosProprietario,
       valor_transaccao: r.valor_transaccao ?? null,
       motivo: r.motivo ?? null,
       motivo_rejeicao: r.motivo_rejeicao ?? null,

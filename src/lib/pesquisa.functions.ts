@@ -18,7 +18,7 @@ export type ResultadoPesquisaNacional = {
   proprietario_nome?: string | null;
   proprietario_bi?: string | null;
   proprietario_contacto?: string | null;
-  proprietario_morada?: string | null;
+  proprietario_endereco?: string | null;
 };
 
 export type TipoPesquisa = "chassi" | "matricula" | "motor";
@@ -58,27 +58,11 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
 
       const termoLike = `%${data.termo.toUpperCase()}%`;
 
-      // Campos base — visíveis para todos
-      const camposBase = [
-        "id",
-        "chassi",
-        "matricula",
-        "numero_motor",
-        "marca",
-        "modelo",
-        "cor",
-        "estado",
-        "municipio_id",
-        "created_at",
-        "proprietario_nome",
-        "proprietario_bi",
-        "proprietario_contacto",
-        "proprietario_morada",
-      ].join(", ");
-
       const { data: motas, error } = await supa
         .from("motos")
-        .select(camposBase)
+        .select(
+          "id, chassi, matricula, numero_motor, marca, modelo, cor, estado, municipio_id, created_at, proprietario_nome, proprietario_bi, proprietario_contacto, proprietario_endereco",
+        )
         .ilike(campoFiltro, termoLike)
         .order("created_at", { ascending: false })
         .limit(20);
@@ -90,14 +74,15 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
       const { data: munis } = await supa
         .from("municipios")
         .select("id, nome")
-        .in("id", municipioIds.length > 0 ? municipioIds : ["00000000-0000-0000-0000-000000000000"]);
+        .in(
+          "id",
+          municipioIds.length > 0 ? municipioIds : ["00000000-0000-0000-0000-000000000000"],
+        );
       const nomeMunicipio = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
       // Papéis com acesso a dados pessoais do proprietário
       const podeDadosPessoais =
-        ctx.superAdmin ||
-        ctx.papel === "admin_municipal" ||
-        ctx.papel === "policia";
+        ctx.superAdmin || ctx.papel === "admin_municipal" || ctx.papel === "policia";
 
       const resultados: ResultadoPesquisaNacional[] = (motas ?? []).map((m) => {
         // Técnico a ver mota do seu próprio município → acesso completo
@@ -120,7 +105,7 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
           proprietario_nome: acessoCompleto ? (m.proprietario_nome ?? null) : undefined,
           proprietario_bi: acessoCompleto ? (m.proprietario_bi ?? null) : undefined,
           proprietario_contacto: acessoCompleto ? (m.proprietario_contacto ?? null) : undefined,
-          proprietario_morada: acessoCompleto ? (m.proprietario_morada ?? null) : undefined,
+          proprietario_endereco: acessoCompleto ? (m.proprietario_endereco ?? null) : undefined,
         };
       });
 

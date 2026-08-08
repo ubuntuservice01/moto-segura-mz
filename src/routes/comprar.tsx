@@ -10,7 +10,10 @@ export const Route = createFileRoute("/comprar")({
   head: () => ({
     meta: [
       { title: "Comprar Moto — Marketplace MotoVerify MZ" },
-      { name: "description", content: "Motas verificadas à venda em Moçambique. Compre com confiança." },
+      {
+        name: "description",
+        content: "Motas verificadas à venda em Moçambique. Compre com confiança.",
+      },
       { property: "og:title", content: "Marketplace MotoVerify MZ" },
     ],
   }),
@@ -66,7 +69,9 @@ function ComprarPage() {
         >
           <option value="">Todas as marcas</option>
           {marcasUnicas.map((m) => (
-            <option key={m} value={m}>{m}</option>
+            <option key={m} value={m}>
+              {m}
+            </option>
           ))}
         </select>
         <select
@@ -76,7 +81,9 @@ function ComprarPage() {
         >
           <option value="">Todas as províncias</option>
           {PROVINCIAS_MZ.map((p) => (
-            <option key={p} value={p}>{p}</option>
+            <option key={p} value={p}>
+              {p}
+            </option>
           ))}
         </select>
         <input

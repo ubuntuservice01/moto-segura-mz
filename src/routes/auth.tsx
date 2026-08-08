@@ -108,7 +108,10 @@ function AuthPage() {
               <input type="checkbox" className="h-3 w-3 accent-blue-600 cursor-pointer" />
               Remember me
             </label>
-            <button type="button" className="flex items-center gap-1.5 hover:text-blue-600 hover:underline">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 hover:text-blue-600 hover:underline"
+            >
               <div className="h-2 w-2 rounded-sm bg-blue-500" />
               Forgot password?
             </button>
@@ -199,7 +202,11 @@ function Instalacao({ onPronto }: { onPronto: () => void }) {
             disabled={criar.isPending}
             className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
-            {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+            {criar.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <ShieldCheck className="h-4 w-4" />
+            )}
             Criar conta Ubuntu Service
           </button>
         </form>

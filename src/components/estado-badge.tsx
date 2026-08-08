@@ -1,6 +1,14 @@
 import { cn } from "@/lib/utils";
 import { ESTADOS_LABEL, type EstadoMoto } from "@/lib/moto-types";
-import { AlertTriangle, CheckCircle2, Tag, ArrowRightLeft, ShieldCheck, Banknote, Ban } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Tag,
+  ArrowRightLeft,
+  ShieldCheck,
+  Banknote,
+  Ban,
+} from "lucide-react";
 
 const STYLES: Record<EstadoMoto, string> = {
   activa: "bg-secondary/10 text-secondary border-secondary/30",

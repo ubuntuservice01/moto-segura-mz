@@ -62,7 +62,8 @@ function EsquadrasPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Esquadras da Polícia</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Gerir esquadras e agentes da Polícia de Moçambique no {sessao?.municipio?.nome || "Município"}.
+            Gerir esquadras e agentes da Polícia de Moçambique no{" "}
+            {sessao?.municipio?.nome || "Município"}.
           </p>
         </div>
         <button
@@ -94,7 +95,9 @@ function EsquadrasPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm">{eq.nome}</h3>
-                    <span className="text-[10px] text-muted-foreground">{eq.endereco || "Sem endereço"}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {eq.endereco || "Sem endereço"}
+                    </span>
                   </div>
                 </div>
                 <span
@@ -138,7 +141,7 @@ function EsquadrasPage() {
       {/* Modal Nova Esquadra */}
       {modalEsquadra && (
         <ModalNovaEsquadra
-          municipioId={sessao?.municipioId!}
+          municipioId={sessao?.municipioId ?? ""}
           onClose={() => setModalEsquadra(false)}
           onSucesso={() => {
             setModalEsquadra(false);
@@ -151,7 +154,7 @@ function EsquadrasPage() {
       {modalPolicia && (
         <ModalCriarPolicia
           esquadra={modalPolicia}
-          municipioId={sessao?.municipioId!}
+          municipioId={sessao?.municipioId ?? ""}
           onClose={() => setModalPolicia(null)}
         />
       )}
@@ -259,7 +262,11 @@ function ModalNovaEsquadra({
               disabled={criar.isPending}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
             >
-              {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              {criar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
               Criar Esquadra
             </button>
           </div>
@@ -283,7 +290,9 @@ function ModalCriarPolicia({
     email: "",
     palavraPasse: "",
   });
-  const [credencial, setCredencial] = useState<{ email: string; palavraPasse: string } | null>(null);
+  const [credencial, setCredencial] = useState<{ email: string; palavraPasse: string } | null>(
+    null,
+  );
 
   const criar = useMutation({
     mutationFn: () =>
@@ -321,7 +330,9 @@ function ModalCriarPolicia({
         {credencial ? (
           <div className="space-y-4">
             <div className="rounded-xl border bg-muted/30 p-4">
-              <p className="text-xs font-bold text-success mb-2 font-mono">Credenciais de Acesso:</p>
+              <p className="text-xs font-bold text-success mb-2 font-mono">
+                Credenciais de Acesso:
+              </p>
               <p className="text-xs font-mono">Email: {credencial.email}</p>
               <p className="text-xs font-mono">Palavra-passe: {credencial.palavraPasse}</p>
             </div>
@@ -341,7 +352,9 @@ function ModalCriarPolicia({
             className="space-y-3 text-sm"
           >
             <div>
-              <label className="mb-1 block text-xs font-semibold">Nome do Agente / Operador *</label>
+              <label className="mb-1 block text-xs font-semibold">
+                Nome do Agente / Operador *
+              </label>
               <input
                 required
                 value={form.nome}
@@ -386,7 +399,11 @@ function ModalCriarPolicia({
                 disabled={criar.isPending}
                 className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
               >
-                {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                {criar.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
                 Criar Acesso Polícia
               </button>
             </div>

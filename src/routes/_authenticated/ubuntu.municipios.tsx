@@ -34,8 +34,17 @@ export const Route = createFileRoute("/_authenticated/ubuntu/municipios")({
 });
 
 const PROVINCIAS_MZ = [
-  "Cabo Delgado","Gaza","Inhambane","Manica","Maputo","Nampula",
-  "Niassa","Sofala","Tete","Zambézia","Cidade de Maputo",
+  "Cabo Delgado",
+  "Gaza",
+  "Inhambane",
+  "Manica",
+  "Maputo",
+  "Nampula",
+  "Niassa",
+  "Sofala",
+  "Tete",
+  "Zambézia",
+  "Cidade de Maputo",
 ];
 
 const PLANO_COR: Record<string, string> = {
@@ -247,11 +256,22 @@ function ModalCriarMunicipio({
   onCriado: (creds: { papel: string; email: string; palavraPasse: string }[]) => void;
 }) {
   const [form, setForm] = useState({
-    nome: "", provincia: "Niassa", distrito: "", endereco: "",
-    contacto: "", contacto_alt: "", email: "", website: "",
-    logo_url: "", brasao_url: "", cor_principal: "#006633",
-    cor_secundaria: "#FAF92A", nome_plataforma: "",
-    licenca_plano: "base", licenca_validade: "", notas: "",
+    nome: "",
+    provincia: "Niassa",
+    distrito: "",
+    endereco: "",
+    contacto: "",
+    contacto_alt: "",
+    email: "",
+    website: "",
+    logo_url: "",
+    brasao_url: "",
+    cor_principal: "#006633",
+    cor_secundaria: "#FAF92A",
+    nome_plataforma: "",
+    licenca_plano: "base",
+    licenca_validade: "",
+    notas: "",
   });
   const [secao, setSecao] = useState<"institucional" | "visual">("institucional");
 
@@ -277,8 +297,10 @@ function ModalCriarMunicipio({
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [k]: e.target.value }));
+  const f =
+    (k: string) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((p) => ({ ...p, [k]: e.target.value }));
 
   return (
     <Overlay onClose={onClose}>
@@ -310,14 +332,19 @@ function ModalCriarMunicipio({
       </div>
 
       <form
-        onSubmit={(e) => { e.preventDefault(); criar.mutate(); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          criar.mutate();
+        }}
         className="space-y-3"
       >
         {secao === "institucional" ? (
           <>
             <Campo label="Nome do Município *" required>
               <input
-                required value={form.nome} onChange={f("nome")}
+                required
+                value={form.nome}
+                onChange={f("nome")}
                 className={INPUT}
                 placeholder="Município de Lichinga"
               />
@@ -325,7 +352,9 @@ function ModalCriarMunicipio({
             <div className="grid grid-cols-2 gap-3">
               <Campo label="Província *" required>
                 <select required value={form.provincia} onChange={f("provincia")} className={INPUT}>
-                  {PROVINCIAS_MZ.map((p) => <option key={p}>{p}</option>)}
+                  {PROVINCIAS_MZ.map((p) => (
+                    <option key={p}>{p}</option>
+                  ))}
                 </select>
               </Campo>
               <Campo label="Distrito">
@@ -337,17 +366,34 @@ function ModalCriarMunicipio({
             </Campo>
             <div className="grid grid-cols-2 gap-3">
               <Campo label="Contacto principal">
-                <input value={form.contacto} onChange={f("contacto")} className={INPUT} placeholder="+258 8x xxx xxxx" />
+                <input
+                  value={form.contacto}
+                  onChange={f("contacto")}
+                  className={INPUT}
+                  placeholder="+258 8x xxx xxxx"
+                />
               </Campo>
               <Campo label="Contacto alternativo">
                 <input value={form.contacto_alt} onChange={f("contacto_alt")} className={INPUT} />
               </Campo>
             </div>
             <Campo label="Email institucional">
-              <input type="email" value={form.email} onChange={f("email")} className={INPUT} placeholder="geral@municipio.gov.mz" />
+              <input
+                type="email"
+                value={form.email}
+                onChange={f("email")}
+                className={INPUT}
+                placeholder="geral@municipio.gov.mz"
+              />
             </Campo>
             <Campo label="Website">
-              <input type="url" value={form.website} onChange={f("website")} className={INPUT} placeholder="https://municipio.gov.mz" />
+              <input
+                type="url"
+                value={form.website}
+                onChange={f("website")}
+                className={INPUT}
+                placeholder="https://municipio.gov.mz"
+              />
             </Campo>
             <div className="grid grid-cols-2 gap-3">
               <Campo label="Plano de licença">
@@ -358,7 +404,12 @@ function ModalCriarMunicipio({
                 </select>
               </Campo>
               <Campo label="Validade da licença">
-                <input type="date" value={form.licenca_validade} onChange={f("licenca_validade")} className={INPUT} />
+                <input
+                  type="date"
+                  value={form.licenca_validade}
+                  onChange={f("licenca_validade")}
+                  className={INPUT}
+                />
               </Campo>
             </div>
             <Campo label="Notas internas">
@@ -378,29 +429,59 @@ function ModalCriarMunicipio({
             <div className="grid grid-cols-2 gap-3">
               <Campo label="Cor principal">
                 <div className="flex gap-2">
-                  <input type="color" value={form.cor_principal} onChange={f("cor_principal")} className="h-9 w-12 cursor-pointer rounded-md border p-0.5" />
-                  <input value={form.cor_principal} onChange={f("cor_principal")} className={`${INPUT} flex-1`} />
+                  <input
+                    type="color"
+                    value={form.cor_principal}
+                    onChange={f("cor_principal")}
+                    className="h-9 w-12 cursor-pointer rounded-md border p-0.5"
+                  />
+                  <input
+                    value={form.cor_principal}
+                    onChange={f("cor_principal")}
+                    className={`${INPUT} flex-1`}
+                  />
                 </div>
               </Campo>
               <Campo label="Cor secundária">
                 <div className="flex gap-2">
-                  <input type="color" value={form.cor_secundaria} onChange={f("cor_secundaria")} className="h-9 w-12 cursor-pointer rounded-md border p-0.5" />
-                  <input value={form.cor_secundaria} onChange={f("cor_secundaria")} className={`${INPUT} flex-1`} />
+                  <input
+                    type="color"
+                    value={form.cor_secundaria}
+                    onChange={f("cor_secundaria")}
+                    className="h-9 w-12 cursor-pointer rounded-md border p-0.5"
+                  />
+                  <input
+                    value={form.cor_secundaria}
+                    onChange={f("cor_secundaria")}
+                    className={`${INPUT} flex-1`}
+                  />
                 </div>
               </Campo>
             </div>
             <Campo label="URL do Logótipo">
-              <input value={form.logo_url} onChange={f("logo_url")} className={INPUT} placeholder="https://..." />
+              <input
+                value={form.logo_url}
+                onChange={f("logo_url")}
+                className={INPUT}
+                placeholder="https://..."
+              />
             </Campo>
             <Campo label="URL do Brasão (opcional)">
-              <input value={form.brasao_url} onChange={f("brasao_url")} className={INPUT} placeholder="https://..." />
+              <input
+                value={form.brasao_url}
+                onChange={f("brasao_url")}
+                className={INPUT}
+                placeholder="https://..."
+              />
             </Campo>
             {/* Preview */}
             <div
               className="mt-2 rounded-xl border p-4 text-center"
               style={{ borderColor: form.cor_principal }}
             >
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Pré-visualização</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                Pré-visualização
+              </p>
               <div
                 className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-bold text-white"
                 style={{ backgroundColor: form.cor_principal }}
@@ -421,7 +502,11 @@ function ModalCriarMunicipio({
             </button>
           ) : (
             <button type="submit" disabled={criar.isPending} className={BTN_PRIMARY}>
-              {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              {criar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
               Criar Município
             </button>
           )}
@@ -479,49 +564,92 @@ function ModalEditarMunicipio({
           },
         },
       }),
-    onSuccess: () => { toast.success("Município actualizado."); onGuardado(); },
+    onSuccess: () => {
+      toast.success("Município actualizado.");
+      onGuardado();
+    },
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [k]: e.target.value }));
+  const f =
+    (k: string) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((p) => ({ ...p, [k]: e.target.value }));
 
   return (
     <Overlay onClose={onClose}>
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-bold">Editar — {municipio.nome}</h2>
-        <button onClick={onClose} className="rounded-md p-1.5 hover:bg-muted"><X className="h-4 w-4" /></button>
+        <button onClick={onClose} className="rounded-md p-1.5 hover:bg-muted">
+          <X className="h-4 w-4" />
+        </button>
       </div>
-      <form onSubmit={(e) => { e.preventDefault(); guardar.mutate(); }} className="space-y-3">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          guardar.mutate();
+        }}
+        className="space-y-3"
+      >
         <Campo label="Nome do Município">
           <input value={form.nome} onChange={f("nome")} className={INPUT} />
         </Campo>
         <div className="grid grid-cols-2 gap-3">
           <Campo label="Província">
             <select value={form.provincia} onChange={f("provincia")} className={INPUT}>
-              {PROVINCIAS_MZ.map((p) => <option key={p}>{p}</option>)}
+              {PROVINCIAS_MZ.map((p) => (
+                <option key={p}>{p}</option>
+              ))}
             </select>
           </Campo>
           <Campo label="Distrito">
             <input value={form.distrito} onChange={f("distrito")} className={INPUT} />
           </Campo>
         </div>
-        <Campo label="Endereço"><input value={form.endereco} onChange={f("endereco")} className={INPUT} /></Campo>
-        <Campo label="Contacto"><input value={form.contacto} onChange={f("contacto")} className={INPUT} /></Campo>
-        <Campo label="Email"><input type="email" value={form.email} onChange={f("email")} className={INPUT} /></Campo>
-        <Campo label="Website"><input value={form.website} onChange={f("website")} className={INPUT} /></Campo>
-        <Campo label="URL do Logótipo"><input value={form.logo_url} onChange={f("logo_url")} className={INPUT} /></Campo>
+        <Campo label="Endereço">
+          <input value={form.endereco} onChange={f("endereco")} className={INPUT} />
+        </Campo>
+        <Campo label="Contacto">
+          <input value={form.contacto} onChange={f("contacto")} className={INPUT} />
+        </Campo>
+        <Campo label="Email">
+          <input type="email" value={form.email} onChange={f("email")} className={INPUT} />
+        </Campo>
+        <Campo label="Website">
+          <input value={form.website} onChange={f("website")} className={INPUT} />
+        </Campo>
+        <Campo label="URL do Logótipo">
+          <input value={form.logo_url} onChange={f("logo_url")} className={INPUT} />
+        </Campo>
         <div className="grid grid-cols-2 gap-3">
           <Campo label="Cor principal">
             <div className="flex gap-2">
-              <input type="color" value={form.cor_principal} onChange={f("cor_principal")} className="h-9 w-12 cursor-pointer rounded-md border p-0.5" />
-              <input value={form.cor_principal} onChange={f("cor_principal")} className={`${INPUT} flex-1`} />
+              <input
+                type="color"
+                value={form.cor_principal}
+                onChange={f("cor_principal")}
+                className="h-9 w-12 cursor-pointer rounded-md border p-0.5"
+              />
+              <input
+                value={form.cor_principal}
+                onChange={f("cor_principal")}
+                className={`${INPUT} flex-1`}
+              />
             </div>
           </Campo>
           <Campo label="Cor secundária">
             <div className="flex gap-2">
-              <input type="color" value={form.cor_secundaria} onChange={f("cor_secundaria")} className="h-9 w-12 cursor-pointer rounded-md border p-0.5" />
-              <input value={form.cor_secundaria} onChange={f("cor_secundaria")} className={`${INPUT} flex-1`} />
+              <input
+                type="color"
+                value={form.cor_secundaria}
+                onChange={f("cor_secundaria")}
+                className="h-9 w-12 cursor-pointer rounded-md border p-0.5"
+              />
+              <input
+                value={form.cor_secundaria}
+                onChange={f("cor_secundaria")}
+                className={`${INPUT} flex-1`}
+              />
             </div>
           </Campo>
         </div>
@@ -529,9 +657,15 @@ function ModalEditarMunicipio({
           <input value={form.nome_plataforma} onChange={f("nome_plataforma")} className={INPUT} />
         </Campo>
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className={BTN_GHOST}>Cancelar</button>
+          <button type="button" onClick={onClose} className={BTN_GHOST}>
+            Cancelar
+          </button>
           <button type="submit" disabled={guardar.isPending} className={BTN_PRIMARY}>
-            {guardar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            {guardar.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
             Guardar
           </button>
         </div>
@@ -563,20 +697,26 @@ function ModalCredenciais({
         </div>
         <h2 className="text-lg font-bold">Município criado com sucesso!</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Guarde as credenciais abaixo. A palavra-passe <strong>não será mostrada novamente</strong>.
+          Guarde as credenciais abaixo. A palavra-passe <strong>não será mostrada novamente</strong>
+          .
         </p>
       </div>
       <div className="space-y-4">
         {credenciais.map((c) => (
           <div key={c.papel} className="rounded-xl border bg-muted/30 p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">{c.papel}</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+              {c.papel}
+            </p>
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2 rounded-lg bg-card px-3 py-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <Mail className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
                   <span className="text-sm font-mono truncate">{c.email}</span>
                 </div>
-                <button onClick={() => copiar(c.email)} className="flex-shrink-0 rounded p-1 hover:bg-muted">
+                <button
+                  onClick={() => copiar(c.email)}
+                  className="flex-shrink-0 rounded p-1 hover:bg-muted"
+                >
                   <Copy className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -585,7 +725,10 @@ function ModalCredenciais({
                   <Globe className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
                   <span className="text-sm font-mono truncate">{c.palavraPasse}</span>
                 </div>
-                <button onClick={() => copiar(c.palavraPasse)} className="flex-shrink-0 rounded p-1 hover:bg-muted">
+                <button
+                  onClick={() => copiar(c.palavraPasse)}
+                  className="flex-shrink-0 rounded p-1 hover:bg-muted"
+                >
                   <Copy className="h-3.5 w-3.5" />
                 </button>
               </div>

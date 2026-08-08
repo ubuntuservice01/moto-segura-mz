@@ -49,7 +49,13 @@ const TIPO_LABEL: Record<string, string> = {
 
 function rgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
-  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const full =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
   const n = parseInt(full, 16);
   if (Number.isNaN(n)) return [0, 102, 51];
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
@@ -63,7 +69,6 @@ function dataStr(iso: string) {
 function txt(s: string): string {
   return s.replace(/→/g, "->").replace(/[•·]/g, "*").replace(/[’‘]/g, "'").replace(/[“”]/g, '"');
 }
-
 
 /** Converte um asset (url) em data URL para embutir no PDF */
 export async function toDataUrl(url: string): Promise<string | null> {
@@ -377,7 +382,6 @@ export function gerarLivretePDF(moto: MotoPublica, opts: IdentidadeOpcoes) {
     cy += 5.6;
   });
 
-
   // ---- VERSO ----
   doc.addPage([W, H], "landscape");
   doc.setFillColor(...principal);
@@ -394,7 +398,9 @@ export function gerarLivretePDF(moto: MotoPublica, opts: IdentidadeOpcoes) {
   doc.setTextColor(70, 70, 70);
   doc.text(
     doc.splitTextToSize(
-      txt(`Consulte o estado actual desta mota em motocheck-mz.lovable.app/verificar usando o chassi ${chassi}. Este livrete é um comprovativo de registo e não substitui documentação oficial emitida pelas autoridades.`),
+      txt(
+        `Consulte o estado actual desta mota em motocheck-mz.lovable.app/verificar usando o chassi ${chassi}. Este livrete é um comprovativo de registo e não substitui documentação oficial emitida pelas autoridades.`,
+      ),
       W - 12,
     ) as string[],
     6,
