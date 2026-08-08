@@ -10,13 +10,14 @@ export type EstadoTransferencia =
   | "rejeitada";
 export type TipoFluxoTransferencia = "origem_inicia" | "destino_solicita";
 
+export type DadosProprietario = Record<string, string | number | boolean | null>;
+
 export interface ItemTransferencia {
   id: string;
   moto_id: string;
   municipio_id: string;
   municipio_origem_id: string;
   municipio_origem_nome: string;
-export type DadosProprietario = Record<string, string | number | boolean | null>;
   municipio_destino_id: string;
   municipio_destino_nome: string;
   utilizador_origem_id: string | null;
