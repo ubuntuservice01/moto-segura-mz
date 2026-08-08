@@ -55,7 +55,7 @@ function TransferirMota() {
       iniciarTransferenciaOrigem({
         data: {
           motoId: moto.id,
-          municipioDestinoId: municipioDestinoId || sessao?.municipioId!,
+          municipioDestinoId: municipioDestinoId || (sessao?.municipioId ?? ""),
           novoProprietario: {
             nome: form.nome.trim(),
             bi: form.bi || null,

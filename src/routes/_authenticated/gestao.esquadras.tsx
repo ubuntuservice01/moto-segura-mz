@@ -141,7 +141,7 @@ function EsquadrasPage() {
       {/* Modal Nova Esquadra */}
       {modalEsquadra && (
         <ModalNovaEsquadra
-          municipioId={sessao?.municipioId!}
+          municipioId={sessao?.municipioId ?? ""}
           onClose={() => setModalEsquadra(false)}
           onSucesso={() => {
             setModalEsquadra(false);
@@ -154,7 +154,7 @@ function EsquadrasPage() {
       {modalPolicia && (
         <ModalCriarPolicia
           esquadra={modalPolicia}
-          municipioId={sessao?.municipioId!}
+          municipioId={sessao?.municipioId ?? ""}
           onClose={() => setModalPolicia(null)}
         />
       )}

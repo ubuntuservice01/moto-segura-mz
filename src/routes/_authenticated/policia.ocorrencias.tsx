@@ -146,7 +146,6 @@ function OcorrenciasPage() {
       {/* Modal Registar Ocorrência */}
       {modalNovo && (
         <ModalNovaOcorrencia
-          municipioId={sessao?.municipioId!}
           onClose={() => setModalNovo(false)}
           onSucesso={() => {
             setModalNovo(false);
@@ -162,7 +161,6 @@ function ModalNovaOcorrencia({
   onClose,
   onSucesso,
 }: {
-  municipioId: string;
   onClose: () => void;
   onSucesso: () => void;
 }) {
@@ -213,7 +211,7 @@ function ModalNovaOcorrencia({
             <label className="mb-1 block text-xs font-semibold">Tipo de Identificador *</label>
             <select
               value={tipo}
-              onChange={(e) => setTipo(e.target.value as any)}
+              onChange={(e) => setTipo(e.target.value as "chassi" | "matricula" | "motor")}
               className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
             >
               <option value="chassi">Número do Chassi</option>
