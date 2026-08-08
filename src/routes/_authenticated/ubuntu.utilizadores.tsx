@@ -23,6 +23,7 @@ import {
   eliminarUtilizador,
   type UtilizadorPlataforma,
 } from "@/lib/plataforma.functions";
+import type { Papel } from "@/lib/permissoes";
 
 export const Route = createFileRoute("/_authenticated/ubuntu/utilizadores")({
   ssr: false,
