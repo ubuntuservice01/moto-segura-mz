@@ -58,27 +58,11 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
 
       const termoLike = `%${data.termo.toUpperCase()}%`;
 
-      // Campos base — visíveis para todos
-      const camposBase = [
-        "id",
-        "chassi",
-        "matricula",
-        "numero_motor",
-        "marca",
-        "modelo",
-        "cor",
-        "estado",
-        "municipio_id",
-        "created_at",
-        "proprietario_nome",
-        "proprietario_bi",
-        "proprietario_contacto",
-        "proprietario_endereco",
-      ].join(", ");
-
       const { data: motas, error } = await supa
         .from("motos")
-        .select(camposBase)
+        .select(
+          "id, chassi, matricula, numero_motor, marca, modelo, cor, estado, municipio_id, created_at, proprietario_nome, proprietario_bi, proprietario_contacto, proprietario_endereco",
+        )
         .ilike(campoFiltro, termoLike)
         .order("created_at", { ascending: false })
         .limit(20);
