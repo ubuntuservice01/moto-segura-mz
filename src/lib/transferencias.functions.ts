@@ -22,8 +22,8 @@ export interface ItemTransferencia {
   utilizador_destino_id: string | null;
   estado: EstadoTransferencia;
   tipo_fluxo: TipoFluxoTransferencia;
-  proprietario_anterior: Record<string, any>;
-  proprietario_novo: Record<string, any>;
+  proprietario_anterior: Record<string, unknown>;
+  proprietario_novo: Record<string, unknown>;
   valor_transaccao: number | null;
   motivo: string | null;
   motivo_rejeicao: string | null;
@@ -657,8 +657,8 @@ export const listTransferencias = createServerFn({ method: "GET" })
       utilizador_destino_id: r.utilizador_destino_id ?? null,
       estado: (r.estado as EstadoTransferencia) ?? "concluida",
       tipo_fluxo: (r.tipo_fluxo as TipoFluxoTransferencia) ?? "origem_inicia",
-      proprietario_anterior: (r.proprietario_anterior ?? {}) as Record<string, any>,
-      proprietario_novo: (r.proprietario_novo ?? {}) as Record<string, any>,
+      proprietario_anterior: (r.proprietario_anterior ?? {}) as Record<string, unknown>,
+      proprietario_novo: (r.proprietario_novo ?? {}) as Record<string, unknown>,
       valor_transaccao: r.valor_transaccao ?? null,
       motivo: r.motivo ?? null,
       motivo_rejeicao: r.motivo_rejeicao ?? null,
@@ -709,8 +709,8 @@ export const obterTransferenciaAtivaMoto = createServerFn({ method: "GET" })
       utilizador_destino_id: r.utilizador_destino_id ?? null,
       estado: (r.estado as EstadoTransferencia) ?? "concluida",
       tipo_fluxo: (r.tipo_fluxo as TipoFluxoTransferencia) ?? "origem_inicia",
-      proprietario_anterior: (r.proprietario_anterior ?? {}) as Record<string, any>,
-      proprietario_novo: (r.proprietario_novo ?? {}) as Record<string, any>,
+      proprietario_anterior: (r.proprietario_anterior ?? {}) as Record<string, unknown>,
+      proprietario_novo: (r.proprietario_novo ?? {}) as Record<string, unknown>,
       valor_transaccao: r.valor_transaccao ?? null,
       motivo: r.motivo ?? null,
       motivo_rejeicao: r.motivo_rejeicao ?? null,
