@@ -15,7 +15,7 @@ const safePathSchema = z
   .string()
   .min(1)
   .max(500)
-  .regex(/^motos\/[A-Za-z0-9._-]+\/[A-Za-z0-9._\-\/]+$/, "Caminho inválido");
+  .regex(/^motos\/[A-Za-z0-9._-]+\/[A-Za-z0-9._\-/]+$/, "Caminho inválido");
 
 export const createDocUploadUrl = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>

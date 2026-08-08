@@ -306,7 +306,7 @@ function ModalCriarUtilizador({
             <label className="mb-1 block text-xs font-semibold">Papel / Função *</label>
             <select
               value={form.papel}
-              onChange={(e) => setForm((p) => ({ ...p, papel: e.target.value as any }))}
+              onChange={(e) => setForm((p) => ({ ...p, papel: e.target.value as Papel }))}
               className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-primary"
             >
               <option value="tecnico_municipal">Técnico Municipal</option>
