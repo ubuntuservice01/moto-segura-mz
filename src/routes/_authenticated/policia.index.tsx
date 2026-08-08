@@ -31,13 +31,13 @@ type MotoDetalhe = {
   marca: string;
   modelo: string;
   cor: string | null;
-  ano_fabrico: number | null;
-  cilindrada: string | null;
+  ano: number | null;
+  cilindrada: number | null;
   estado: string;
   proprietario_nome: string;
-  proprietario_bi: string;
-  proprietario_contacto: string;
-  proprietario_morada: string | null;
+  proprietario_bi: string | null;
+  proprietario_contacto: string | null;
+  proprietario_endereco: string | null;
   created_at: string;
 };
 
@@ -176,7 +176,7 @@ function PoliciaIndexPage() {
                       <strong>Cor:</strong> {m.cor || "—"}
                     </p>
                     <p>
-                      <strong>Cilindrada / Ano:</strong> {m.cilindrada || "—"} ({m.ano_fabrico || "—"})
+                      <strong>Cilindrada / Ano:</strong> {m.cilindrada || "—"} ({m.ano || "—"})
                     </p>
                   </div>
 
@@ -195,7 +195,7 @@ function PoliciaIndexPage() {
                     </p>
                     <p className="flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" />
-                      {m.proprietario_morada || "Sem morada"}
+                      {m.proprietario_endereco || "Sem morada"}
                     </p>
                   </div>
 

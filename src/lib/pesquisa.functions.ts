@@ -18,7 +18,7 @@ export type ResultadoPesquisaNacional = {
   proprietario_nome?: string | null;
   proprietario_bi?: string | null;
   proprietario_contacto?: string | null;
-  proprietario_morada?: string | null;
+  proprietario_endereco?: string | null;
 };
 
 export type TipoPesquisa = "chassi" | "matricula" | "motor";
@@ -73,7 +73,7 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
         "proprietario_nome",
         "proprietario_bi",
         "proprietario_contacto",
-        "proprietario_morada",
+        "proprietario_endereco",
       ].join(", ");
 
       const { data: motas, error } = await supa
@@ -120,7 +120,7 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
           proprietario_nome: acessoCompleto ? (m.proprietario_nome ?? null) : undefined,
           proprietario_bi: acessoCompleto ? (m.proprietario_bi ?? null) : undefined,
           proprietario_contacto: acessoCompleto ? (m.proprietario_contacto ?? null) : undefined,
-          proprietario_morada: acessoCompleto ? (m.proprietario_morada ?? null) : undefined,
+          proprietario_endereco: acessoCompleto ? (m.proprietario_endereco ?? null) : undefined,
         };
       });
 
