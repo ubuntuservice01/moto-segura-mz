@@ -34,8 +34,8 @@ function NovaMota() {
         <div className="mt-6 rounded-xl border-2 border-secondary bg-secondary/5 p-5">
           <h3 className="text-base font-bold text-secondary">Código de Recuperação gerado</h3>
           <p className="mt-1 text-sm">
-            Entregue este código ao proprietário. Ele é necessário para reportar a mota como
-            roubada e <strong>não voltará a ser mostrado</strong>.
+            Entregue este código ao proprietário. Ele é necessário para reportar a mota como roubada
+            e <strong>não voltará a ser mostrado</strong>.
           </p>
           <p className="mt-3 select-all rounded-lg bg-card px-4 py-3 text-center font-mono text-2xl font-bold tracking-widest">
             {codigo.codigo}

@@ -3,11 +3,9 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
 export function sbAdmin() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
 
 let cachedDefault: string | null = null;

@@ -12,11 +12,7 @@ import {
   Building2,
   FileJson,
 } from "lucide-react";
-import {
-  listMunicipios,
-  exportarBackup,
-  restaurarBackup,
-} from "@/lib/plataforma.functions";
+import { listMunicipios, exportarBackup, restaurarBackup } from "@/lib/plataforma.functions";
 
 export const Route = createFileRoute("/_authenticated/ubuntu/backups")({
   ssr: false,
@@ -73,7 +69,8 @@ function BackupsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Cópias de Segurança & Restauro</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Fazer backup dos dados nacionais ou por município e restaurar registos em caso de emergência.
+          Fazer backup dos dados nacionais ou por município e restaurar registos em caso de
+          emergência.
         </p>
       </div>
 
@@ -113,7 +110,11 @@ function BackupsPage() {
             disabled={exportar.isPending}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
-            {exportar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            {exportar.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
             Gerar e Descarregar Backup
           </button>
         </div>
@@ -138,7 +139,8 @@ function BackupsPage() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
               <p>
-                <strong>Atenção:</strong> O restauro realiza inserções de registos em falta. Registos com o mesmo ID não serão duplicados.
+                <strong>Atenção:</strong> O restauro realiza inserções de registos em falta.
+                Registos com o mesmo ID não serão duplicados.
               </p>
             </div>
           </div>
@@ -170,7 +172,11 @@ function BackupsPage() {
             disabled={restaurar.isPending || !jsonInput}
             className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
           >
-            {restaurar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            {restaurar.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4" />
+            )}
             Iniciar Restauro
           </button>
 

@@ -84,10 +84,19 @@ function GestaoLayout() {
 
         {/* NAVEGAÇÃO DE TABS */}
         <nav className="flex flex-wrap items-center gap-2">
-          <TabLink to="/gestao" exact icon={<LayoutGrid className="h-4 w-4" />} active={path === "/gestao"}>
+          <TabLink
+            to="/gestao"
+            exact
+            icon={<LayoutGrid className="h-4 w-4" />}
+            active={path === "/gestao"}
+          >
             Motas
           </TabLink>
-          <TabLink to="/gestao/nova" icon={<Plus className="h-4 w-4" />} active={path === "/gestao/nova"}>
+          <TabLink
+            to="/gestao/nova"
+            icon={<Plus className="h-4 w-4" />}
+            active={path === "/gestao/nova"}
+          >
             Nova
           </TabLink>
           <TabLink

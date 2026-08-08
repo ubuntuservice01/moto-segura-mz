@@ -46,12 +46,18 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <p className="mt-2 text-sm text-muted-foreground">Algo correu mal. Tente novamente.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             Tentar de novo
           </button>
-          <a href="/" className="rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-accent">
+          <a
+            href="/"
+            className="rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
+          >
             Início
           </a>
         </div>
@@ -71,16 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "MotoCheck MZ: plataforma pública de verificação de propriedade e mercado de motas em Moçambique.",
       },
-      { property: "og:title", content: "MotoCheck MZ — Verifique. Confirme. Compre com segurança." },
+      {
+        property: "og:title",
+        content: "MotoCheck MZ — Verifique. Confirme. Compre com segurança.",
+      },
       {
         property: "og:description",
-        content: "Verifique qualquer mota pelo chassi. Marketplace de motas verificadas em Moçambique.",
+        content:
+          "Verifique qualquer mota pelo chassi. Marketplace de motas verificadas em Moçambique.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "MotoCheck MZ" },
-      { name: "twitter:description", content: "Verifique qualquer mota pelo chassi em Moçambique." },
-
+      {
+        name: "twitter:description",
+        content: "Verifique qualquer mota pelo chassi em Moçambique.",
+      },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),

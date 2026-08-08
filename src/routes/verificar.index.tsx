@@ -11,9 +11,15 @@ export const Route = createFileRoute("/verificar/")({
   head: () => ({
     meta: [
       { title: "Verificar Chassi — MotoCheck MZ" },
-      { name: "description", content: "Pesquise o chassi de qualquer mota registada em Moçambique." },
+      {
+        name: "description",
+        content: "Pesquise o chassi de qualquer mota registada em Moçambique.",
+      },
       { property: "og:title", content: "Verificar Chassi — MotoCheck MZ" },
-      { property: "og:description", content: "Consulte o estado e histórico de qualquer mota registada em Moçambique." },
+      {
+        property: "og:description",
+        content: "Consulte o estado e histórico de qualquer mota registada em Moçambique.",
+      },
     ],
   }),
   component: VerificarPage,
@@ -65,7 +71,11 @@ function VerificarPage() {
             disabled={mut.isPending || q.trim().length < 2}
             className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground transition hover:opacity-90 disabled:opacity-50"
           >
-            {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+            {mut.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Search className="h-4 w-4" />
+            )}
             Verificar
           </button>
         </div>
@@ -82,8 +92,8 @@ function VerificarPage() {
           <div className="rounded-xl border border-dashed bg-card p-8 text-center">
             <p className="text-base font-semibold">Nenhuma mota encontrada com "{q}".</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Confirme o número do chassi e tente novamente. Se a mota ainda não está no
-              sistema, pode fazer um pré-registo para revisão pelo operador Ubuntu Service.
+              Confirme o número do chassi e tente novamente. Se a mota ainda não está no sistema,
+              pode fazer um pré-registo para revisão pelo operador Ubuntu Service.
             </p>
             {!mostrarPreRegisto && (
               <button
@@ -130,7 +140,10 @@ function VerificarPage() {
             <li>2. Introduza pelo menos 2 caracteres consecutivos.</li>
             <li>3. Veja a ficha completa, histórico e estado actual.</li>
           </ol>
-          <Link to="/" className="mt-6 inline-block text-sm font-semibold text-secondary hover:underline">
+          <Link
+            to="/"
+            className="mt-6 inline-block text-sm font-semibold text-secondary hover:underline"
+          >
             ← Voltar ao início
           </Link>
         </div>

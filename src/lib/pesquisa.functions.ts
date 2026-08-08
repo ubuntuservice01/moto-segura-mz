@@ -74,14 +74,15 @@ export const pesquisaNacional = createServerFn({ method: "GET" })
       const { data: munis } = await supa
         .from("municipios")
         .select("id, nome")
-        .in("id", municipioIds.length > 0 ? municipioIds : ["00000000-0000-0000-0000-000000000000"]);
+        .in(
+          "id",
+          municipioIds.length > 0 ? municipioIds : ["00000000-0000-0000-0000-000000000000"],
+        );
       const nomeMunicipio = new Map((munis ?? []).map((m) => [m.id, m.nome]));
 
       // Papéis com acesso a dados pessoais do proprietário
       const podeDadosPessoais =
-        ctx.superAdmin ||
-        ctx.papel === "admin_municipal" ||
-        ctx.papel === "policia";
+        ctx.superAdmin || ctx.papel === "admin_municipal" || ctx.papel === "policia";
 
       const resultados: ResultadoPesquisaNacional[] = (motas ?? []).map((m) => {
         // Técnico a ver mota do seu próprio município → acesso completo

@@ -65,9 +65,7 @@ const reporteSchema = z.object({
 export const reportarRoubo = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => reporteSchema.parse(d))
   .handler(
-    async ({
-      data,
-    }): Promise<{ ok: true; chassi: string; marca: string; modelo: string }> => {
+    async ({ data }): Promise<{ ok: true; chassi: string; marca: string; modelo: string }> => {
       const supa = sbAdmin();
       const ip =
         getRequestHeader("cf-connecting-ip") ??
@@ -278,7 +276,13 @@ export const registarAvistamento = createServerFn({ method: "POST" })
       .eq("id", data.motoId)
       .maybeSingle();
     if (!moto) throw new Error("Motorizada não encontrada");
-    const m = moto as { id: string; chassi: string; marca: string; modelo: string; municipio_id: string };
+    const m = moto as {
+      id: string;
+      chassi: string;
+      marca: string;
+      modelo: string;
+      municipio_id: string;
+    };
 
     const { error } = await supa.from("avistamentos").insert({
       moto_id: data.motoId,

@@ -163,7 +163,11 @@ export const criarMunicipio = createServerFn({ method: "POST" })
       return {
         municipio,
         credenciais: [
-          { papel: "Administrador Municipal", email: admin.email, palavraPasse: admin.palavraPasse },
+          {
+            papel: "Administrador Municipal",
+            email: admin.email,
+            palavraPasse: admin.palavraPasse,
+          },
           { papel: "Técnico Municipal", email: tecnico.email, palavraPasse: tecnico.palavraPasse },
         ],
       };
@@ -237,7 +241,14 @@ export type EstatisticasNacionais = {
   utilizadores: { total: number; porPapel: Record<string, number> };
   esquadras: number;
   transferencias: number;
-  ultimosRegistos: { id: string; chassi: string; marca: string; modelo: string; municipio: string; created_at: string }[];
+  ultimosRegistos: {
+    id: string;
+    chassi: string;
+    marca: string;
+    modelo: string;
+    municipio: string;
+    created_at: string;
+  }[];
   ultimasTransferencias: { id: string; moto_id: string; municipio: string; created_at: string }[];
   ultimosReportes: { id: string; identificador: string; sucesso: boolean; created_at: string }[];
   porMunicipio: { nome: string; total: number }[];
@@ -420,7 +431,11 @@ export const eliminarUtilizador = createServerFn({ method: "POST" })
     const ctx = await contextoUtilizador(context.userId);
     if (data.id === ctx.userId) throw new Error("Não pode eliminar a sua própria conta.");
     const supa = sbAdmin();
-    const { data: alvo } = await supa.from("perfis").select("municipio_id").eq("id", data.id).maybeSingle();
+    const { data: alvo } = await supa
+      .from("perfis")
+      .select("municipio_id")
+      .eq("id", data.id)
+      .maybeSingle();
     if (!ctx.superAdmin) {
       exigirPermissao(ctx, "utilizadores.gerir");
       if (!alvo || alvo.municipio_id !== ctx.municipioId)
@@ -457,7 +472,10 @@ export const exportarBackup = createServerFn({ method: "POST" })
     for (const t of tabelas) {
       let q = supa.from(t as "motos").select("*");
       if (data.municipioId) {
-        q = t === "municipios" ? q.eq("id", data.municipioId) : q.eq("municipio_id", data.municipioId);
+        q =
+          t === "municipios"
+            ? q.eq("id", data.municipioId)
+            : q.eq("municipio_id", data.municipioId);
       }
       const { data: rows } = await q;
       dados[t] = (rows ?? []) as unknown[];

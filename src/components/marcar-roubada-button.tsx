@@ -103,7 +103,11 @@ export function MarcarRoubadaButton({
                 disabled={mut.isPending || motivo.trim().length < 5}
                 className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-sm font-semibold text-destructive-foreground hover:opacity-90 disabled:opacity-50"
               >
-                {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertTriangle className="h-4 w-4" />}
+                {mut.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <AlertTriangle className="h-4 w-4" />
+                )}
                 Confirmar roubo
               </button>
             </div>

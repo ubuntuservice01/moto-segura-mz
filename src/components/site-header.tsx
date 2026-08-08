@@ -1,5 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingBag, Settings, ShieldAlert, ShieldCheck, LogIn, LogOut, Shield, Globe } from "lucide-react";
+import {
+  Search,
+  ShoppingBag,
+  Settings,
+  ShieldAlert,
+  ShieldCheck,
+  LogIn,
+  LogOut,
+  Shield,
+  Globe,
+} from "lucide-react";
 import { useSessao } from "@/hooks/use-sessao";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,19 +45,35 @@ export function SiteHeader() {
 
         <nav className="flex items-center gap-1">
           <NavLink to="/verificar" icon={<Search className="h-4 w-4" />} label="Verificar" />
-          <NavLink to="/reportar-roubo" icon={<ShieldAlert className="h-4 w-4" />} label="Reportar roubo" />
+          <NavLink
+            to="/reportar-roubo"
+            icon={<ShieldAlert className="h-4 w-4" />}
+            label="Reportar roubo"
+          />
           <NavLink to="/comprar" icon={<ShoppingBag className="h-4 w-4" />} label="Comprar" />
 
           {autenticado ? (
             <>
               {/* Pesquisa Nacional rápida */}
-              <NavLink to="/pesquisa-nacional" icon={<Globe className="h-4 w-4 text-primary" />} label="Nacional" />
+              <NavLink
+                to="/pesquisa-nacional"
+                icon={<Globe className="h-4 w-4 text-primary" />}
+                label="Nacional"
+              />
 
               {/* Botão de Painel consoante o Papel */}
               {sessao?.superAdmin ? (
-                <NavLink to="/ubuntu" icon={<Shield className="h-4 w-4 text-purple-600" />} label="Ubuntu Service" />
+                <NavLink
+                  to="/ubuntu"
+                  icon={<Shield className="h-4 w-4 text-purple-600" />}
+                  label="Ubuntu Service"
+                />
               ) : sessao?.papel === "policia" ? (
-                <NavLink to="/policia" icon={<Shield className="h-4 w-4 text-amber-600" />} label="Polícia" />
+                <NavLink
+                  to="/policia"
+                  icon={<Shield className="h-4 w-4 text-amber-600" />}
+                  label="Polícia"
+                />
               ) : (
                 <NavLink to="/gestao" icon={<Settings className="h-4 w-4" />} label="Gestão" />
               )}
@@ -102,7 +128,9 @@ export function SiteFooter() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-secondary" />
-            <span>MotoGest MZ — Plataforma Nacional de Gestão de Motorizadas por Ubuntu Service.</span>
+            <span>
+              MotoGest MZ — Plataforma Nacional de Gestão de Motorizadas por Ubuntu Service.
+            </span>
           </div>
           <p className="text-xs">© {new Date().getFullYear()} MotoGest MZ</p>
         </div>

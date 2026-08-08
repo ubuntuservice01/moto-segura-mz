@@ -62,59 +62,112 @@ export function PreRegistoForm({ chassiInicial, onSuccess }: Props) {
     );
   }
 
-  const input = "w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20";
+  const input =
+    "w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20";
 
   return (
     <form onSubmit={submit} className="space-y-4 rounded-xl border bg-card p-5">
       <div>
         <h3 className="text-base font-semibold">Fazer pré-registo</h3>
         <p className="mt-1 text-xs text-muted-foreground">
-          Preencha os dados básicos. Um operador Ubuntu Service vai validar antes de a mota
-          aparecer no sistema.
+          Preencha os dados básicos. Um operador Ubuntu Service vai validar antes de a mota aparecer
+          no sistema.
         </p>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Chassi *</span>
-          <input required minLength={4} value={form.chassi} onChange={(e) => setForm({ ...form, chassi: e.target.value.toUpperCase() })} className={input + " font-mono"} />
+          <input
+            required
+            minLength={4}
+            value={form.chassi}
+            onChange={(e) => setForm({ ...form, chassi: e.target.value.toUpperCase() })}
+            className={input + " font-mono"}
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Marca *</span>
-          <input required value={form.marca} onChange={(e) => setForm({ ...form, marca: e.target.value })} className={input} placeholder="Ex: Honda" />
+          <input
+            required
+            value={form.marca}
+            onChange={(e) => setForm({ ...form, marca: e.target.value })}
+            className={input}
+            placeholder="Ex: Honda"
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Modelo *</span>
-          <input required value={form.modelo} onChange={(e) => setForm({ ...form, modelo: e.target.value })} className={input} placeholder="Ex: CG 125" />
+          <input
+            required
+            value={form.modelo}
+            onChange={(e) => setForm({ ...form, modelo: e.target.value })}
+            className={input}
+            placeholder="Ex: CG 125"
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Ano</span>
-          <input type="number" min={1950} max={2100} value={form.ano} onChange={(e) => setForm({ ...form, ano: e.target.value })} className={input} />
+          <input
+            type="number"
+            min={1950}
+            max={2100}
+            value={form.ano}
+            onChange={(e) => setForm({ ...form, ano: e.target.value })}
+            className={input}
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Cor</span>
-          <input value={form.cor} onChange={(e) => setForm({ ...form, cor: e.target.value })} className={input} />
+          <input
+            value={form.cor}
+            onChange={(e) => setForm({ ...form, cor: e.target.value })}
+            className={input}
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Província</span>
-          <select value={form.proprietario_provincia} onChange={(e) => setForm({ ...form, proprietario_provincia: e.target.value })} className={input}>
+          <select
+            value={form.proprietario_provincia}
+            onChange={(e) => setForm({ ...form, proprietario_provincia: e.target.value })}
+            className={input}
+          >
             <option value="">—</option>
-            {PROVINCIAS_MZ.map((p) => <option key={p} value={p}>{p}</option>)}
+            {PROVINCIAS_MZ.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
           </select>
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Nome do proprietário *</span>
-          <input required value={form.proprietario_nome} onChange={(e) => setForm({ ...form, proprietario_nome: e.target.value })} className={input} />
+          <input
+            required
+            value={form.proprietario_nome}
+            onChange={(e) => setForm({ ...form, proprietario_nome: e.target.value })}
+            className={input}
+          />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium">Contacto</span>
-          <input value={form.proprietario_contacto} onChange={(e) => setForm({ ...form, proprietario_contacto: e.target.value })} className={input} placeholder="+258 ..." />
+          <input
+            value={form.proprietario_contacto}
+            onChange={(e) => setForm({ ...form, proprietario_contacto: e.target.value })}
+            className={input}
+            placeholder="+258 ..."
+          />
         </label>
       </div>
 
       <label className="block">
         <span className="mb-1 block text-xs font-medium">Notas (opcional)</span>
-        <textarea rows={2} value={form.notas} onChange={(e) => setForm({ ...form, notas: e.target.value })} className={input + " resize-none"} />
+        <textarea
+          rows={2}
+          value={form.notas}
+          onChange={(e) => setForm({ ...form, notas: e.target.value })}
+          className={input + " resize-none"}
+        />
       </label>
 
       <button
@@ -122,7 +175,11 @@ export function PreRegistoForm({ chassiInicial, onSuccess }: Props) {
         disabled={mut.isPending}
         className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-50"
       >
-        {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+        {mut.isPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Send className="h-4 w-4" />
+        )}
         Enviar pré-registo
       </button>
     </form>

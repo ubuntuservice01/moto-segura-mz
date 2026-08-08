@@ -11,8 +11,9 @@ export function AlertaRoubada({ children }: { children?: React.ReactNode }) {
         <div className="flex-1">
           <h3 className="text-lg font-bold text-destructive">MOTA REPORTADA COMO ROUBADA</h3>
           <p className="mt-1 text-sm text-foreground">
-            Esta mota consta como roubada no registo Ubuntu Service. Não compre nem use esta viatura.
-            Se a viu ou tem informações, contacte de imediato a Polícia da República de Moçambique.
+            Esta mota consta como roubada no registo Ubuntu Service. Não compre nem use esta
+            viatura. Se a viu ou tem informações, contacte de imediato a Polícia da República de
+            Moçambique.
           </p>
           <div className="mt-3 inline-flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-1.5 text-sm font-semibold text-destructive">
             <Phone className="h-4 w-4" /> Linha PRM: 119

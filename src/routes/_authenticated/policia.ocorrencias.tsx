@@ -49,14 +49,14 @@ function OcorrenciasPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Ocorrências Policiais</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Registo e acompanhamento de roubos e recuperações no {sessao?.municipio?.nome || "Município"}.
+            Registo e acompanhamento de roubos e recuperações no{" "}
+            {sessao?.municipio?.nome || "Município"}.
           </p>
         </div>
         <button
@@ -125,7 +125,9 @@ function OcorrenciasPage() {
                   <td className="px-4 py-3 text-right">
                     {!r.sucesso && (
                       <button
-                        onClick={() => marcarRecuperada.mutate({ reporteId: r.id, motoId: r.moto_id })}
+                        onClick={() =>
+                          marcarRecuperada.mutate({ reporteId: r.id, motoId: r.moto_id })
+                        }
                         disabled={marcarRecuperada.isPending}
                         className="inline-flex items-center gap-1 rounded-md bg-success/10 border border-success/30 px-2.5 py-1 text-xs font-bold text-success hover:bg-success hover:text-white transition-colors"
                       >
@@ -190,7 +192,6 @@ function ModalNovaOcorrencia({
     onError: (e) => toast.error((e as Error).message),
   });
 
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div className="w-full max-w-md rounded-2xl bg-card p-6 shadow-2xl">
@@ -243,7 +244,9 @@ function ModalNovaOcorrencia({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold">Descrição / Circunstâncias do Roubo</label>
+            <label className="mb-1 block text-xs font-semibold">
+              Descrição / Circunstâncias do Roubo
+            </label>
             <textarea
               required
               rows={3}
@@ -267,7 +270,11 @@ function ModalNovaOcorrencia({
               disabled={criar.isPending}
               className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
             >
-              {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              {criar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
               Submeter Ocorrência
             </button>
           </div>

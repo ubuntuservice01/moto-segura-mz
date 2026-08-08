@@ -72,7 +72,9 @@ function TransferenciasPage() {
     mutationFn: (id: string) => aprovarSolicitacaoOrigem({ data: { transferenciaId: id } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["transferencias-painel"] });
-      toast.success("Solicitação aprovada! O município de destino pode agora concluir a transferência.");
+      toast.success(
+        "Solicitação aprovada! O município de destino pode agora concluir a transferência.",
+      );
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -144,14 +146,17 @@ function TransferenciasPage() {
                           {t.moto?.marca} {t.moto?.modelo}
                         </h3>
                         <p className="text-xs font-mono text-muted-foreground">
-                          Chassi: <strong className="text-foreground">{t.moto?.chassi || "—"}</strong>
+                          Chassi:{" "}
+                          <strong className="text-foreground">{t.moto?.chassi || "—"}</strong>
                           {t.moto?.matricula && <span> · Matrícula: {t.moto.matricula}</span>}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${badge.class}`}>
+                      <span
+                        className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${badge.class}`}
+                      >
                         {badge.label}
                       </span>
                     </div>
@@ -184,7 +189,8 @@ function TransferenciasPage() {
                         <strong>Contacto:</strong> {t.proprietario_anterior?.contacto || "—"}
                       </p>
                       <p>
-                        <strong>Localidade:</strong> {t.proprietario_anterior?.localidade || "—"}, {t.proprietario_anterior?.provincia || "—"}
+                        <strong>Localidade:</strong> {t.proprietario_anterior?.localidade || "—"},{" "}
+                        {t.proprietario_anterior?.provincia || "—"}
                       </p>
                     </div>
 
@@ -192,7 +198,9 @@ function TransferenciasPage() {
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                         Novo Proprietário (Destino)
                       </p>
-                      <p className="font-bold text-sm text-primary">{t.proprietario_novo?.nome || "—"}</p>
+                      <p className="font-bold text-sm text-primary">
+                        {t.proprietario_novo?.nome || "—"}
+                      </p>
                       <p>
                         <strong>BI:</strong> {t.proprietario_novo?.bi || "—"}
                       </p>
@@ -200,7 +208,8 @@ function TransferenciasPage() {
                         <strong>Contacto:</strong> {t.proprietario_novo?.contacto || "—"}
                       </p>
                       <p>
-                        <strong>Localidade:</strong> {t.proprietario_novo?.localidade || "—"}, {t.proprietario_novo?.provincia || "—"}
+                        <strong>Localidade:</strong> {t.proprietario_novo?.localidade || "—"},{" "}
+                        {t.proprietario_novo?.provincia || "—"}
                       </p>
                     </div>
                   </div>
@@ -231,7 +240,8 @@ function TransferenciasPage() {
                   <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3 text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Clock className="h-3.5 w-3.5" />
-                      Iniciada em {new Date(t.created_at).toLocaleDateString("pt-MZ")} por {t.operador}
+                      Iniciada em {new Date(t.created_at).toLocaleDateString("pt-MZ")} por{" "}
+                      {t.operador}
                     </span>
 
                     <div className="flex items-center gap-2">
@@ -242,7 +252,11 @@ function TransferenciasPage() {
                           disabled={aprovar.isPending}
                           className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
                         >
-                          {aprovar.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                          {aprovar.isPending ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <Check className="h-3.5 w-3.5" />
+                          )}
                           Aprovar Solicitação
                         </button>
                       )}
@@ -259,15 +273,16 @@ function TransferenciasPage() {
                       )}
 
                       {/* Botão REJEITAR (se em andamento) */}
-                      {(t.estado === "pendente_aceitacao" || t.estado === "aguardando_origem") && (eOrigem || eDestino) && (
-                        <button
-                          onClick={() => setModalRejeitar(t)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-destructive/30 text-destructive px-3 py-1.5 text-xs font-bold hover:bg-destructive/10"
-                        >
-                          <XCircle className="h-3.5 w-3.5" />
-                          Rejeitar
-                        </button>
-                      )}
+                      {(t.estado === "pendente_aceitacao" || t.estado === "aguardando_origem") &&
+                        (eOrigem || eDestino) && (
+                          <button
+                            onClick={() => setModalRejeitar(t)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-destructive/30 text-destructive px-3 py-1.5 text-xs font-bold hover:bg-destructive/10"
+                          >
+                            <XCircle className="h-3.5 w-3.5" />
+                            Rejeitar
+                          </button>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -354,7 +369,9 @@ function ModalConcluirTransferencia({
         },
       }),
     onSuccess: () => {
-      toast.success("Transferência concluída! O município e proprietário da motorizada foram atualizados.");
+      toast.success(
+        "Transferência concluída! O município e proprietário da motorizada foram atualizados.",
+      );
       onSucesso();
     },
     onError: (e) => toast.error((e as Error).message),
@@ -367,7 +384,8 @@ function ModalConcluirTransferencia({
           <div>
             <h2 className="text-lg font-bold">Concluir Transferência</h2>
             <p className="text-xs text-muted-foreground">
-              Confirme ou actualize os dados do novo proprietário antes de alterar o município responsável.
+              Confirme ou actualize os dados do novo proprietário antes de alterar o município
+              responsável.
             </p>
           </div>
           <button onClick={onClose} className="rounded-md p-1.5 hover:bg-muted">
@@ -384,8 +402,8 @@ function ModalConcluirTransferencia({
         >
           <div className="rounded-lg bg-muted/40 p-3 text-xs">
             <p>
-              <strong>Motorizada:</strong> {transferencia.moto?.marca} {transferencia.moto?.modelo} (
-              {transferencia.moto?.chassi})
+              <strong>Motorizada:</strong> {transferencia.moto?.marca} {transferencia.moto?.modelo}{" "}
+              ({transferencia.moto?.chassi})
             </p>
             <p>
               <strong>Município de Origem:</strong> {transferencia.municipio_origem_nome} ➔{" "}
@@ -395,7 +413,9 @@ function ModalConcluirTransferencia({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-semibold">Nome Completo do Novo Proprietário *</label>
+              <label className="mb-1 block text-xs font-semibold">
+                Nome Completo do Novo Proprietário *
+              </label>
               <input
                 required
                 value={form.nome}
@@ -428,7 +448,9 @@ function ModalConcluirTransferencia({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold">Nome de Familiar de Referência</label>
+              <label className="mb-1 block text-xs font-semibold">
+                Nome de Familiar de Referência
+              </label>
               <input
                 value={form.familiar_nome}
                 onChange={(e) => setForm((p) => ({ ...p, familiar_nome: e.target.value }))}
@@ -507,7 +529,11 @@ function ModalConcluirTransferencia({
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t">
-            <button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted"
+            >
               Cancelar
             </button>
             <button
@@ -515,7 +541,11 @@ function ModalConcluirTransferencia({
               disabled={concluir.isPending || !form.nome.trim()}
               className="inline-flex items-center gap-2 rounded-lg bg-success px-5 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
             >
-              {concluir.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+              {concluir.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4" />
+              )}
               Concluir Transferência
             </button>
           </div>
@@ -592,7 +622,11 @@ function ModalRejeitarTransferencia({
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted"
+            >
               Cancelar
             </button>
             <button
@@ -600,7 +634,11 @@ function ModalRejeitarTransferencia({
               disabled={rejeitar.isPending || motivoRejeicao.trim().length < 3}
               className="inline-flex items-center gap-2 rounded-lg bg-destructive px-4 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
             >
-              {rejeitar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+              {rejeitar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <XCircle className="h-4 w-4" />
+              )}
               Confirmar Rejeição
             </button>
           </div>

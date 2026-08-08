@@ -48,7 +48,10 @@ function UtilizadoresPage() {
   const qc = useQueryClient();
   const [municipioFiltro, setMunicipioFiltro] = useState<string>("");
   const [modalCriar, setModalCriar] = useState(false);
-  const [credencialNova, setCredencialNova] = useState<{ email: string; palavraPasse: string } | null>(null);
+  const [credencialNova, setCredencialNova] = useState<{
+    email: string;
+    palavraPasse: string;
+  } | null>(null);
 
   const { data: municipios } = useQuery({
     queryKey: ["municipios"],
@@ -158,7 +161,9 @@ function UtilizadoresPage() {
                         {u.municipio}
                       </span>
                     ) : (
-                      <span className="text-xs font-mono text-muted-foreground/60">Global (Ubuntu)</span>
+                      <span className="text-xs font-mono text-muted-foreground/60">
+                        Global (Ubuntu)
+                      </span>
                     )}
                   </td>
                   <td className="hidden px-4 py-3 text-xs text-muted-foreground md:table-cell">
@@ -167,7 +172,9 @@ function UtilizadoresPage() {
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => {
-                        if (confirm(`Tem a certeza que deseja eliminar o utilizador "${u.nome}"?`)) {
+                        if (
+                          confirm(`Tem a certeza que deseja eliminar o utilizador "${u.nome}"?`)
+                        ) {
                           eliminar.mutate(u.id);
                         }
                       }}
@@ -198,10 +205,7 @@ function UtilizadoresPage() {
 
       {/* Modal Mostrar Credencial */}
       {credencialNova && (
-        <ModalCredencialNova
-          credencial={credencialNova}
-          onClose={() => setCredencialNova(null)}
-        />
+        <ModalCredencialNova credencial={credencialNova} onClose={() => setCredencialNova(null)} />
       )}
     </div>
   );
@@ -218,7 +222,11 @@ function ModalCriarUtilizador({
     nome: "",
     email: "",
     telefone: "",
-    papel: "tecnico_municipal" as "super_admin" | "admin_municipal" | "tecnico_municipal" | "policia",
+    papel: "tecnico_municipal" as
+      | "super_admin"
+      | "admin_municipal"
+      | "tecnico_municipal"
+      | "policia",
     municipioId: "",
     palavraPasse: "",
   });
@@ -354,7 +362,11 @@ function ModalCriarUtilizador({
               disabled={criar.isPending}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
             >
-              {criar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              {criar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
               Criar Utilizador
             </button>
           </div>
@@ -404,7 +416,10 @@ function ModalCredencialNova({
               <Lock className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
               <span className="text-xs font-mono truncate">{credencial.palavraPasse}</span>
             </div>
-            <button onClick={() => copiar(credencial.palavraPasse)} className="rounded p-1 hover:bg-muted">
+            <button
+              onClick={() => copiar(credencial.palavraPasse)}
+              className="rounded p-1 hover:bg-muted"
+            >
               <Copy className="h-3.5 w-3.5" />
             </button>
           </div>

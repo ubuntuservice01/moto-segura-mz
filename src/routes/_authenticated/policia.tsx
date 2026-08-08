@@ -11,7 +11,10 @@ export const Route = createFileRoute("/_authenticated/policia")({
   head: () => ({
     meta: [
       { title: "Painel Polícia — MotoGest Nacional" },
-      { name: "description", content: "Painel de operações policiais e fiscalização de motorizadas." },
+      {
+        name: "description",
+        content: "Painel de operações policiais e fiscalização de motorizadas.",
+      },
     ],
   }),
   component: PoliciaLayout,

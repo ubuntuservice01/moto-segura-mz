@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { type MotoInput } from "@/lib/motos.functions";
-import {
-  createDocUploadUrl,
-  createDocReadUrl,
-  removeDoc,
-} from "@/lib/documentos.functions";
+import { createDocUploadUrl, createDocReadUrl, removeDoc } from "@/lib/documentos.functions";
 import {
   PROVINCIAS_MZ,
   type EstadoMoto,
@@ -76,12 +72,10 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       const { path, token } = await createDocUploadUrl({
         data: { chassi: chassiSafe, tipo, filename: file.name },
       });
-      const { error } = await supabase.storage
-        .from(BUCKET)
-        .uploadToSignedUrl(path, token, file, {
-          contentType: file.type || "application/octet-stream",
-          upsert: false,
-        });
+      const { error } = await supabase.storage.from(BUCKET).uploadToSignedUrl(path, token, file, {
+        contentType: file.type || "application/octet-stream",
+        upsert: false,
+      });
       if (error) throw error;
       setDocumentos((d) => [
         ...d,
@@ -118,7 +112,6 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       setUploadError(e instanceof Error ? e.message : "Não foi possível abrir o documento");
     }
   }
-
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -158,31 +151,77 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       <Section title="Identificação da viatura">
         <Grid>
           <Field label="Chassi" required value={form.chassi}>
-            <input value={form.chassi} onChange={(e) => set("chassi", e.target.value.toUpperCase())} required minLength={6} className={inputCls(form.chassi, true) + " font-mono"} />
+            <input
+              value={form.chassi}
+              onChange={(e) => set("chassi", e.target.value.toUpperCase())}
+              required
+              minLength={6}
+              className={inputCls(form.chassi, true) + " font-mono"}
+            />
           </Field>
           <Field label="Matrícula" value={form.matricula}>
-            <input value={form.matricula} onChange={(e) => set("matricula", e.target.value)} className={inputCls(form.matricula, false) + " font-mono"} />
+            <input
+              value={form.matricula}
+              onChange={(e) => set("matricula", e.target.value)}
+              className={inputCls(form.matricula, false) + " font-mono"}
+            />
           </Field>
           <Field label="Número do motor" value={form.numero_motor}>
-            <input value={form.numero_motor} onChange={(e) => set("numero_motor", e.target.value.toUpperCase())} className={inputCls(form.numero_motor, false) + " font-mono"} />
+            <input
+              value={form.numero_motor}
+              onChange={(e) => set("numero_motor", e.target.value.toUpperCase())}
+              className={inputCls(form.numero_motor, false) + " font-mono"}
+            />
           </Field>
           <Field label="Marca" required value={form.marca}>
-            <input value={form.marca} onChange={(e) => set("marca", e.target.value)} required className={inputCls(form.marca, true)} />
+            <input
+              value={form.marca}
+              onChange={(e) => set("marca", e.target.value)}
+              required
+              className={inputCls(form.marca, true)}
+            />
           </Field>
           <Field label="Modelo" required value={form.modelo}>
-            <input value={form.modelo} onChange={(e) => set("modelo", e.target.value)} required className={inputCls(form.modelo, true)} />
+            <input
+              value={form.modelo}
+              onChange={(e) => set("modelo", e.target.value)}
+              required
+              className={inputCls(form.modelo, true)}
+            />
           </Field>
           <Field label="Ano" value={form.ano}>
-            <input type="number" value={form.ano} onChange={(e) => set("ano", e.target.value)} min={1950} max={2100} className={inputCls(form.ano, false)} />
+            <input
+              type="number"
+              value={form.ano}
+              onChange={(e) => set("ano", e.target.value)}
+              min={1950}
+              max={2100}
+              className={inputCls(form.ano, false)}
+            />
           </Field>
           <Field label="Cilindrada (cc)" value={form.cilindrada}>
-            <input type="number" value={form.cilindrada} onChange={(e) => set("cilindrada", e.target.value)} className={inputCls(form.cilindrada, false)} />
+            <input
+              type="number"
+              value={form.cilindrada}
+              onChange={(e) => set("cilindrada", e.target.value)}
+              className={inputCls(form.cilindrada, false)}
+            />
           </Field>
           <Field label="Cor" value={form.cor}>
-            <input value={form.cor} onChange={(e) => set("cor", e.target.value)} className={inputCls(form.cor, false)} />
+            <input
+              value={form.cor}
+              onChange={(e) => set("cor", e.target.value)}
+              className={inputCls(form.cor, false)}
+            />
           </Field>
           <Field label="Quilometragem" value={form.km}>
-            <input type="number" value={form.km} onChange={(e) => set("km", e.target.value)} min={0} className={inputCls(form.km, false)} />
+            <input
+              type="number"
+              value={form.km}
+              onChange={(e) => set("km", e.target.value)}
+              min={0}
+              className={inputCls(form.km, false)}
+            />
           </Field>
         </Grid>
       </Section>
@@ -190,13 +229,27 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       <Section title="Proprietário">
         <Grid>
           <Field label="Nome completo" required value={form.proprietario_nome}>
-            <input value={form.proprietario_nome} onChange={(e) => set("proprietario_nome", e.target.value)} required className={inputCls(form.proprietario_nome, true)} />
+            <input
+              value={form.proprietario_nome}
+              onChange={(e) => set("proprietario_nome", e.target.value)}
+              required
+              className={inputCls(form.proprietario_nome, true)}
+            />
           </Field>
           <Field label="BI / Identificação" value={form.proprietario_bi}>
-            <input value={form.proprietario_bi} onChange={(e) => set("proprietario_bi", e.target.value)} className={inputCls(form.proprietario_bi, false) + " font-mono"} />
+            <input
+              value={form.proprietario_bi}
+              onChange={(e) => set("proprietario_bi", e.target.value)}
+              className={inputCls(form.proprietario_bi, false) + " font-mono"}
+            />
           </Field>
           <Field label="Contacto" value={form.proprietario_contacto}>
-            <input value={form.proprietario_contacto} onChange={(e) => set("proprietario_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto, false)} />
+            <input
+              value={form.proprietario_contacto}
+              onChange={(e) => set("proprietario_contacto", e.target.value)}
+              placeholder="+258 ..."
+              className={inputCls(form.proprietario_contacto, false)}
+            />
           </Field>
           <Field label="Província" value={form.proprietario_provincia}>
             <select
@@ -213,7 +266,11 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
               className={inputCls(form.proprietario_provincia, false)}
             >
               <option value="">—</option>
-              {PROVINCIAS_MZ.map((p) => <option key={p} value={p}>{p}</option>)}
+              {PROVINCIAS_MZ.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
             </select>
           </Field>
           <Field label="Distrito / Município" value={form.proprietario_distrito}>
@@ -228,13 +285,18 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
                 }));
               }}
               disabled={!form.proprietario_provincia}
-              className={inputCls(form.proprietario_distrito, false) + " disabled:opacity-50 disabled:bg-muted"}
+              className={
+                inputCls(form.proprietario_distrito, false) +
+                " disabled:opacity-50 disabled:bg-muted"
+              }
             >
               <option value="">
                 {form.proprietario_provincia ? "—" : "Escolha a província primeiro"}
               </option>
               {getDistritos(form.proprietario_provincia).map((d) => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d}>
+                  {d}
+                </option>
               ))}
             </select>
           </Field>
@@ -244,7 +306,11 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
               onChange={(e) => set("proprietario_posto_admin", e.target.value.slice(0, 100))}
               list="postos-admin-list"
               maxLength={100}
-              placeholder={form.proprietario_distrito ? "Escreva ou escolha da lista" : "Escolha o distrito primeiro (opcional)"}
+              placeholder={
+                form.proprietario_distrito
+                  ? "Escreva ou escolha da lista"
+                  : "Escolha o distrito primeiro (opcional)"
+              }
               className={inputCls(form.proprietario_posto_admin, false)}
             />
             <datalist id="postos-admin-list">
@@ -254,11 +320,14 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
             </datalist>
           </Field>
           <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
-            <input value={form.proprietario_localidade} onChange={(e) => set("proprietario_localidade", e.target.value)} className={inputCls(form.proprietario_localidade, false)} />
+            <input
+              value={form.proprietario_localidade}
+              onChange={(e) => set("proprietario_localidade", e.target.value)}
+              className={inputCls(form.proprietario_localidade, false)}
+            />
           </Field>
         </Grid>
       </Section>
-
 
       <Section title="Dados de Segurança e Recuperação">
         <p className="-mt-2 text-xs text-muted-foreground">
@@ -267,33 +336,71 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
           concluir o registo e mostrado uma única vez.
         </p>
         <Grid>
-          <Field label="Data de nascimento do proprietário" value={form.proprietario_data_nascimento}>
-            <input type="date" value={form.proprietario_data_nascimento} onChange={(e) => set("proprietario_data_nascimento", e.target.value)} className={inputCls(form.proprietario_data_nascimento, false)} />
+          <Field
+            label="Data de nascimento do proprietário"
+            value={form.proprietario_data_nascimento}
+          >
+            <input
+              type="date"
+              value={form.proprietario_data_nascimento}
+              onChange={(e) => set("proprietario_data_nascimento", e.target.value)}
+              className={inputCls(form.proprietario_data_nascimento, false)}
+            />
           </Field>
           <Field label="Telefone alternativo" value={form.proprietario_contacto_alt}>
-            <input value={form.proprietario_contacto_alt} onChange={(e) => set("proprietario_contacto_alt", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_contacto_alt, false)} />
+            <input
+              value={form.proprietario_contacto_alt}
+              onChange={(e) => set("proprietario_contacto_alt", e.target.value)}
+              placeholder="+258 ..."
+              className={inputCls(form.proprietario_contacto_alt, false)}
+            />
           </Field>
           <Field label="Nome do familiar de referência" value={form.proprietario_familiar_nome}>
-            <input value={form.proprietario_familiar_nome} onChange={(e) => set("proprietario_familiar_nome", e.target.value)} className={inputCls(form.proprietario_familiar_nome, false)} />
+            <input
+              value={form.proprietario_familiar_nome}
+              onChange={(e) => set("proprietario_familiar_nome", e.target.value)}
+              className={inputCls(form.proprietario_familiar_nome, false)}
+            />
           </Field>
           <Field label="Telefone do familiar" value={form.proprietario_familiar_contacto}>
-            <input value={form.proprietario_familiar_contacto} onChange={(e) => set("proprietario_familiar_contacto", e.target.value)} placeholder="+258 ..." className={inputCls(form.proprietario_familiar_contacto, false)} />
+            <input
+              value={form.proprietario_familiar_contacto}
+              onChange={(e) => set("proprietario_familiar_contacto", e.target.value)}
+              placeholder="+258 ..."
+              className={inputCls(form.proprietario_familiar_contacto, false)}
+            />
           </Field>
           <Field label="Data da compra" value={form.data_compra}>
-            <input type="date" value={form.data_compra} onChange={(e) => set("data_compra", e.target.value)} className={inputCls(form.data_compra, false)} />
+            <input
+              type="date"
+              value={form.data_compra}
+              onChange={(e) => set("data_compra", e.target.value)}
+              className={inputCls(form.data_compra, false)}
+            />
           </Field>
           <Field label="Local da compra" value={form.local_compra}>
-            <input value={form.local_compra} onChange={(e) => set("local_compra", e.target.value)} placeholder="Loja, feira, particular…" className={inputCls(form.local_compra, false)} />
+            <input
+              value={form.local_compra}
+              onChange={(e) => set("local_compra", e.target.value)}
+              placeholder="Loja, feira, particular…"
+              className={inputCls(form.local_compra, false)}
+            />
           </Field>
         </Grid>
         <Field label="Endereço completo do proprietário" value={form.proprietario_endereco}>
-          <textarea value={form.proprietario_endereco} onChange={(e) => set("proprietario_endereco", e.target.value)} rows={2} className={inputCls(form.proprietario_endereco, false) + " resize-none"} />
+          <textarea
+            value={form.proprietario_endereco}
+            onChange={(e) => set("proprietario_endereco", e.target.value)}
+            rows={2}
+            className={inputCls(form.proprietario_endereco, false) + " resize-none"}
+          />
         </Field>
       </Section>
 
       <Section title="Documentos">
         <p className="text-xs text-muted-foreground -mt-2">
-          Carregue cópias do BI, carta de condução, livrete da moto e outros documentos relevantes (PDF ou imagem, até 8 MB).
+          Carregue cópias do BI, carta de condução, livrete da moto e outros documentos relevantes
+          (PDF ou imagem, até 8 MB).
         </p>
 
         <div className="grid gap-3 md:grid-cols-2">
@@ -333,7 +440,10 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
         {documentos.length > 0 && (
           <ul className="divide-y rounded-md border bg-background">
             {documentos.map((doc) => (
-              <li key={doc.path} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+              <li
+                key={doc.path}
+                className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
+              >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="rounded bg-secondary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-secondary">
@@ -342,14 +452,23 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
                     <span className="truncate font-medium">{doc.nome}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {(doc.tamanho / 1024).toFixed(0)} KB · {new Date(doc.carregado_em).toLocaleString("pt-PT")}
+                    {(doc.tamanho / 1024).toFixed(0)} KB ·{" "}
+                    {new Date(doc.carregado_em).toLocaleString("pt-PT")}
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-2">
-                  <button type="button" onClick={() => void openDoc(doc)} className="rounded border px-2 py-1 text-xs hover:bg-muted">
+                  <button
+                    type="button"
+                    onClick={() => void openDoc(doc)}
+                    className="rounded border px-2 py-1 text-xs hover:bg-muted"
+                  >
                     Ver
                   </button>
-                  <button type="button" onClick={() => void handleRemove(doc)} className="rounded border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10">
+                  <button
+                    type="button"
+                    onClick={() => void handleRemove(doc)}
+                    className="rounded border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
+                  >
                     Remover
                   </button>
                 </div>
@@ -362,18 +481,42 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       <Section title="Estado e mercado">
         <Grid>
           <Field label="Estado" required value={form.estado}>
-            <select value={form.estado} onChange={(e) => set("estado", e.target.value as EstadoMoto)} className={inputCls(form.estado, true)}>
+            <select
+              value={form.estado}
+              onChange={(e) => set("estado", e.target.value as EstadoMoto)}
+              className={inputCls(form.estado, true)}
+            >
               {(Object.keys(ESTADOS_LABEL) as EstadoMoto[]).map((s) => (
-                <option key={s} value={s}>{ESTADOS_LABEL[s]}</option>
+                <option key={s} value={s}>
+                  {ESTADOS_LABEL[s]}
+                </option>
               ))}
             </select>
           </Field>
-          <Field label="Preço de venda (MT)" required={form.estado === "a_venda"} value={form.preco_venda}>
-            <input type="number" value={form.preco_venda} onChange={(e) => set("preco_venda", e.target.value)} disabled={form.estado !== "a_venda"} className={inputCls(form.preco_venda, form.estado === "a_venda") + " disabled:opacity-50 disabled:bg-muted"} />
+          <Field
+            label="Preço de venda (MT)"
+            required={form.estado === "a_venda"}
+            value={form.preco_venda}
+          >
+            <input
+              type="number"
+              value={form.preco_venda}
+              onChange={(e) => set("preco_venda", e.target.value)}
+              disabled={form.estado !== "a_venda"}
+              className={
+                inputCls(form.preco_venda, form.estado === "a_venda") +
+                " disabled:opacity-50 disabled:bg-muted"
+              }
+            />
           </Field>
         </Grid>
         <Field label="Notas internas (não públicas)" value={form.notas_internas}>
-          <textarea value={form.notas_internas} onChange={(e) => set("notas_internas", e.target.value)} rows={3} className={inputCls(form.notas_internas, false) + " resize-none"} />
+          <textarea
+            value={form.notas_internas}
+            onChange={(e) => set("notas_internas", e.target.value)}
+            rows={3}
+            className={inputCls(form.notas_internas, false) + " resize-none"}
+          />
         </Field>
       </Section>
 
@@ -412,7 +555,9 @@ function inputCls(value: string, required: boolean) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="rounded-xl border bg-card p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{title}</h2>
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        {title}
+      </h2>
       <div className="mt-4 space-y-4">{children}</div>
     </section>
   );
@@ -445,7 +590,9 @@ function Field({
         <span className="text-xs font-medium text-foreground">
           {label} {required && <span className="text-accent-foreground">*</span>}
         </span>
-        <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${status.cls}`}>
+        <span
+          className={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${status.cls}`}
+        >
           {status.text}
         </span>
       </span>
@@ -454,10 +601,18 @@ function Field({
   );
 }
 
-
 function UploadIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="17 8 12 3 7 8" />
       <line x1="12" y1="3" x2="12" y2="15" />

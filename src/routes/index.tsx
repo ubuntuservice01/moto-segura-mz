@@ -75,8 +75,16 @@ function Index() {
         <section className="border-b bg-card">
           <div className="container mx-auto grid grid-cols-2 gap-px overflow-hidden px-4 py-6 md:grid-cols-4 md:py-8">
             <Stat label="Motas registadas" value={stats.total} />
-            <Stat label="À venda" value={stats.aVenda} accent="text-accent-foreground bg-accent/10" />
-            <Stat label="Reportadas como roubadas" value={stats.roubadas} accent="text-destructive bg-destructive/5" />
+            <Stat
+              label="À venda"
+              value={stats.aVenda}
+              accent="text-accent-foreground bg-accent/10"
+            />
+            <Stat
+              label="Reportadas como roubadas"
+              value={stats.roubadas}
+              accent="text-destructive bg-destructive/5"
+            />
             <Stat label="Eventos no histórico" value={stats.eventos} />
           </div>
         </section>
@@ -104,7 +112,6 @@ function Index() {
             icon={<Settings className="h-6 w-6" />}
             title="Painel de Gestão"
             desc="Registar motas, gerir transferências de propriedade e consultar o histórico global de operações."
-
             color="bg-primary/10 text-primary"
           />
         </div>
@@ -144,9 +151,17 @@ function Stat({ label, value, accent }: { label: string; value: number; accent?:
 }
 
 function ActionCard({
-  to, icon, title, desc, color,
+  to,
+  icon,
+  title,
+  desc,
+  color,
 }: {
-  to: string; icon: React.ReactNode; title: string; desc: string; color: string;
+  to: string;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  color: string;
 }) {
   return (
     <Link

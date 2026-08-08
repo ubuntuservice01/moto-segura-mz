@@ -61,18 +61,27 @@ export function Timeline({ eventos }: { eventos: HistoricoEvento[] }) {
                   if (val === null || val === undefined) return null;
                   if (typeof val !== "object") {
                     return (
-                      <li key={campo} className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
+                      <li
+                        key={campo}
+                        className="flex flex-wrap items-center gap-1.5 text-muted-foreground"
+                      >
                         <span className="font-mono font-semibold text-foreground">{campo}:</span>
-                        <span className="font-semibold text-secondary">{formatVal(val as never)}</span>
+                        <span className="font-semibold text-secondary">
+                          {formatVal(val as never)}
+                        </span>
                       </li>
                     );
                   }
                   const { antes, depois } = val as { antes?: never; depois?: never };
                   const a = antes === null || antes === undefined || antes === "" ? null : antes;
-                  const d = depois === null || depois === undefined || depois === "" ? null : depois;
+                  const d =
+                    depois === null || depois === undefined || depois === "" ? null : depois;
                   if (a === null && d === null) return null;
                   return (
-                    <li key={campo} className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
+                    <li
+                      key={campo}
+                      className="flex flex-wrap items-center gap-1.5 text-muted-foreground"
+                    >
                       <span className="font-mono font-semibold text-foreground">{campo}:</span>
                       {a !== null && (
                         <>

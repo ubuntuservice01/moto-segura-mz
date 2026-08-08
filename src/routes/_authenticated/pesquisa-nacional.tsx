@@ -16,7 +16,11 @@ import {
   X,
   Check,
 } from "lucide-react";
-import { pesquisaNacional, type TipoPesquisa, type ResultadoPesquisaNacional } from "@/lib/pesquisa.functions";
+import {
+  pesquisaNacional,
+  type TipoPesquisa,
+  type ResultadoPesquisaNacional,
+} from "@/lib/pesquisa.functions";
 import { solicitarTransferenciaDestino } from "@/lib/transferencias.functions";
 import { useSessao } from "@/hooks/use-sessao";
 
@@ -49,7 +53,8 @@ function PesquisaNacionalPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Pesquisa Nacional de Veículos</h1>
           <p className="text-xs text-muted-foreground">
-            Localizar qualquer motorizada registada em Moçambique independente do município de origem.
+            Localizar qualquer motorizada registada em Moçambique independente do município de
+            origem.
           </p>
         </div>
       </div>
@@ -96,7 +101,11 @@ function PesquisaNacionalPage() {
               disabled={isLoading || termo.trim().length < 2}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="h-4 w-4" />
+              )}
               Pesquisar
             </button>
           </div>
@@ -117,7 +126,8 @@ function PesquisaNacionalPage() {
             </div>
           ) : (
             (data?.resultados ?? []).map((m) => {
-              const pertencaOutroMunicipio = sessao?.municipioId && m.municipio_id !== sessao.municipioId;
+              const pertencaOutroMunicipio =
+                sessao?.municipioId && m.municipio_id !== sessao.municipioId;
 
               return (
                 <div key={m.id} className="rounded-xl border bg-card p-5 shadow-sm space-y-4">
@@ -163,7 +173,8 @@ function PesquisaNacionalPage() {
                           Esta motorizada está registada no {m.municipio_nome}.
                         </p>
                         <p className="text-muted-foreground">
-                          Como técnico do {sessao?.municipio?.nome}, pode solicitar a transferência deste veículo para o seu município.
+                          Como técnico do {sessao?.municipio?.nome}, pode solicitar a transferência
+                          deste veículo para o seu município.
                         </p>
                       </div>
                       <button
@@ -206,7 +217,11 @@ function PesquisaNacionalPage() {
                             <User className="h-3.5 w-3.5" />
                             {m.proprietario_nome}
                           </p>
-                          {m.proprietario_bi && <p><strong>BI:</strong> {m.proprietario_bi}</p>}
+                          {m.proprietario_bi && (
+                            <p>
+                              <strong>BI:</strong> {m.proprietario_bi}
+                            </p>
+                          )}
                           {m.proprietario_contacto && (
                             <p className="flex items-center gap-1 text-success">
                               <Phone className="h-3.5 w-3.5" />
@@ -217,7 +232,9 @@ function PesquisaNacionalPage() {
                       ) : (
                         <div className="flex items-center gap-1.5 text-muted-foreground/70 py-1">
                           <Lock className="h-3.5 w-3.5" />
-                          <span className="text-[11px]">Dados do proprietário omissos (Isolamento por Município)</span>
+                          <span className="text-[11px]">
+                            Dados do proprietário omissos (Isolamento por Município)
+                          </span>
                         </div>
                       )}
                     </div>
@@ -351,7 +368,11 @@ function ModalSolicitarTransferencia({
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t">
-            <button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border px-4 py-2 text-xs font-semibold hover:bg-muted"
+            >
               Cancelar
             </button>
             <button
@@ -359,7 +380,11 @@ function ModalSolicitarTransferencia({
               disabled={solicitar.isPending || !motivo.trim() || !nome.trim()}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
             >
-              {solicitar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              {solicitar.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
               Enviar Solicitação
             </button>
           </div>

@@ -177,7 +177,7 @@ function ReportarRouboPage() {
           <p className="mt-2 text-xs text-muted-foreground">
             {gps
               ? `${gps.lat.toFixed(5)}, ${gps.lng.toFixed(5)} — será anexada ao reporte.`
-              : gpsErro ?? "Opcional. Ajuda as autoridades a localizar o último ponto conhecido."}
+              : (gpsErro ?? "Opcional. Ajuda as autoridades a localizar o último ponto conhecido.")}
           </p>
         </div>
 
@@ -197,7 +197,11 @@ function ReportarRouboPage() {
           disabled={mut.isPending}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-destructive px-5 py-3 text-sm font-bold text-destructive-foreground hover:opacity-90 disabled:opacity-50"
         >
-          {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldAlert className="h-4 w-4" />}
+          {mut.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ShieldAlert className="h-4 w-4" />
+          )}
           Reportar como roubada
         </button>
       </form>

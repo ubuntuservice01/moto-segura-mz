@@ -114,18 +114,19 @@ function PreRegistosPage() {
                       )}
                     </div>
                     <div className="mt-1 text-sm">
-                      <strong>{p.marca} {p.modelo}</strong>
+                      <strong>
+                        {p.marca} {p.modelo}
+                      </strong>
                       {p.ano && <span className="text-muted-foreground"> · {p.ano}</span>}
                       {p.cor && <span className="text-muted-foreground"> · {p.cor}</span>}
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
-                      Proprietário: <strong className="text-foreground">{p.proprietario_nome}</strong>
+                      Proprietário:{" "}
+                      <strong className="text-foreground">{p.proprietario_nome}</strong>
                       {p.proprietario_contacto && <> · {p.proprietario_contacto}</>}
                       {p.proprietario_provincia && <> · {p.proprietario_provincia}</>}
                     </div>
-                    {p.notas && (
-                      <p className="mt-2 rounded bg-muted/50 p-2 text-xs">{p.notas}</p>
-                    )}
+                    {p.notas && <p className="mt-2 rounded bg-muted/50 p-2 text-xs">{p.notas}</p>}
                     <p className="mt-2 text-[11px] text-muted-foreground">
                       Submetido em {new Date(p.created_at).toLocaleString("pt-PT")}
                     </p>
@@ -190,7 +191,9 @@ function EstadoBadge({ estado }: { estado: PreRegistoEstado }) {
     rejeitado: "bg-destructive/15 text-destructive",
   };
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${map[estado]}`}>
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${map[estado]}`}
+    >
       {estado}
     </span>
   );

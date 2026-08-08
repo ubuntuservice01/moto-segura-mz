@@ -128,7 +128,9 @@ function ModulosPage() {
       {!municipioSel ? (
         <div className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
           <Info className="mx-auto h-8 w-8 opacity-40 mb-2" />
-          <p className="text-sm">Seleccione um município acima para activar ou desactivar os seus módulos.</p>
+          <p className="text-sm">
+            Seleccione um município acima para activar ou desactivar os seus módulos.
+          </p>
         </div>
       ) : aCarregarModulos || aCarregarVinculos ? (
         <div className="flex h-40 items-center justify-center">
@@ -149,7 +151,9 @@ function ModulosPage() {
                   <div className="flex items-center gap-2.5">
                     <div
                       className={`h-9 w-9 rounded-lg flex items-center justify-center font-bold ${
-                        activo ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                        activo
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       <Puzzle className="h-5 w-5" />
@@ -182,9 +186,7 @@ function ModulosPage() {
                 <div className="mt-4 flex items-center justify-between pt-3 border-t text-[11px]">
                   <span className="text-muted-foreground">Estado:</span>
                   <span
-                    className={`font-semibold ${
-                      activo ? "text-success" : "text-muted-foreground"
-                    }`}
+                    className={`font-semibold ${activo ? "text-success" : "text-muted-foreground"}`}
                   >
                     {activo ? "Activo" : "Inactivo"}
                   </span>
