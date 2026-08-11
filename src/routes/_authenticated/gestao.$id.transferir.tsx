@@ -150,7 +150,7 @@ function TransferirMota() {
               >
                 <option value="">Seleccione o Município de Destino...</option>
                 {(municipios ?? [])
-                  .filter((m) => m.id !== moto.municipio_id)
+                  .filter((m) => m.id !== (moto as { municipio_id?: string }).municipio_id)
                   .map((m) => (
                     <option key={m.id} value={m.id}>
                       {m.nome} ({m.provincia})
