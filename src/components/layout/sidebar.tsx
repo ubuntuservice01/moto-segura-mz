@@ -123,7 +123,8 @@ export function Sidebar() {
   const bgColor = sessao?.municipio?.cor_principal || "var(--color-secondary)";
   const logoText = sessao?.municipio?.nome?.[0]?.toUpperCase() || (sessao?.superAdmin ? "U" : "P");
   const nomeExibido = sessao?.municipio?.nome || (sessao?.superAdmin ? "Ubuntu Service" : "MotoGest Polícia");
-  const papelExibido = sessao?.papel === "admin" ? "Admin Municipal" : (sessao?.papel || "");
+  const papelExibido =
+    sessao?.papel === "admin_municipal" ? "Admin Municipal" : (sessao?.papel ?? "");
 
   return (
     <aside
