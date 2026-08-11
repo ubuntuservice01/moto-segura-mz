@@ -1,4 +1,21 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  Bike,
+  CalendarDays,
+  FileText,
+  Gauge,
+  Hash,
+  MapPin,
+  Palette,
+  Pencil,
+  Phone,
+  ShieldCheck,
+  Tag,
+  Trash2,
+  Upload,
+  User,
+  Loader2,
+} from "lucide-react";
 import { type MotoInput } from "@/lib/motos.functions";
 import { createDocUploadUrl, createDocReadUrl, removeDoc } from "@/lib/documentos.functions";
 import {
@@ -12,6 +29,15 @@ import {
 } from "@/lib/moto-types";
 import { getDistritos, getPostos } from "@/lib/mz-localidades";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  CampoSelect,
+  CampoTexto,
+  CampoTextarea,
+  CartaoSeccao,
+  GrelhaCampos,
+} from "@/components/ui/form-fields";
+import { MultiStepFormWrapper, type StepItem } from "@/components/ui/multi-step-form-wrapper";
+import { notificar } from "@/components/ui/notify";
 
 interface Props {
   initial?: Partial<Moto>;
@@ -23,7 +49,18 @@ interface Props {
 const BUCKET = "moto-documentos";
 const MAX_SIZE = 8 * 1024 * 1024; // 8 MB
 
+const STEPS: StepItem[] = [
+  { id: "moto", title: "Motociclo" },
+  { id: "prop", title: "Proprietário" },
+  { id: "seg", title: "Segurança" },
+  { id: "docs", title: "Documentos" },
+  { id: "mercado", title: "Estado" },
+  { id: "rev", title: "Revisão" },
+];
+
 export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar" }: Props) {
+  const [step, setStep] = useState(0);
+  const [erros, setErros] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
     chassi: initial?.chassi ?? "",
     matricula: initial?.matricula ?? "",
@@ -54,19 +91,44 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
   });
   const [documentos, setDocumentos] = useState<Documento[]>(initial?.documentos ?? []);
   const [uploadingTipo, setUploadingTipo] = useState<TipoDocumento | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
 
   function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+    setErros((e) => (e[k] ? { ...e, [k]: "" } : e));
+  }
+
+  function validarEtapa(idx: number): boolean {
+    const e: Record<string, string> = {};
+    if (idx === 0) {
+      if (form.chassi.trim().length < 6) e.chassi = "Indique um chassi com pelo menos 6 caracteres.";
+      if (!form.marca.trim()) e.marca = "Indique a marca do motociclo.";
+      if (!form.modelo.trim()) e.modelo = "Indique o modelo do motociclo.";
+      if (form.ano && (Number(form.ano) < 1950 || Number(form.ano) > 2100))
+        e.ano = "Ano inválido.";
+    }
+    if (idx === 1 && !form.proprietario_nome.trim())
+      e.proprietario_nome = "Indique o nome completo do proprietário.";
+    if (idx === 4 && form.estado === "a_venda" && !form.preco_venda)
+      e.preco_venda = "Defina o preço para colocar à venda.";
+    setErros(e);
+    if (Object.keys(e).length > 0) {
+      notificar.aviso("Existem campos por corrigir", {
+        descricao: "Reveja os campos assinalados nesta etapa antes de continuar.",
+      });
+      return false;
+    }
+    return true;
   }
 
   async function handleUpload(tipo: TipoDocumento, file: File) {
-    setUploadError(null);
     if (file.size > MAX_SIZE) {
-      setUploadError(`Ficheiro maior que ${Math.round(MAX_SIZE / 1024 / 1024)} MB`);
+      notificar.erro("Ficheiro demasiado grande", {
+        descricao: `O limite é ${Math.round(MAX_SIZE / 1024 / 1024)} MB por documento.`,
+      });
       return;
     }
     setUploadingTipo(tipo);
+    const id = notificar.aCarregar(`A carregar ${TIPOS_DOCUMENTO_LABEL[tipo]}…`);
     try {
       const chassiSafe = (form.chassi || "novo").replace(/[^A-Za-z0-9_-]/g, "_");
       const { path, token } = await createDocUploadUrl({
@@ -88,8 +150,13 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
           carregado_em: new Date().toISOString(),
         },
       ]);
-    } catch (e) {
-      setUploadError(e instanceof Error ? e.message : "Falha no carregamento");
+      notificar.fechar(id);
+      notificar.sucesso("Documento carregado", { descricao: file.name });
+    } catch (err) {
+      notificar.fechar(id);
+      notificar.erro("Falha no carregamento", {
+        descricao: err instanceof Error ? err.message : "Tente novamente.",
+      });
     } finally {
       setUploadingTipo(null);
     }
@@ -99,9 +166,10 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     try {
       await removeDoc({ data: { path: doc.path } });
     } catch {
-      // best-effort remove
+      // remoção best-effort
     }
     setDocumentos((d) => d.filter((x) => x.path !== doc.path));
+    notificar.info("Documento removido", { descricao: doc.nome });
   }
 
   async function openDoc(doc: Documento) {
@@ -109,12 +177,19 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
       const { signedUrl } = await createDocReadUrl({ data: { path: doc.path } });
       window.open(signedUrl, "_blank", "noopener,noreferrer");
     } catch (e) {
-      setUploadError(e instanceof Error ? e.message : "Não foi possível abrir o documento");
+      notificar.erro("Não foi possível abrir o documento", {
+        descricao: e instanceof Error ? e.message : undefined,
+      });
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function submeter() {
+    for (const idx of [0, 1, 4]) {
+      if (!validarEtapa(idx)) {
+        setStep(idx);
+        return;
+      }
+    }
     onSubmit({
       chassi: form.chassi.trim().toUpperCase(),
       matricula: form.matricula || null,
@@ -146,124 +221,138 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
     });
   }
 
+  const postos = useMemo(
+    () => getPostos(form.proprietario_provincia, form.proprietario_distrito),
+    [form.proprietario_provincia, form.proprietario_distrito],
+  );
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <Section title="Identificação da viatura">
-        <Grid>
-          <Field label="Chassi" required value={form.chassi}>
-            <input
+    <MultiStepFormWrapper
+      steps={STEPS}
+      currentStep={step}
+      onStepChange={setStep}
+      onNextStep={() => validarEtapa(step)}
+      onSubmit={submeter}
+      isSubmitting={submitting || uploadingTipo !== null}
+      submitLabel={submitLabel}
+    >
+      {step === 0 && (
+        <CartaoSeccao
+          titulo="Dados do motociclo"
+          descricao="Identifique a viatura. O chassi é o identificador único e não pode repetir-se."
+          icone={<Bike className="h-4.5 w-4.5" />}
+        >
+          <GrelhaCampos>
+            <CampoTexto
+              label="Chassi"
+              obrigatorio
+              icone={<Hash className="h-4 w-4" />}
               value={form.chassi}
+              erro={erros.chassi}
               onChange={(e) => set("chassi", e.target.value.toUpperCase())}
-              required
-              minLength={6}
-              className={inputCls(form.chassi, true) + " font-mono"}
+              placeholder="LXYPCKL0XXXXXXXXX"
+              className="font-mono sm:col-span-2"
             />
-          </Field>
-          <Field label="Matrícula" value={form.matricula}>
-            <input
+            <CampoTexto
+              label="Matrícula"
               value={form.matricula}
-              onChange={(e) => set("matricula", e.target.value)}
-              className={inputCls(form.matricula, false) + " font-mono"}
+              onChange={(e) => set("matricula", e.target.value.toUpperCase())}
+              placeholder="AAA-123-MC"
             />
-          </Field>
-          <Field label="Número do motor" value={form.numero_motor}>
-            <input
+            <CampoTexto
+              label="Número do motor"
               value={form.numero_motor}
               onChange={(e) => set("numero_motor", e.target.value.toUpperCase())}
-              className={inputCls(form.numero_motor, false) + " font-mono"}
             />
-          </Field>
-          <Field label="Marca" required value={form.marca}>
-            <input
+            <CampoTexto
+              label="Marca"
+              obrigatorio
+              erro={erros.marca}
               value={form.marca}
               onChange={(e) => set("marca", e.target.value)}
-              required
-              className={inputCls(form.marca, true)}
+              placeholder="Ex.: Haojue"
             />
-          </Field>
-          <Field label="Modelo" required value={form.modelo}>
-            <input
+            <CampoTexto
+              label="Modelo"
+              obrigatorio
+              erro={erros.modelo}
               value={form.modelo}
               onChange={(e) => set("modelo", e.target.value)}
-              required
-              className={inputCls(form.modelo, true)}
+              placeholder="Ex.: HJ125-8"
             />
-          </Field>
-          <Field label="Ano" value={form.ano}>
-            <input
+            <CampoTexto
+              label="Ano"
               type="number"
-              value={form.ano}
-              onChange={(e) => set("ano", e.target.value)}
               min={1950}
               max={2100}
-              className={inputCls(form.ano, false)}
+              erro={erros.ano}
+              value={form.ano}
+              onChange={(e) => set("ano", e.target.value)}
+              icone={<CalendarDays className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Cilindrada (cc)" value={form.cilindrada}>
-            <input
+            <CampoTexto
+              label="Cilindrada (cc)"
               type="number"
               value={form.cilindrada}
               onChange={(e) => set("cilindrada", e.target.value)}
-              className={inputCls(form.cilindrada, false)}
+              icone={<Gauge className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Cor" value={form.cor}>
-            <input
+            <CampoTexto
+              label="Cor"
               value={form.cor}
               onChange={(e) => set("cor", e.target.value)}
-              className={inputCls(form.cor, false)}
+              icone={<Palette className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Quilometragem" value={form.km}>
-            <input
+            <CampoTexto
+              label="Quilometragem"
               type="number"
+              min={0}
               value={form.km}
               onChange={(e) => set("km", e.target.value)}
-              min={0}
-              className={inputCls(form.km, false)}
             />
-          </Field>
-        </Grid>
-      </Section>
+          </GrelhaCampos>
+        </CartaoSeccao>
+      )}
 
-      <Section title="Proprietário">
-        <Grid>
-          <Field label="Nome completo" required value={form.proprietario_nome}>
-            <input
+      {step === 1 && (
+        <CartaoSeccao
+          titulo="Dados do proprietário"
+          descricao="Introduza os dados da pessoa responsável pelo motociclo."
+          icone={<User className="h-4.5 w-4.5" />}
+        >
+          <GrelhaCampos>
+            <CampoTexto
+              label="Nome completo"
+              obrigatorio
+              erro={erros.proprietario_nome}
               value={form.proprietario_nome}
               onChange={(e) => set("proprietario_nome", e.target.value)}
-              required
-              className={inputCls(form.proprietario_nome, true)}
+              className="sm:col-span-2"
             />
-          </Field>
-          <Field label="BI / Identificação" value={form.proprietario_bi}>
-            <input
+            <CampoTexto
+              label="BI / Identificação"
               value={form.proprietario_bi}
               onChange={(e) => set("proprietario_bi", e.target.value)}
-              className={inputCls(form.proprietario_bi, false) + " font-mono"}
             />
-          </Field>
-          <Field label="Contacto" value={form.proprietario_contacto}>
-            <input
+            <CampoTexto
+              label="Contacto"
               value={form.proprietario_contacto}
               onChange={(e) => set("proprietario_contacto", e.target.value)}
-              placeholder="+258 ..."
-              className={inputCls(form.proprietario_contacto, false)}
+              placeholder="+258 …"
+              icone={<Phone className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Província" value={form.proprietario_provincia}>
-            <select
+            <CampoSelect
+              label="Província"
               value={form.proprietario_provincia}
-              onChange={(e) => {
-                const v = e.target.value;
+              icone={<MapPin className="h-4 w-4" />}
+              onChange={(e) =>
                 setForm((f) => ({
                   ...f,
-                  proprietario_provincia: v,
+                  proprietario_provincia: e.target.value,
                   proprietario_distrito: "",
                   proprietario_posto_admin: "",
-                }));
-              }}
-              className={inputCls(form.proprietario_provincia, false)}
+                }))
+              }
             >
               <option value="">—</option>
               {PROVINCIAS_MZ.map((p) => (
@@ -271,23 +360,17 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
                   {p}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field label="Distrito / Município" value={form.proprietario_distrito}>
-            <select
+            </CampoSelect>
+            <CampoSelect
+              label="Distrito / Município"
               value={form.proprietario_distrito}
-              onChange={(e) => {
-                const v = e.target.value;
+              disabled={!form.proprietario_provincia}
+              onChange={(e) =>
                 setForm((f) => ({
                   ...f,
-                  proprietario_distrito: v,
+                  proprietario_distrito: e.target.value,
                   proprietario_posto_admin: "",
-                }));
-              }}
-              disabled={!form.proprietario_provincia}
-              className={
-                inputCls(form.proprietario_distrito, false) +
-                " disabled:opacity-50 disabled:bg-muted"
+                }))
               }
             >
               <option value="">
@@ -298,324 +381,310 @@ export function MotoForm({ initial, submitting, onSubmit, submitLabel = "Guardar
                   {d}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field label="Posto Administrativo" value={form.proprietario_posto_admin}>
-            <input
+            </CampoSelect>
+            <CampoTexto
+              label="Posto administrativo"
               value={form.proprietario_posto_admin}
               onChange={(e) => set("proprietario_posto_admin", e.target.value.slice(0, 100))}
               list="postos-admin-list"
               maxLength={100}
+              hint="Escreva livremente ou escolha uma sugestão da lista oficial."
               placeholder={
-                form.proprietario_distrito
-                  ? "Escreva ou escolha da lista"
-                  : "Escolha o distrito primeiro (opcional)"
+                form.proprietario_distrito ? "Escreva ou escolha da lista" : "Escolha o distrito"
               }
-              className={inputCls(form.proprietario_posto_admin, false)}
             />
-            <datalist id="postos-admin-list">
-              {getPostos(form.proprietario_provincia, form.proprietario_distrito).map((p) => (
-                <option key={p} value={p} />
-              ))}
-            </datalist>
-          </Field>
-          <Field label="Localidade / Bairro" value={form.proprietario_localidade}>
-            <input
+            <CampoTexto
+              label="Localidade / Bairro"
               value={form.proprietario_localidade}
               onChange={(e) => set("proprietario_localidade", e.target.value)}
-              className={inputCls(form.proprietario_localidade, false)}
             />
-          </Field>
-        </Grid>
-      </Section>
+          </GrelhaCampos>
+          <datalist id="postos-admin-list">
+            {postos.map((p) => (
+              <option key={p} value={p} />
+            ))}
+          </datalist>
+        </CartaoSeccao>
+      )}
 
-      <Section title="Dados de Segurança e Recuperação">
-        <p className="-mt-2 text-xs text-muted-foreground">
-          Estes dados permitem ao proprietário reportar a motorizada como roubada pelo telemóvel,
-          sem criar conta. O <strong>Código de Recuperação</strong> é gerado automaticamente ao
-          concluir o registo e mostrado uma única vez.
-        </p>
-        <Grid>
-          <Field
-            label="Data de nascimento do proprietário"
-            value={form.proprietario_data_nascimento}
-          >
-            <input
+      {step === 2 && (
+        <CartaoSeccao
+          titulo="Segurança e aquisição"
+          descricao="Estes dados permitem ao proprietário reportar a mota como roubada pelo telemóvel, sem criar conta. O código de recuperação é gerado automaticamente no fim do registo."
+          icone={<ShieldCheck className="h-4.5 w-4.5" />}
+        >
+          <GrelhaCampos>
+            <CampoTexto
+              label="Data de nascimento"
               type="date"
               value={form.proprietario_data_nascimento}
               onChange={(e) => set("proprietario_data_nascimento", e.target.value)}
-              className={inputCls(form.proprietario_data_nascimento, false)}
             />
-          </Field>
-          <Field label="Telefone alternativo" value={form.proprietario_contacto_alt}>
-            <input
+            <CampoTexto
+              label="Telefone alternativo"
               value={form.proprietario_contacto_alt}
               onChange={(e) => set("proprietario_contacto_alt", e.target.value)}
-              placeholder="+258 ..."
-              className={inputCls(form.proprietario_contacto_alt, false)}
+              placeholder="+258 …"
+              icone={<Phone className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Nome do familiar de referência" value={form.proprietario_familiar_nome}>
-            <input
+            <CampoTexto
+              label="Familiar de referência"
               value={form.proprietario_familiar_nome}
               onChange={(e) => set("proprietario_familiar_nome", e.target.value)}
-              className={inputCls(form.proprietario_familiar_nome, false)}
             />
-          </Field>
-          <Field label="Telefone do familiar" value={form.proprietario_familiar_contacto}>
-            <input
+            <CampoTexto
+              label="Telefone do familiar"
               value={form.proprietario_familiar_contacto}
               onChange={(e) => set("proprietario_familiar_contacto", e.target.value)}
-              placeholder="+258 ..."
-              className={inputCls(form.proprietario_familiar_contacto, false)}
+              placeholder="+258 …"
+              icone={<Phone className="h-4 w-4" />}
             />
-          </Field>
-          <Field label="Data da compra" value={form.data_compra}>
-            <input
+            <CampoTexto
+              label="Data da compra"
               type="date"
               value={form.data_compra}
               onChange={(e) => set("data_compra", e.target.value)}
-              className={inputCls(form.data_compra, false)}
             />
-          </Field>
-          <Field label="Local da compra" value={form.local_compra}>
-            <input
+            <CampoTexto
+              label="Local da compra"
               value={form.local_compra}
               onChange={(e) => set("local_compra", e.target.value)}
               placeholder="Loja, feira, particular…"
-              className={inputCls(form.local_compra, false)}
             />
-          </Field>
-        </Grid>
-        <Field label="Endereço completo do proprietário" value={form.proprietario_endereco}>
-          <textarea
-            value={form.proprietario_endereco}
-            onChange={(e) => set("proprietario_endereco", e.target.value)}
-            rows={2}
-            className={inputCls(form.proprietario_endereco, false) + " resize-none"}
-          />
-        </Field>
-      </Section>
+            <CampoTextarea
+              label="Endereço completo"
+              rows={3}
+              value={form.proprietario_endereco}
+              onChange={(e) => set("proprietario_endereco", e.target.value)}
+              className="sm:col-span-2"
+            />
+          </GrelhaCampos>
+        </CartaoSeccao>
+      )}
 
-      <Section title="Documentos">
-        <p className="text-xs text-muted-foreground -mt-2">
-          Carregue cópias do BI, carta de condução, livrete da moto e outros documentos relevantes
-          (PDF ou imagem, até 8 MB).
-        </p>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          {(Object.keys(TIPOS_DOCUMENTO_LABEL) as TipoDocumento[]).map((tipo) => (
-            <label
-              key={tipo}
-              className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed bg-background px-3 py-2.5 text-sm hover:border-secondary hover:bg-secondary/5"
-            >
-              <span className="flex items-center gap-2 font-medium">
-                <UploadIcon />
-                {TIPOS_DOCUMENTO_LABEL[tipo]}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {uploadingTipo === tipo ? "A carregar…" : "Escolher ficheiro"}
-              </span>
-              <input
-                type="file"
-                accept="image/*,application/pdf"
-                className="hidden"
-                disabled={uploadingTipo !== null}
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) void handleUpload(tipo, f);
-                  e.target.value = "";
-                }}
-              />
-            </label>
-          ))}
-        </div>
-
-        {uploadError && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-            {uploadError}
-          </div>
-        )}
-
-        {documentos.length > 0 && (
-          <ul className="divide-y rounded-md border bg-background">
-            {documentos.map((doc) => (
-              <li
-                key={doc.path}
-                className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
+      {step === 3 && (
+        <CartaoSeccao
+          titulo="Documentos"
+          descricao="Carregue cópias do BI, carta de condução, livrete e outros documentos (PDF ou imagem, até 8 MB)."
+          icone={<FileText className="h-4.5 w-4.5" />}
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            {(Object.keys(TIPOS_DOCUMENTO_LABEL) as TipoDocumento[]).map((tipo) => (
+              <label
+                key={tipo}
+                className="group flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-input bg-background px-3.5 py-3 text-sm transition-colors hover:border-primary/50 hover:bg-primary/4"
               >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded bg-secondary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-secondary">
-                      {TIPOS_DOCUMENTO_LABEL[doc.tipo]}
-                    </span>
-                    <span className="truncate font-medium">{doc.nome}</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {(doc.tamanho / 1024).toFixed(0)} KB ·{" "}
-                    {new Date(doc.carregado_em).toLocaleString("pt-PT")}
-                  </div>
-                </div>
-                <div className="flex shrink-0 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => void openDoc(doc)}
-                    className="rounded border px-2 py-1 text-xs hover:bg-muted"
-                  >
-                    Ver
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void handleRemove(doc)}
-                    className="rounded border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
-                  >
-                    Remover
-                  </button>
-                </div>
-              </li>
+                <span className="flex min-w-0 items-center gap-2 font-medium text-foreground">
+                  {uploadingTipo === tipo ? (
+                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
+                  ) : (
+                    <Upload className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  )}
+                  <span className="truncate">{TIPOS_DOCUMENTO_LABEL[tipo]}</span>
+                </span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {uploadingTipo === tipo ? "A carregar…" : "Escolher"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  className="hidden"
+                  disabled={uploadingTipo !== null}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void handleUpload(tipo, f);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
             ))}
-          </ul>
-        )}
-      </Section>
+          </div>
 
-      <Section title="Estado e mercado">
-        <Grid>
-          <Field label="Estado" required value={form.estado}>
-            <select
+          {documentos.length > 0 && (
+            <ul className="mt-4 divide-y divide-border rounded-md border border-border">
+              {documentos.map((doc) => (
+                <li key={doc.path} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {TIPOS_DOCUMENTO_LABEL[doc.tipo]}
+                      </span>
+                      <span className="truncate text-sm font-medium">{doc.nome}</span>
+                    </div>
+                    <div className="mt-0.5 text-xs text-muted-foreground">
+                      {(doc.tamanho / 1024).toFixed(0)} KB ·{" "}
+                      {new Date(doc.carregado_em).toLocaleString("pt-PT")}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => void openDoc(doc)}
+                      className="rounded-md border border-border px-2.5 py-1 text-xs font-semibold transition-colors hover:bg-muted"
+                    >
+                      Ver
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleRemove(doc)}
+                      aria-label="Remover documento"
+                      className="rounded-md border border-destructive/30 px-2 py-1 text-destructive transition-colors hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CartaoSeccao>
+      )}
+
+      {step === 4 && (
+        <CartaoSeccao
+          titulo="Estado e mercado"
+          descricao="Defina a situação actual do motociclo e, se aplicável, o preço de venda."
+          icone={<Tag className="h-4.5 w-4.5" />}
+        >
+          <GrelhaCampos>
+            <CampoSelect
+              label="Estado"
+              obrigatorio
               value={form.estado}
               onChange={(e) => set("estado", e.target.value as EstadoMoto)}
-              className={inputCls(form.estado, true)}
             >
               {(Object.keys(ESTADOS_LABEL) as EstadoMoto[]).map((s) => (
                 <option key={s} value={s}>
                   {ESTADOS_LABEL[s]}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field
-            label="Preço de venda (MT)"
-            required={form.estado === "a_venda"}
-            value={form.preco_venda}
-          >
-            <input
+            </CampoSelect>
+            <CampoTexto
+              label="Preço de venda (MT)"
               type="number"
+              obrigatorio={form.estado === "a_venda"}
+              erro={erros.preco_venda}
+              disabled={form.estado !== "a_venda"}
               value={form.preco_venda}
               onChange={(e) => set("preco_venda", e.target.value)}
-              disabled={form.estado !== "a_venda"}
-              className={
-                inputCls(form.preco_venda, form.estado === "a_venda") +
-                " disabled:opacity-50 disabled:bg-muted"
+              hint={
+                form.estado === "a_venda" ? undefined : "Disponível apenas no estado “À venda”."
               }
             />
-          </Field>
-        </Grid>
-        <Field label="Notas internas (não públicas)" value={form.notas_internas}>
-          <textarea
-            value={form.notas_internas}
-            onChange={(e) => set("notas_internas", e.target.value)}
-            rows={3}
-            className={inputCls(form.notas_internas, false) + " resize-none"}
+            <CampoTextarea
+              label="Notas internas (não públicas)"
+              rows={3}
+              value={form.notas_internas}
+              onChange={(e) => set("notas_internas", e.target.value)}
+              className="sm:col-span-2"
+            />
+          </GrelhaCampos>
+        </CartaoSeccao>
+      )}
+
+      {step === 5 && (
+        <div className="space-y-4">
+          <Revisao
+            titulo="Dados do motociclo"
+            icone={<Bike className="h-4.5 w-4.5" />}
+            onEditar={() => setStep(0)}
+            itens={[
+              ["Chassi", form.chassi],
+              ["Matrícula", form.matricula],
+              ["Nº do motor", form.numero_motor],
+              ["Marca", form.marca],
+              ["Modelo", form.modelo],
+              ["Ano", form.ano],
+              ["Cilindrada", form.cilindrada ? `${form.cilindrada} cc` : ""],
+              ["Cor", form.cor],
+              ["Quilometragem", form.km ? `${form.km} km` : ""],
+            ]}
           />
-        </Field>
-      </Section>
-
-      <div className="flex justify-end gap-3">
-        <button
-          type="submit"
-          disabled={submitting || uploadingTipo !== null}
-          className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-50"
-        >
-          {submitting ? "A guardar…" : submitLabel}
-        </button>
-      </div>
-    </form>
+          <Revisao
+            titulo="Proprietário"
+            icone={<User className="h-4.5 w-4.5" />}
+            onEditar={() => setStep(1)}
+            itens={[
+              ["Nome", form.proprietario_nome],
+              ["BI", form.proprietario_bi],
+              ["Contacto", form.proprietario_contacto],
+              ["Província", form.proprietario_provincia],
+              ["Distrito", form.proprietario_distrito],
+              ["Posto administrativo", form.proprietario_posto_admin],
+              ["Localidade", form.proprietario_localidade],
+            ]}
+          />
+          <Revisao
+            titulo="Segurança e aquisição"
+            icone={<ShieldCheck className="h-4.5 w-4.5" />}
+            onEditar={() => setStep(2)}
+            itens={[
+              ["Data de nascimento", form.proprietario_data_nascimento],
+              ["Telefone alternativo", form.proprietario_contacto_alt],
+              ["Familiar", form.proprietario_familiar_nome],
+              ["Telefone do familiar", form.proprietario_familiar_contacto],
+              ["Data da compra", form.data_compra],
+              ["Local da compra", form.local_compra],
+              ["Endereço", form.proprietario_endereco],
+            ]}
+          />
+          <Revisao
+            titulo="Documentos e estado"
+            icone={<FileText className="h-4.5 w-4.5" />}
+            onEditar={() => setStep(3)}
+            itens={[
+              ["Documentos carregados", documentos.length ? `${documentos.length}` : "0"],
+              ["Estado", ESTADOS_LABEL[form.estado]],
+              [
+                "Preço de venda",
+                form.preco_venda ? `${Number(form.preco_venda).toLocaleString("pt-PT")} MT` : "",
+              ],
+            ]}
+          />
+        </div>
+      )}
+    </MultiStepFormWrapper>
   );
 }
 
-/** Colour-coded input:
- *  - required + empty → âmbar (precisa preencher)
- *  - required + preenchido → verde (ok)
- *  - opcional + vazio → cinza neutro
- *  - opcional + preenchido → verde suave
- */
-function inputCls(value: string, required: boolean) {
-  const base =
-    "w-full rounded-md border bg-background px-3 py-2 text-sm outline-none transition-colors focus:ring-2";
-  const filled = value != null && String(value).trim() !== "";
-  if (required && !filled) {
-    return `${base} border-accent/70 bg-accent/10 focus:border-accent focus:ring-accent/30`;
-  }
-  if (filled) {
-    return `${base} border-secondary/50 bg-secondary/5 focus:border-secondary focus:ring-secondary/30`;
-  }
-  return `${base} border-input focus:border-secondary focus:ring-secondary/20`;
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-xl border bg-card p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-        {title}
-      </h2>
-      <div className="mt-4 space-y-4">{children}</div>
-    </section>
-  );
-}
-function Grid({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-4 md:grid-cols-2">{children}</div>;
-}
-function Field({
-  label,
-  required,
-  value,
-  children,
+function Revisao({
+  titulo,
+  icone,
+  itens,
+  onEditar,
 }: {
-  label: string;
-  required?: boolean;
-  value?: string;
-  children: React.ReactNode;
+  titulo: string;
+  icone: React.ReactNode;
+  itens: [string, string][];
+  onEditar: () => void;
 }) {
-  const filled = value != null && String(value).trim() !== "";
-  const status = required
-    ? filled
-      ? { text: "Preenchido", cls: "bg-secondary/15 text-secondary" }
-      : { text: "Obrigatório", cls: "bg-accent/25 text-accent-foreground" }
-    : filled
-      ? { text: "Preenchido", cls: "bg-secondary/10 text-secondary" }
-      : { text: "Opcional", cls: "bg-muted text-muted-foreground" };
   return (
-    <label className="block">
-      <span className="mb-1 flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-foreground">
-          {label} {required && <span className="text-accent-foreground">*</span>}
-        </span>
-        <span
-          className={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${status.cls}`}
+    <CartaoSeccao
+      titulo={titulo}
+      icone={icone}
+      accao={
+        <button
+          type="button"
+          onClick={onEditar}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
         >
-          {status.text}
-        </span>
-      </span>
-      {children}
-    </label>
-  );
-}
-
-function UploadIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+          <Pencil className="h-3.5 w-3.5" />
+          Editar
+        </button>
+      }
     >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="17 8 12 3 7 8" />
-      <line x1="12" y1="3" x2="12" y2="15" />
-    </svg>
+      <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+        {itens.map(([k, v]) => (
+          <div key={k} className="min-w-0 border-b border-border/60 pb-2 last:border-b-0">
+            <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {k}
+            </dt>
+            <dd className="mt-0.5 truncate text-sm font-medium text-foreground">
+              {v?.toString().trim() ? v : <span className="text-muted-foreground/60">—</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </CartaoSeccao>
   );
 }

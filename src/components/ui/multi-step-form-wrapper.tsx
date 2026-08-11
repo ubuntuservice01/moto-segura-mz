@@ -157,7 +157,7 @@ export function MultiStepFormWrapper({
             className="inline-flex items-center gap-2 rounded-lg bg-success px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-success/90 disabled:opacity-50 transition-all"
           >
             <Save className="h-4 w-4" />
-            {isSubmitting ? "A guardar..." : submitLabel}
+            {isSubmitting ? "A guardar…" : submitLabel}
           </button>
         )}
       </div>
