@@ -7,12 +7,19 @@ export const Route = createFileRoute("/_authenticated")({
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });
 
-    // Se estiver a tentar aceder à raiz das rotas autenticadas ou a redireccionar
-    if (location.pathname === "/_authenticated") {
-      throw redirect({ to: "/gestao" });
+    const { data: profile, error: profileError } = await (supabase as any)
+      .from("profiles").select("is_active, role").eq("id", data.user.id).maybeSingle();
+
+    if (profileError || !profile || !profile.is_active) {
+      await supabase.auth.signOut();
+      throw redirect({ to: "/auth" });
     }
 
-    return { user: data.user };
+    if (location.pathname === "/_authenticated") {
+      throw redirect({ to: profile.role === "super_admin" ? "/ubuntu" : "/gestao" });
+    }
+
+    return { user: data.user, profile };
   },
   component: () => <Outlet />,
 });
