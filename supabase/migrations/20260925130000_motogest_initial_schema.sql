@@ -379,7 +379,10 @@ create policy profiles_insert
 on public.profiles for insert to authenticated
 with check (
   public.is_super_admin()
-  or municipality_id = (select public.current_user_municipality_id())
+  or (
+    municipality_id = (select public.current_user_municipality_id())
+    and role <> 'super_admin'
+  )
 );
 
 create policy profiles_update
@@ -391,7 +394,10 @@ using (
 )
 with check (
   public.is_super_admin()
-  or municipality_id = (select public.current_user_municipality_id())
+  or (
+    municipality_id = (select public.current_user_municipality_id())
+    and role <> 'super_admin'
+  )
 );
 
 create policy profiles_delete
