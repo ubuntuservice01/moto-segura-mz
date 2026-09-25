@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutGrid,
+  Building2,
   Shield,
   History,
   Globe,
@@ -68,7 +69,8 @@ export function Sidebar() {
     sections.push({
       title: "Ubuntu Service",
       items: [
-        { label: "Municípios", icon: LayoutGrid, href: "/ubuntu", exact: true },
+        { label: "Dashboard", icon: LayoutGrid, href: "/ubuntu", exact: true },
+        { label: "Municípios", icon: Building2, href: "/ubuntu/municipios" },
         { label: "Utilizadores", icon: Users, href: "/ubuntu/utilizadores" },
         { label: "Módulos", icon: Box, href: "/ubuntu/modulos" },
         { label: "Backups", icon: Database, href: "/ubuntu/backups" },
