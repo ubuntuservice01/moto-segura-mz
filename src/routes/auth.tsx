@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Loader2, LogIn, ShieldCheck, Sparkles, User, Lock } from "lucide-react";
+import { Loader2, ShieldCheck, User, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { criarPrimeiroSuperAdmin, estadoInstalacao } from "@/lib/plataforma.functions";
+
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -33,184 +33,105 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const instalacao = useQuery({
-    queryKey: ["estado-instalacao"],
-    queryFn: () => estadoInstalacao(),
-  });
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/gestao", replace: true });
-    });
-  }, [navigate]);
-
   const entrar = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
       if (error) throw new Error(error.message);
+      if (!data.user) throw new Error("Não foi possível iniciar a sessão.");
+
+      const { data: profile, error: profileError } = await (supabase as any)
+        .from("profiles")
+        .select("full_name, role, municipality_id, is_active")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (profileError) throw new Error(profileError.message);
+      if (!profile) {
+        await supabase.auth.signOut();
+        throw new Error("A conta existe, mas ainda não tem um perfil MotoGest.");
+      }
+      if (!profile.is_active) {
+        await supabase.auth.signOut();
+        throw new Error("O seu perfil MotoGest está desactivado.");
+      }
+
+      return profile;
     },
-    onSuccess: () => {
-      toast.success("Sessão iniciada");
+    onSuccess: (profile) => {
+      toast.success(`Bem-vindo, ${profile.full_name}`);
       navigate({ to: "/gestao", replace: true });
     },
-    onError: (e) => toast.error((e as Error).message),
-  });
-
-  if (instalacao.data && !instalacao.data.instalada) {
-    return <Instalacao onPronto={() => instalacao.refetch()} />;
-  }
-
-  return (
-    <div className="flex min-h-[calc(100vh-140px)] w-full flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-200 to-gray-400 p-4">
-      <div className="relative flex h-[420px] w-[420px] flex-col items-center justify-center rounded-full border-[12px] border-blue-600 bg-white p-10 shadow-2xl">
-        <h1 className="mb-6 text-3xl font-medium tracking-wide text-blue-600">LOGIN</h1>
-
-        <form
-          className="w-full max-w-[240px] space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            entrar.mutate();
-          }}
-        >
-          {/* Username Input */}
-          <div className="flex w-full items-center overflow-hidden rounded bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-gray-200">
-            <div className="flex h-10 w-10 items-center justify-center bg-blue-600 text-white">
-              <User className="h-5 w-5" />
-            </div>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-10 flex-1 px-3 text-sm text-gray-500 outline-none placeholder:text-gray-400"
-              placeholder="Username"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className="flex w-full items-center overflow-hidden rounded bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-gray-200">
-            <div className="flex h-10 w-10 items-center justify-center bg-blue-600 text-white">
-              <Lock className="h-5 w-5" />
-            </div>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-10 flex-1 px-3 text-sm text-gray-500 outline-none placeholder:text-gray-400"
-              placeholder="Password"
-            />
-          </div>
-
-          {/* Remember me and Forgot password */}
-          <div className="flex items-center justify-between px-1 text-[10px] text-gray-600 font-medium">
-            <label className="flex cursor-pointer items-center gap-1.5">
-              <input type="checkbox" className="h-3 w-3 accent-blue-600 cursor-pointer" />
-              Remember me
-            </label>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 hover:text-blue-600 hover:underline"
-            >
-              <div className="h-2 w-2 rounded-sm bg-blue-500" />
-              Forgot password?
-            </button>
-          </div>
-
-          {/* Login Button */}
-          <div className="mt-6 flex justify-center pt-2">
-            <button
-              type="submit"
-              disabled={entrar.isPending}
-              className="flex w-32 items-center justify-center rounded-full bg-blue-600 py-2.5 text-sm font-semibold tracking-wider text-white shadow-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
-            >
-              {entrar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "LOGIN"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function Instalacao({ onPronto }: { onPronto: () => void }) {
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const criar = useMutation({
-    mutationFn: () =>
-      criarPrimeiroSuperAdmin({ data: { nome, email: email.trim(), palavraPasse: password } }),
-    onSuccess: () => {
-      toast.success("Super Administrador criado. Já pode entrar.");
-      onPronto();
-    },
-    onError: (e) => toast.error((e as Error).message),
+    onError: (error) => toast.error((error as Error).message),
   });
 
   return (
-    <div className="container mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
-      <div className="rounded-2xl border-2 border-secondary bg-card p-7 shadow-sm">
-        <div className="flex items-center gap-2 text-secondary-foreground">
-          <Sparkles className="h-5 w-5 text-secondary" />
-          <span className="text-xs font-bold uppercase tracking-wider">Primeira instalação</span>
-        </div>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight">Criar Super Administrador</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Esta conta pertence à Ubuntu Service e gere toda a plataforma nacional. Só pode ser criada
-          uma vez.
-        </p>
-        <form
-          className="mt-6 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            criar.mutate();
-          }}
-        >
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold">Nome completo</span>
-            <input
-              required
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold">Email</span>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold">Palavra-passe (mín. 8)</span>
-            <input
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={criar.isPending}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50"
-          >
-            {criar.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <ShieldCheck className="h-4 w-4" />
-            )}
-            Criar conta Ubuntu Service
-          </button>
-        </form>
+    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-10">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl md:grid-cols-2">
+        <section className="hidden bg-slate-900 p-10 text-white md:flex md:flex-col md:justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-xl font-bold">MotoGest</p>
+                <p className="text-xs text-slate-400">Gestão municipal de motociclos</p>
+              </div>
+            </div>
+            <div className="mt-20 max-w-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">Acesso seguro</p>
+              <h1 className="mt-4 text-4xl font-bold leading-tight">Gestão simples, controlo municipal.</h1>
+              <p className="mt-5 text-sm leading-6 text-slate-400">
+                Registe motociclos, consulte proprietários e acompanhe transferências do seu município.
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500">MotoGest · Ubuntu Service Lda</p>
+        </section>
+
+        <section className="flex min-h-[620px] items-center justify-center p-6 sm:p-10">
+          <div className="w-full max-w-md">
+            <div className="mb-8 md:hidden">
+              <p className="text-2xl font-bold text-slate-950">MotoGest</p>
+              <p className="text-sm text-slate-500">Gestão municipal</p>
+            </div>
+            <p className="text-sm font-semibold text-blue-600">Área reservada</p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">Entrar na plataforma</h2>
+            <p className="mt-2 text-sm text-slate-500">Use o email e a palavra-passe da sua conta MotoGest.</p>
+
+            <form className="mt-8 space-y-5" onSubmit={(event) => { event.preventDefault(); entrar.mutate(); }}>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-slate-700">Email</span>
+                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 focus-within:border-blue-500">
+                  <User className="ml-3 h-5 w-5 text-slate-400" />
+                  <input type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)}
+                    placeholder="nome@instituicao.gov.mz" className="h-12 w-full bg-transparent px-3 text-sm outline-none" />
+                </div>
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-slate-700">Palavra-passe</span>
+                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 focus-within:border-blue-500">
+                  <Lock className="ml-3 h-5 w-5 text-slate-400" />
+                  <input type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)}
+                    placeholder="••••••••" className="h-12 w-full bg-transparent px-3 text-sm outline-none" />
+                </div>
+              </label>
+              <button type="submit" disabled={entrar.isPending}
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-bold text-white shadow-lg transition hover:bg-blue-700 disabled:opacity-60">
+                {entrar.isPending ? <><Loader2 className="h-4 w-4 animate-spin" />A entrar...</> : "Entrar"}
+              </button>
+            </form>
+
+            <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50 p-4 text-xs leading-5 text-blue-900">
+              O acesso só é permitido quando existe um perfil MotoGest activo associado à conta.
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
+
