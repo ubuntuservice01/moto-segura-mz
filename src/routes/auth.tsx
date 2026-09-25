@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, ShieldCheck, User, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar — MotoGest Plataforma Nacional" },
+      { title: "Entrar — MotoGest" },
       {
         name: "description",
         content:
@@ -62,7 +62,7 @@ function AuthPage() {
     },
     onSuccess: (profile) => {
       toast.success(`Bem-vindo, ${profile.full_name}`);
-      navigate({ to: "/gestao", replace: true });
+      navigate({ to: profile.role === "super_admin" ? "/ubuntu" : "/gestao", replace: true });
     },
     onError: (error) => toast.error((error as Error).message),
   });
