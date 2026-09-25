@@ -1,354 +1,63 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Building2,
-  Bike,
-  Users,
-  ShieldCheck,
-  TrendingUp,
-  AlertTriangle,
-  RefreshCw,
-  Clock,
-  ArrowRightLeft,
-} from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
-import { estatisticasNacionais } from "@/lib/plataforma.functions";
+import { Building2, Bike, Users, Activity, ArrowRightLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/ubuntu/")({
   ssr: false,
-  head: () => ({
-    meta: [{ title: "Dashboard Nacional — Ubuntu Service" }],
-  }),
-  component: UbuntuDashboard,
+  head: () => ({ meta: [{ title: "Painel Nacional — MotoGest" }] }),
+  component: Dashboard,
 });
 
-const ESTADO_CONFIG: Record<string, { label: string; cor: string }> = {
-  activa: { label: "Activas", cor: "#22c55e" },
-  roubada: { label: "Roubadas", cor: "#ef4444" },
-  recuperada: { label: "Recuperadas", cor: "#3b82f6" },
-  transferida: { label: "Transferidas", cor: "#a855f7" },
-  abatida: { label: "Abatidas", cor: "#6b7280" },
-};
-
-const PAPEL_LABEL: Record<string, string> = {
-  super_admin: "Super Admin",
-  admin_municipal: "Administradores",
-  tecnico_municipal: "Técnicos",
-  policia: "Polícia",
-};
-
-function UbuntuDashboard() {
-  const {
-    data: stats,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["ubuntu-stats"],
-    queryFn: () => estatisticasNacionais(),
-    staleTime: 30_000,
-    refetchInterval: 60_000,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (error || !stats) {
-    return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-6 text-center">
-        <AlertTriangle className="mx-auto h-8 w-8 text-destructive" />
-        <p className="mt-2 text-sm font-medium text-destructive">Erro ao carregar estatísticas</p>
-        <button
-          onClick={() => refetch()}
-          className="mt-3 rounded-md bg-destructive px-4 py-1.5 text-xs font-bold text-white"
-        >
-          Tentar novamente
-        </button>
-      </div>
-    );
-  }
-
-  const estadoData = Object.entries(stats.motos.porEstado).map(([estado, count]) => ({
-    name: ESTADO_CONFIG[estado]?.label ?? estado,
-    value: count,
-    fill: ESTADO_CONFIG[estado]?.cor ?? "#6b7280",
-  }));
-
-  return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Cabeçalho */}
-      <div className="page-header">
-        <h1 className="page-title">Dashboard Nacional</h1>
-        <p className="page-subtitle">
-          Visão em tempo real de toda a plataforma MotoGest.
-        </p>
-      </div>
-
-      {/* KPIs — Municípios */}
-      <section>
-        <p className="section-label mb-3">Municípios</p>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <KpiCard
-            icon={<Building2 className="h-5 w-5" />}
-            label="Total"
-            value={stats.municipios.total}
-            cor="bg-primary/10 text-primary"
-          />
-          <KpiCard
-            icon={<ShieldCheck className="h-5 w-5" />}
-            label="Activos"
-            value={stats.municipios.activos}
-            cor="bg-success/10 text-success"
-          />
-          <KpiCard
-            icon={<AlertTriangle className="h-5 w-5" />}
-            label="Suspensos"
-            value={stats.municipios.suspensos}
-            cor="bg-destructive/10 text-destructive"
-          />
-        </div>
-      </section>
-
-      {/* KPIs — Motorizadas */}
-      <section>
-        <p className="section-label mb-3">Motorizadas</p>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          <KpiCard
-            icon={<Bike className="h-5 w-5" />}
-            label="Total"
-            value={stats.motos.total}
-            cor="bg-primary/10 text-primary"
-          />
-          {Object.entries(stats.motos.porEstado).map(([estado, count]) => (
-            <KpiCard
-              key={estado}
-              icon={<Bike className="h-5 w-5" />}
-              label={ESTADO_CONFIG[estado]?.label ?? estado}
-              value={count}
-              cor="bg-muted text-foreground"
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Utilizadores & Infraestrutura */}
-      <section>
-        <p className="section-label mb-3">Utilizadores &amp; Infraestrutura</p>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          <KpiCard
-            icon={<Users className="h-5 w-5" />}
-            label="Total utilizadores"
-            value={stats.utilizadores.total}
-            cor="bg-primary/10 text-primary"
-          />
-          {Object.entries(stats.utilizadores.porPapel).map(([papel, count]) => (
-            <KpiCard
-              key={papel}
-              icon={<Users className="h-5 w-5" />}
-              label={PAPEL_LABEL[papel] ?? papel}
-              value={count}
-              cor="bg-muted text-foreground"
-            />
-          ))}
-          <KpiCard
-            icon={<ShieldCheck className="h-5 w-5" />}
-            label="Esquadras"
-            value={stats.esquadras}
-            cor="bg-secondary/10 text-secondary"
-          />
-          <KpiCard
-            icon={<ArrowRightLeft className="h-5 w-5" />}
-            label="Transferências"
-            value={stats.transferencias}
-            cor="bg-muted text-foreground"
-          />
-        </div>
-      </section>
-
-      {/* Gráficos */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Motorizadas por município */}
-        <div className="mg-card p-5">
-          <div className="mb-4 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-bold">Motorizadas por Município</h3>
-          </div>
-          {stats.porMunicipio.length > 0 ? (
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart
-                data={stats.porMunicipio}
-                margin={{ top: 0, right: 0, left: -10, bottom: 0 }}
-              >
-                <XAxis
-                  dataKey="nome"
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(v: string) => (v.length > 12 ? v.slice(0, 12) + "…" : v)}
-                />
-                <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-                <Tooltip
-                  formatter={(v: number) => [v, "Motorizadas"]}
-                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                />
-                <Bar dataKey="total" fill="var(--color-secondary)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="py-10 text-center text-sm text-muted-foreground">
-              Sem dados disponíveis.
-            </p>
-          )}
-        </div>
-
-        {/* Distribuição por estado */}
-        <div className="rounded-xl border bg-card p-5">
-          <div className="mb-4 flex items-center gap-2">
-            <Bike className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-bold">Distribuição por Estado</h3>
-          </div>
-          {estadoData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie
-                  data={estadoData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={100}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
-                >
-                  {estadoData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Legend iconType="circle" iconSize={8} />
-                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="py-10 text-center text-sm text-muted-foreground">
-              Sem dados disponíveis.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Feeds de actividade */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <FeedCard
-          title="Últimos Registos"
-          icon={<Bike className="h-4 w-4 text-primary" />}
-          items={stats.ultimosRegistos.map((r) => ({
-            id: r.id,
-            titulo: `${r.marca} ${r.modelo}`,
-            subtitulo: r.chassi,
-            nota: r.municipio,
-            data: r.created_at,
-          }))}
-        />
-        <FeedCard
-          title="Últimas Transferências"
-          icon={<ArrowRightLeft className="h-4 w-4 text-primary" />}
-          items={stats.ultimasTransferencias.map((t) => ({
-            id: t.id,
-            titulo: "Transferência",
-            subtitulo: t.moto_id.slice(0, 8) + "…",
-            nota: t.municipio,
-            data: t.created_at,
-          }))}
-        />
-        <FeedCard
-          title="Últimos Reportes de Roubo"
-          icon={<AlertTriangle className="h-4 w-4 text-destructive" />}
-          items={stats.ultimosReportes.map((r) => ({
-            id: r.id,
-            titulo: r.sucesso ? "Recuperada" : "Em investigação",
-            subtitulo: r.identificador,
-            nota: r.sucesso ? "Recuperada" : "Roubada",
-            data: r.created_at,
-          }))}
-        />
-      </div>
-    </div>
-  );
+async function getStats() {
+  const [m, ma, bikes, owners, users, transfers] = await Promise.all([
+    (supabase as any).from("municipalities").select("id,name,code,province,is_active").order("name"),
+    (supabase as any).from("municipalities").select("id", { count: "exact", head: true }).eq("is_active", true),
+    (supabase as any).from("motorcycles").select("id,status", { count: "exact" }),
+    (supabase as any).from("owners").select("id", { count: "exact", head: true }),
+    (supabase as any).from("profiles").select("id", { count: "exact", head: true }),
+    (supabase as any).from("ownership_transfers").select("id", { count: "exact", head: true }),
+  ]);
+  const error = [m,ma,bikes,owners,users,transfers].map(x=>x.error).find(Boolean);
+  if (error) throw error;
+  const rows = bikes.data || [];
+  return {
+    municipalities: m.data || [],
+    total: m.count ?? (m.data || []).length,
+    active: ma.count ?? 0,
+    bikes: bikes.count ?? rows.length,
+    owners: owners.count ?? 0,
+    users: users.count ?? 0,
+    transfers: transfers.count ?? 0,
+    activeBikes: rows.filter(x=>x.status === "activa").length,
+    stolen: rows.filter(x=>x.status === "roubada").length,
+    sale: rows.filter(x=>x.status === "a_venda").length,
+    seized: rows.filter(x=>x.status === "apreendida").length,
+  };
 }
 
-function KpiCard({
-  icon,
-  label,
-  value,
-  cor,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  cor: string;
-}) {
-  return (
-    <div className="rounded-xl border bg-card p-4 shadow-sm">
-      <div className={`mb-2 inline-flex rounded-lg p-2 ${cor}`}>{icon}</div>
-      <p className="text-2xl font-bold tracking-tight">{value.toLocaleString("pt-MZ")}</p>
-      <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
-    </div>
-  );
-}
+function Dashboard() {
+  const { data, isLoading, error, refetch } = useQuery({ queryKey:["national-dashboard"], queryFn:getStats, refetchInterval:60000 });
+  if (isLoading) return <div className="p-12 text-center">A carregar painel…</div>;
+  if (error || !data) return <div className="rounded-xl border p-8 text-center"><p className="font-semibold">Não foi possível carregar o painel.</p><button onClick={()=>refetch()} className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground">Tentar novamente</button></div>;
 
-function FeedCard({
-  title,
-  icon,
-  items,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  items: { id: string; titulo: string; subtitulo: string; nota: string; data: string }[];
-}) {
-  return (
-    <div className="rounded-xl border bg-card">
-      <div className="flex items-center gap-2 border-b px-4 py-3">
-        {icon}
-        <h3 className="text-sm font-bold">{title}</h3>
-      </div>
-      <ul className="divide-y">
-        {items.length === 0 ? (
-          <li className="px-4 py-8 text-center text-xs text-muted-foreground">Sem registos.</li>
-        ) : (
-          items.map((item) => (
-            <li key={item.id} className="flex items-start justify-between gap-2 px-4 py-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{item.titulo}</p>
-                <p className="truncate text-xs text-muted-foreground">{item.subtitulo}</p>
-                <p className="text-[10px] text-muted-foreground/70">{item.nota}</p>
-              </div>
-              <div className="flex-shrink-0 text-right">
-                <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
-                  <Clock className="h-2.5 w-2.5" />
-                  {new Date(item.data).toLocaleDateString("pt-MZ", {
-                    day: "2-digit",
-                    month: "short",
-                  })}
-                </span>
-              </div>
-            </li>
-          ))
-        )}
-      </ul>
+  const cards = [
+    ["Municípios",data.total,Building2],["Activos",data.active,Activity],["Motorizadas",data.bikes,Bike],
+    ["Proprietários",data.owners,Users],["Utilizadores",data.users,Users],["Transferências",data.transfers,ArrowRightLeft]
+  ];
+
+  return <div className="space-y-8">
+    <header><p className="text-xs font-bold uppercase tracking-widest text-primary">MotoGest</p><h1 className="mt-1 text-3xl font-bold">Painel Nacional</h1><p className="mt-2 text-sm text-muted-foreground">Visão geral da plataforma.</p></header>
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {cards.map(([label,value,Icon]:any)=><div key={label} className="rounded-2xl border bg-card p-5 shadow-sm"><div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="h-5 w-5"/></div><p className="text-3xl font-bold">{Number(value).toLocaleString("pt-MZ")}</p><p className="text-sm text-muted-foreground">{label}</p></div>)}
     </div>
-  );
+    <div className="grid gap-6 lg:grid-cols-2">
+      <div className="rounded-2xl border bg-card"><div className="border-b px-5 py-4"><h2 className="font-semibold">Municípios</h2></div><div className="divide-y">
+        {data.municipalities.length===0?<p className="p-10 text-center text-sm text-muted-foreground">Nenhum município criado.</p>:data.municipalities.map((m:any)=><div key={m.id} className="flex items-center justify-between px-5 py-4"><div><p className="font-medium">{m.name}</p><p className="text-xs text-muted-foreground">{m.province || "—"} · {m.code}</p></div><span className="text-xs font-semibold">{m.is_active?"Activo":"Inactivo"}</span></div>)}
+      </div></div>
+      <div className="rounded-2xl border bg-card p-5"><h2 className="font-semibold">Estado das motorizadas</h2><div className="mt-5 space-y-4">
+        {[["Activas",data.activeBikes],["Roubadas",data.stolen],["À venda",data.sale],["Apreendidas",data.seized]].map(([label,value]:any)=><div key={label}><div className="mb-1 flex justify-between text-sm"><span>{label}</span><strong>{value}</strong></div><div className="h-2 rounded-full bg-muted"><div className="h-2 rounded-full bg-primary" style={{width:data.bikes ? (value/data.bikes*100)+"%" : "0%"}}/></div></div>)}
+      </div></div>
+    </div>
+  </div>;
 }
