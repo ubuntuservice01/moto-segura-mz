@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportarRouboRouteImport } from './routes/reportar-roubo'
 import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as RecuperarPasswordRouteImport } from './routes/recuperar-password'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerificarIndexRouteImport } from './routes/verificar.index'
@@ -51,6 +52,11 @@ const ComprarRoute = ComprarRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarPasswordRoute = RecuperarPasswordRouteImport.update({
+  id: '/recuperar-password',
+  path: '/recuperar-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -196,6 +202,7 @@ const AuthenticatedGestaoIdTransferirRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/gestao': typeof AuthenticatedGestaoRouteWithChildren
@@ -225,6 +232,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/pesquisa-nacional': typeof AuthenticatedPesquisaNacionalRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/recuperar-password': typeof RecuperarPasswordRoute
   '/comprar': typeof ComprarRouteWithChildren
   '/reportar-roubo': typeof ReportarRouboRoute
   '/_authenticated/gestao': typeof AuthenticatedGestaoRouteWithChildren
@@ -398,6 +407,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-password': {
+      id: '/recuperar-password'
+      path: '/recuperar-password'
+      fullPath: '/recuperar-password'
+      preLoaderRoute: typeof RecuperarPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -681,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  RecuperarPasswordRoute: RecuperarPasswordRoute,
   ComprarRoute: ComprarRouteWithChildren,
   ReportarRouboRoute: ReportarRouboRoute,
   VerificarChassiRoute: VerificarChassiRoute,
